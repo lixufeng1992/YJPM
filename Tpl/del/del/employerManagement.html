@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <link href="__PUBLIC__/bootstrap-3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="__PUBLIC__/jquery-ui-1.11.1/jquery-ui.min.css" rel="stylesheet">
+  <script src="__PUBLIC__/js/jquery-1.11.1.min.js"></script>
+	<script src="__PUBLIC__/bootstrap-3.2.0/js/bootstrap.js"></script>
+	<script src="__PUBLIC__/jquery-ui-1.11.1/jquery-ui.min.js"></script>
+    <script src="__PUBLIC__/js/resize.js" type="text/javascript"></script>
+  <link href="__PUBLIC__/css/style.css" rel="stylesheet">	
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<div id="bodydiv">
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+  <nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">员工维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperHumanResource/addEmployer')}>新增员工</a></li>
+      <li><a href={:U('OperHumanResource/listEmployer')} class="active">已有员工</a>   </li>
+      <li><a href={:U('OperHumanResource/searchEmployer')}>搜索员工</a> </li>
+    </ul>
+  </div>
+</nav>
+	<div class="panel panel-default">
+		
+		<div class="panel-body">
+		<div class="page-header">
+			<h4>已有员工</h4>
+		</div>
+		<div>
+			<volist name="employerRowArray" id="vo">			
+			<label class="control-label col-md-1">{$vo['name']}</label>
+			<div class="col-md-8">					 
+			</div>				
+			<div class="col-md-2">
+				<a class="btn btn-primary btn-block" href={:U('OperHumanResource/editEmployer',array('employerid'=>$vo['employerid']))}>修改</a>
+			</div>
+			<div class="col-md-1">
+				<a class="btn btn-danger btn-block" href={:U('OperHumanResource/deleteEmployer',array('employerid'=>$vo['employerid']))}>删除</a>
+			<br>
+			</div>
+			
+			</volist>
+		</div>
+		</div>
+		</div>
+
+</div>
+<div style="clear:both"></div>
+</div>
+</body>
+</html>

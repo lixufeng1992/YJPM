@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />	
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+<div class="navbar-header navbar-brand">员工维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperHumanResource/addEmployer')}>新增员工</a></li>
+      <li><a href={:U('OperHumanResource/listEmployer')} class="active">已有员工</a>   </li>
+    </ul>
+  </div>
+</nav>
+	<div class="panel panel-default">
+		
+		<div class="panel-body">
+		<div class="page-header">
+                   <div class="col-md-4">
+                   <h4>已有员工</h4>
+                   </div>
+		<div style="clear:both"></div>
+		</div>
+		<form class="form-horizontal">
+		<div class="form-group">
+			<label class="col-md-2 control-label">所属公司</label>
+						<div class="col-md-2">
+							<select class="form-control" name="companyid" id="companyid">
+							<option value="0">全部</option>
+							<volist name="companyRowArray" id="vo">	
+								 <if condition="$employerRow.companyid eq $vo['companyid']"><option value="{$vo.companyid}" selected="true">{$vo.name}</option>
+                  					<else /><option value="{$vo.companyid}">{$vo.name}</option>
+                 				</if>
+							</volist>
+							</select>
+							<br>
+						</div>                    
+                	<label class="col-md-2 control-label">所属部门</label>
+                    <div class="col-md-2">
+                       <select class="form-control" name="departmentid" id="departmentid">
+												<option value="0">全部</option>
+							<volist name="departmentRowArray" id="vo">	
+								<if condition="$employerRow.departmentid eq $vo['departmentid']"><option value="{$vo.departmentid}" selected="true">{$vo.name}</option>
+                  <else /><option value="{$vo.departmentid}">{$vo.name}</option>
+                </if>
+							</volist>
+							</select>
+                    </div>
+										
+		</div>
+		</form>
+		<table class="table table-hover">
+			<thead>
+				<th>员工编号</th>
+				<th>姓名</th>
+				<th>公司</th>
+				<th>部门</th>
+                                <th>操作</th>
+                                <th></th>                                
+			</thead>
+			<tbody>
+			<volist name="employerRowArray" id="vo">
+				<tr class="tr_select tr_select_company{$vo.companyid} tr_select_department{$vo.departmentid}">
+					<td>{$vo.employerid}</td>
+					<td>{$vo.name}</td>
+					<volist name="companyRowArray" id="vo_1">
+					<if condition="$vo['companyid'] eq $vo_1['companyid']">
+					<td>{$vo_1.name}</td>
+					</if>
+					</volist>
+					<volist name="departmentRowArray" id="vo_2">
+					<if condition="$vo['departmentid'] eq $vo_2['departmentid']">
+					<td>{$vo_2.name}</td>
+					</if>
+					</volist>
+					<td><a class="btn btn-primary btn-block" href={:U('OperHumanResource/editEmployer',array('employerid'=>$vo['employerid']))}>编辑</a></td>
+					<td><a class="btn btn-danger" href={:U('OperHumanResource/deleteEmployer',array('employerid'=>$vo['employerid']))}>删除</a></td>
+				</tr>
+			</volist>
+			</tbody>			
+		</table>		
+		</div>
+		</div>
+
+</div>
+<include file="./Tpl/Part/script.html" />
+<script>
+$(document).ready(function(){
+	$("#companyid").change(function(){
+		if($("#companyid").val()==0){
+			$(".tr_select").hide();
+			if($("#departmentid").val()==0){
+				$(".tr_select").show();
+			}
+			if($("#departmentid").val()!=0){
+			$(".tr_select"+".tr_select_department"+$("#departmentid").val()).show();
+			}
+		}
+		if($("#companyid").val()!=0){		
+			$(".tr_select").hide();
+			if($("#departmentid").val()==0){
+				$(".tr_select_company"+$("#companyid").val()).show();
+			}
+			if($("#departmentid").val()!=0){
+				$(".tr_select_company"+$("#companyid").val()+".tr_select_department"+$("#departmentid").val()).show();
+			}
+		}
+	});
+	$("#departmentid").change(function(){
+		if($("#departmentid").val()==0){
+			$(".tr_select").hide();
+			if($("#companyid").val()==0){
+				$(".tr_select").show();
+			}
+			if($("#companyid").val()!=0){
+			$(".tr_select"+".tr_select_company"+$("#companyid").val()).show();
+			}
+		}
+		if($("#departmentid").val()!=0){
+			$(".tr_select").hide();	
+			if($("#companyid").val()==0){
+				$(".tr_select_department"+$("#departmentid").val()).show();
+			}
+			if($("#companyid").val()!=0){			
+				$(".tr_select_company"+$("#companyid").val()+".tr_select_department"+$("#departmentid").val()).show();
+			}
+		}
+	});
+})
+</script>
+</body>
+</html>

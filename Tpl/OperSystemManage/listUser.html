@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">用户维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperSystemManage/addUser')}>新增用户</a></li>
+      <li><a href={:U('OperSystemManage/listUser')} class="active">已有用户</a></li>
+    </ul>
+  </div>
+</nav>
+	<div class="panel panel-default">			
+		<div class="panel-body">		
+			<div class="page-header">
+                            <div class="col-md-4">
+				<h4>已有用户列表</h4>
+                            </div>
+                            <div style="clear:both"></div>
+			</div>
+			<div class="container-fluid">		
+			<volist name="userRowArray" id="vo">
+				<div class="row list-row">
+				<label class="control-label col-md-9">{$vo.username}</label>
+				<div class="col-md-2">
+					<a class="btn btn-primary btn-block" href={:U('OperSystemManage/editUser',array('userid'=>$vo['userid']))}>编辑</a>
+				</div>
+				<div class="col-md-1">
+					<a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteUser',array('userid'=>$vo['userid']))}>删除</a>
+				</div>	
+				</div>
+			</volist>	
+			</div>	
+		</div>
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+</body>
+</html>

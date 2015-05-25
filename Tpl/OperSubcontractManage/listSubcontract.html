@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>亿建工程管理系统</title>
+<include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right" style="min-width:1500px">
+  <nav class="navbar navbar-default" role="navigation" id="bodynav">
+    <div class="container-fluid">
+      <div class="navbar-header navbar-brand">分包合同</div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{:U('OperSubcontractManage/addSubcontract')}">新增分包合同</a></li>
+        <li><a href="{:U('OperSubcontractManage/listSubcontract')}" class="active" >已有分包合同</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="panel-group"> 
+    <div class="panel panel-default">			
+      <div class="panel-body">
+        <form action="{:U('OperSubcontractManage/editSubcontract')}" method="POST">
+          <div class="page-header">	
+            <div class="col-md-4">
+              <h4>已有分包合同</h4>
+            </div>
+            <div class="col-md-4">						
+              <h4 id="project_title">{$resourceRow['resource_name']}</h4>
+            </div>				
+
+            <div class="col-md-1 col-md-offset-1">
+              <label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目"></label>
+
+              <a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+            </div>
+            <div class="col-md-2">
+              <input type="hidden" name="contract_id" id="contract_id">
+              <input class="btn btn-primary btn-block" type="submit" id="submit" value="编辑"/>
+            </div>
+            <div style="clear:both"></div>
+          </div>
+        </form>
+        <table class="table">
+          <thead>
+            <th>结算</th>
+            <th>审核</th>
+            <th>编号</th>
+            <th>名称</th>                               
+            <th>合同状态</th>
+            <th>合同金额</th>
+            <th>创建人</th>
+            <th>创建日期</th>
+            <th>操作</th>	
+          </thead>
+          <tbody id="contract_list">
+          <volist name="subcontractRowArray" id="vo">
+          <tr class="contract_item" style="cursor:pointer" data-id="{$vo['contractid']}">
+            <td id="finalcost_status_{$vo['contractid']}">{$vo['finalcost']}</td>
+            <td id="check_status_{$vo['contractid']}">{$vo['check']}</td>
+            <td>{$vo['contract_number']}</td>
+            <td>{$vo['name']}</td>
+            <td>{$vo['contract_status']}</td>
+            <td>{$vo['report_price']}</td>
+            <td>{$vo['create_userInfo']}</td>
+            <td>{$vo['create_date']}</td>
+            <td>
+              <if condition="$vo['finalcost_userid'] eq 0">
+              <button class="btn btn-success finalcostbtn" data-func="finalcost" data-contractid="{$vo['contractid']}" data-state="0">通过结算</button>
+              <else />
+              <button class="btn btn-danger finalcostbtn" data-func="cancelfinalcost" data-contractid="{$vo['contractid']}" data-state="1">取消结算</button>
+              </if>
+              
+              <if condition="$vo['check_userid'] eq 0">
+              <button class="btn btn-success checkbtn" data-func="check" data-contractid="{$vo['contractid']}" data-state="0">通过审核</button>
+              <else />
+              <button class="btn btn-danger checkbtn" data-func="cancelcheck" data-contractid="{$vo['contractid']}" data-state="1">取消审核</button>
+              </if>
+
+            </td>
+          </tr>
+          </volist>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--项目资源树形图-->
+<div class="ui sidebar left overlay panel panel-default <if condition="$treeExist eq true">active</if>">
+  <div class="page-header">
+    <h4  style="padding-left:15px">项目列表</h4>
+  </div>
+  <div class="panel-body">
+    <ul class="list-group sidebar-tree">
+      <volist name="resourceRowArray" id="vo1">
+      <if condition="($vo1['resource_level'] eq 1) AND ($vo1.resource_type eq 2)">
+
+      <!-- 有子级 --><if condition="$vo1['resource_haschildren'] eq 1">
+      <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+      <a href="#" class="tree-item">{$vo1['resource_name']}</a>
+      </li>
+      <li class="list-group-item collapse in">
+      <ul class="list-group">
+        <volist name="resourceRowArray" id="vo2">
+        <if condition="($vo2['resource_level'] eq 2) AND ($vo2.resource_type eq 2) AND ($vo2['resource_father_id'] eq $vo1['resource_id'])">
+        <!-- 有子级 --><if condition="$vo2['resource_haschildren'] eq 1">
+        <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+        <a href="{:U('OperSubcontractManage/listSubcontract',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}</a>
+        </li>
+        <li class="list-group-item collapse in">
+        <ul class="list-group">
+          <volist name="resourceRowArray" id="vo3">
+          <if condition="($vo3['resource_level'] eq 3) AND ($vo3.resource_type eq 2) AND ($vo3['resource_father_id'] eq $vo2['resource_id'])">
+          <!-- 无子级 --><if condition="$vo3['resource_haschildren'] neq 1">
+          <li class="list-group-item">
+          <a href="{:U('OperSubcontractManage/listSubcontract',array('resource_id'=>$vo3['resource_id']))}" class="tree-item">{$vo3['resource_name']}
+          </a>
+          </li>
+          </if>
+          </if>
+          </volist>
+        </ul>
+        </li>
+        </if>
+        <!-- 无子级 --><if condition="$vo2['resource_haschildren'] neq 1">
+        <li class="list-group-item">
+        <a href="{:U('OperSubcontractManage/listSubcontract',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}
+        </a>
+        </li>
+        </if>
+        </if>
+        </volist>
+      </ul>
+      </li>
+      </if>
+      <!-- 无子级 --><if condition="($vo1['resource_level'] eq 1) AND ($vo1['resource_haschildren'] neq 1)">
+      <li class="list-group-item">
+      <a href="{:U('OperProjectManage/listContract',array('resource_id'=>$vo1['resource_id']))}" class="tree-item">{$vo1['resource_name']}
+      </a>
+      </li>
+      </if>
+      </if>
+      </volist>
+    </ul>
+  </div>
+</div>
+
+
+
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<script>
+$(function(){			
+    $("#contract_list").on("click",".contract_item",function(){
+      var data=$("#contract_list").data("lastActive");
+      if(data){
+      data.removeClass("active");
+      }
+      $(this).addClass("active");			
+      $("#contract_list").data("lastActive",$(this));
+      $("#contract_id").val($(this).data("id"));        
+      var verify_state=$(this).find('.checkbtn').data("state");
+      var cost_state=$(this).find('.finalcostbtn').data("state");
+      if(verify_state==0 && cost_state==0){
+      $("#submit").attr("disabled",false);
+      }else $("#submit").attr("disabled",true);
+      });
+
+    $(".checkbtn").click(function(){
+      var contractid = $(this).data("contractid");
+      if($(this).data("func") == "check"){
+
+      $.post("{:U('OperSubcontractManage/checkSubcontract')}",
+        {
+contractid:contractid
+},function(process,textStatus){
+if(process['check_userid'] != 0){
+
+$("#check_status_"+contractid).text("已审核");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).data('func',"cancelcheck");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).text("取消审核");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).removeClass("btn-success");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).addClass("btn-danger");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).data("state",1);
+$("#submit").attr("disabled",true);
+}
+},"json");
+      }
+      else if($(this).data("func") == "cancelcheck"){
+
+        $.post("{:U('OperSubcontractManage/cancelcheckSubcontract')}",
+            {
+contractid:contractid
+},function(process,textStatus){
+
+if(process['check_userid'] == 0){
+
+$("#check_status_"+contractid).text("未审核");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).data("func","check");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).html("通过审核");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).removeClass("btn-danger");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).addClass("btn-success");
+$("#contract_list").find(".active").children().eq(8).children().eq(1).data("state",0);
+if($("#contract_list").find(".active").children().eq(8).children().eq(0).data("state")==0){
+$("#submit").attr("disabled",false);
+}
+}
+},"json"
+);
+        }
+
+});
+
+$(".finalcostbtn").click(function(){
+
+    var contractid = $(this).data("contractid");
+    if($(this).data("func") == "finalcost"){
+
+    $.post("{:U('OperSubcontractManage/finalcostSubcontract')}",
+      {
+contractid:contractid
+},function(process,textStatus){
+if(process['finalcost_userid'] != 0){
+//alert("asdasd");
+$("#finalcost_status_"+contractid).text("已结算");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).data("func","cancelfinalcost");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).text("取消结算");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).removeClass("btn-success");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).addClass("btn-danger");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).data("state",1);
+$("#submit").attr("disabled",true);
+}
+},"json");
+    }
+else if($(this).data("func") == "cancelfinalcost"){
+
+  $.post("{:U('OperSubcontractManage/cancelfinalcostSubcontract')}",
+      {
+contractid:contractid
+},function(process,textStatus){
+if(process['finalcost_userid'] == 0){
+//alert("asdasd");
+$("#finalcost_status_"+contractid).text("未结算");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).data("func","finalcost");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).html("通过结算");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).removeClass("btn-danger");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).addClass("btn-success");
+$("#contract_list").find(".active").children().eq(8).children().eq(0).data("state",0);
+if($("#contract_list").find(".active").children().eq(8).children().eq(1).data("state")==0){
+$("#submit").attr("disabled",false);
+}
+}
+},"json"
+);
+  }
+
+});
+
+});
+
+//检查该合同是否可编辑
+$("#submit").click(function(){
+    var editable = true;
+    if(!($("tbody .active").length && $("tbody .active").length>0)){
+    alert("未选择分包合同");
+    return false;
+    }
+    var finalcostStatus = $(".active td:first").text();
+    var checkStatus = $(".active").children().eq(1).text();
+
+    if(finalcostStatus == "已结算"){
+    alert("分包合同已结算，不可编辑");
+    editable = false;
+    }
+    if(checkStatus == "已审核"){
+    alert("分包合同已审核，不可编辑");
+    editable = false;
+    }
+
+    //alert(checkStatus);
+    return editable;
+    });
+
+// function checkContract_switch(contractid){
+//     alert($(this).text());
+//     if($(this).data("func") == "check"){
+
+//         $.post("{:U('OperProjectManage/checkContract')}",
+//             {
+//                 contractid:contractid
+//             },function(process,textStatus){
+//                 if(process['check_userid'] != 0){
+//                     //alert("asdasd");
+//                     $("#check_status_"+contractid).text("已审核");
+//                     $(this).data("func") = "cancelcheck";
+//                     $(this).text("取消审核");
+//             }
+
+//         });
+//     }
+//     else if($(this).data("func") == "cancelcheck"){
+//         $.post("{:U('OperProjectManage/cancelcheckContract')}",
+//             {
+//                 contractid:contractid
+//             },function(process,textStatus){
+//                 if(process['check_userid'] == 0){
+//                     //alert("asdasd");
+//                     $("#check_status_"+contractid).text("未审核");
+//                     $(this).data("func") = "check";
+//                     $(this).text("审       核");
+//             }
+
+//         });
+
+//     };
+//     alert("final");
+// }
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+

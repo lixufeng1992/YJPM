@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+	#viewClassTree{
+		min-width:180px;
+	}
+	td .form-control[readonly]{
+		background:#eee;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">材料出库单</div>
+        <ul class="nav navbar-nav navbar-right">
+	  <li><a href="{:U('OperMaterialManage/addOutboundOrder')}">新增材料出库单</a></li>
+          <li><a href="{:U('OperMaterialManage/listOutboundOrder')}" class="active">已有材料出库单</a></li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <form class="form-horizontal" action="{:U('OperMaterialManage/editOutboundOrderSubmit')}" role="form" method="POST">
+					    <div class="page-header">
+                                                <div class="col-md-8">
+                                                <h4>编辑材料出库单</h4>
+                                                </div>
+						<div class="col-md-2">
+                                                    <input type="hidden" name="outbound_id" value="{$outboundOrderRow.outbound_id}">
+							<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+						</div>
+                                                <div class="col-md-1">
+                                                    <a class="btn btn-danger btn-block" id="delete_outbound" href="{:U('OperMaterialManage/deleteOutboundOrder',array('outbound_id'=>$outboundOrderRow['outbound_id']))}">删除</a>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <a class="btn btn-default btn-block" href="{:U('OperMaterialManage/listOutboundOrder')}">取消</a>
+                                                </div>
+						<div style="clear:both"></div>
+					</div>	
+					
+					<div class="form-group">
+						<label class="col-md-2 control-label">出库项目</label>
+						<div class="col-md-2">
+                                                    <input class="form-control readonly" readonly type="text" id="resource_name" value="{$outboundOrderRow.resource_name}"/>
+						</div>
+						<label class="col-md-2 control-label">单据编号</label>
+						<div class="col-md-2">
+                                                    <input class="form-control readonly" readonly type="text" name="outbound_number" value="{$outboundOrderRow.outbound_number}"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">经办人</label>
+						<div class="col-md-2">
+                                                    <input class="form-control" type="text" name="outbound_man" value="{$outboundOrderRow.outbound_man}"/>
+						</div>
+						<label class="col-md-2 control-label">出库日期</label>
+						<div class="col-md-2">
+                                                    <input class="form-control datepicker" type="text" name="outbound_date" value="{$outboundOrderRow.outbound_date}"/>
+						</div>
+						<label class="col-md-2 control-label">出库库房</label>
+						<div class="col-md-2">
+                                                    <input type="hidden" id="resource_id" value="{$outboundOrderRow.resource_id}">
+                                                    <select class="form-control" name="warehouse" id="warehouse" value="{$outboundOrderRow.warehouse_id}">
+                                                        <option class="resource{$outboundOrderRow.resource_id}" value="{$outboundOrderRow.warehouse_id}">{$outboundOrderRow.warehouse}</option>
+                                                    <volist name="warehouseRowArray" id="vo">
+                                                    <if condition="($vo['resource_id'] eq $outboundOrderRow['resource_id']) AND ($vo['warehouse_id'] neq $outboundOrderRow['warehouse_id'])">
+                                                    <option class="resource{$vo.resource_id}" value="{$vo.warehouse_id}">{$vo.warehouse_name}</option>
+                                                    </if>
+                                                    </volist>
+                                                    </select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">库管员</label>
+						<div class="col-md-2">
+                                                    <select class="form-control" id="warehouse_worker" name="warehouse_worker" value="{$outboundOrderRow.warehouse_worker_id}">
+                                                        <option class="resource{$outboundOrderRow.resource_id}" value="{$outboundOrderRow.warehouse_worker_id}">{$outboundOrderRow.warehouse_worker}</option>
+                                                    <volist name="warehouseWorkerRowArray" id="vo">
+                                                    <if condition="($vo['warehouse_worker_id'] neq $outboundOrderRow['warehouse_worker_id']) AND ($vo['resource_id'] eq $outboundOrderRow['resource_id'])">
+                                                        <option class="resource{$vo.resource_id}" value="{$vo.warehouse_worker_id}">{$vo.warehouse_worker_name}</option>
+                                                    
+                                                    </if>    
+                                                    </volist>
+                                                    </select>
+						</div>
+						<label class="col-md-2 control-label">领料班组</label>
+						<div class="col-md-2">
+                                                    <select class="form-control" id="subcontractor" name="subcontractor" value="{$outboundOrderRow.subcontractor_id}">
+                                                        <option class="{$outboundOrderRow.resource_id}" value="{$outboundOrderRow.subcontractor_id}">{$outboundOrderRow.subcontractor}</option>
+                                                    <volist name="subcontractorRowArray" id="vo">
+                                                    <if condition="($vo['subcontractor_id'] neq $outboundOrderRow['subcontractor_id']) AND ($vo['resource_id'] eq $outboundOrderRow['resource_id'])">
+                                                        <option class="resource{$vo.resource_id}" value="{$vo.subcontractor_id}">{$vo.subcontractor_name}</option>
+                                                        </if>
+                                                    </volist>
+                                                    </select>
+						</div>
+						<label class="col-md-2 control-label">领料人</label>
+						<div class="col-md-2">
+                                                    <select class="form-control" id="subcontractor_worker" name="subcontractor_worker" value="{$outboundOrderRow.subcontractor_worker_id}">
+                                                        <option class="{$outboundOrderRow.resource_id}" value="{$outboundOrderRow.subcontractor_worker_id}">{$outboundOrderRow.subcontractor_worker}</option>
+                                                    <volist name="subcontractorWorkerRowArray" id="vo">
+                                                    <if condition="$vo['subcontractor_worker_id'] neq $outboundOrderRow['subcontractor_worker_id']">
+                                                        <option class="subcontractor{$vo.subcontractor_id}" value="{$vo.subcontractor_worker_id}" style="display:none">{$vo.subcontractor_worker_name}</option>
+                                                        </if>
+                                                        </volist>
+                                                    </select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">备注</label>
+						<div class="col-md-10">
+                                                    <textarea class="form-control" rows="5" name="outbound_remark" >{$outboundOrderRow.outbound_remark}</textarea>
+						</div>
+					</div>
+					<hr>
+					<div class="page-header">	
+						<div class="col-md-2">						
+							<h4>材料列表</h4>
+						</div>
+                                                <div class="col-md-2 col-md-offset-8">
+                                                <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#materialModal">新增</button>                               
+                                                </div>
+                                                <div style="clear:both"></div>
+					</div>	
+					<table class="table">
+						<thead>
+							<tr>
+								<th>工种</th>
+								<th>名称</th>
+								<th>规格</th>
+								<th>单位</th>
+								<th>数量</th>
+								<th>备注</th>
+                                                                <th></th>
+							</tr>
+						</thead>
+						<tbody id="material_list">
+							<tr class="template" style="display:none">
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text"readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control count" type="text" name="count[]" data-max="">
+                                                                
+                                                                    <input type="hidden" name="count_max[]">
+                                                                </td>
+								<td><input class="form-control" type="text" name="remark[]"></td>
+								<td>
+									<button type="button" class="btn btn-danger">删除</button>
+									<input type="hidden" name="materialid[]" />
+									<input type="hidden" name="inventoryid[]" />
+								</td>
+							</tr>
+                                                <volist name="outboundOrderDetailsRowArray" id="vo">
+							<tr>
+                                                            <td><input class="form-control" type="text" readonly value="{$vo.material.worktype}"></td>
+                                                            <td><input class="form-control" type="text" readonly value="{$vo.material.name}"></td>
+                                                            <td><input class="form-control" type="text"readonly value="{$vo.material.parameter}"></td>
+                                                            <td><input class="form-control" type="text" readonly value="{$vo.material.unit}"></td>
+                                                                <td><input class="form-control count" type="text" placeholder="最大：{$vo.max_count}" name="count[]" data-max="{$vo.max_count}" value="{$vo.count}">
+                                                                    <input type="hidden" name="count_max[]" value="{$vo.max_count}">
+                                                                </td>
+
+                                                                <td><input class="form-control" type="text" name="remark[]" value="{$vo.remark}"></td>
+								<td>
+									<button type="button" class="btn btn-danger">删除</button>
+                                                                        <input type="hidden" name="materialid[]" value="{$vo.material_id}"/>
+                                                                        <input type="hidden" name="inventoryid[]" value="{$vo.inventory_id}"/>
+								</td>
+							</tr>
+                                                </volist>
+						</tbody>
+					</table>
+                </form>
+                
+            </div>  
+        </div> 
+    </div>
+</div>
+<div class="modal fade" id="materialModal" tabindex="-1" role="dialog" aria-labelledby="materialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="materialLabel">材料选择</h4>
+			<div class="container-fluid" style="margin-top:15px">
+                <div class="row" style="margin-top:15px">
+			<div class="col-md-2">工种</div>
+			<div class="col-md-3">材料名称</div>
+			<div class="col-md-3">规格</div>
+			<div class="col-md-2">单位</div>
+                        <div class="col-md-2">数量</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body">
+			<div style="height:400px;overflow:auto">
+				<div class="list-group" id="materials"  >
+                                    <volist name="materialInventorySelectedRowArray" id="se">
+                                <a style="display:none" href="#" data-id="{$se['material_id']}" data-inventory="{$se['inventory_id']}" class="list-group-item warehouse{$se['warehouse_id']}">
+					<div class="row">
+						<div class="col-md-2">{$se['material']['worktype']}</div>
+						<div class="col-md-3">{$se['material']['name']}</div>
+						<div class="col-md-3">{$se['material']['specification']}</div>
+						<div class="col-md-2">{$se['material']['unit']}</div>
+						<div class="col-md-2">{$se['count']}</div>
+					</div>
+				  </a>
+                                    </volist>
+				<volist name="materialInventorySameWarehouseRowArray" id="un">
+                                <a href="#" data-id="{$un['material_id']}" data-inventory="{$un['inventory_id']}" class="list-group-item warehouse{$un['warehouse_id']}">
+					<div class="row">
+						<div class="col-md-2">{$un['material']['worktype']}</div>
+						<div class="col-md-3">{$un['material']['name']}</div>
+						<div class="col-md-3">{$un['material']['specification']}</div>
+						<div class="col-md-2">{$un['material']['unit']}</div>
+						<div class="col-md-2">{$un['count']}</div>
+					</div>
+				  </a>
+                                  </volist>
+				<volist name="materialInventoryUnsameWarehouseRowArray" id="un">
+                                <a style="display:none" href="#" data-id="{$un['material_id']}" data-inventory="{$un['inventory_id']}" class="list-group-item warehouse{$un['warehouse_id']}">
+					<div class="row">
+						<div class="col-md-2">{$un['material']['worktype']}</div>
+						<div class="col-md-3">{$un['material']['name']}</div>
+						<div class="col-md-3">{$un['material']['specification']}</div>
+						<div class="col-md-2">{$un['material']['unit']}</div>
+						<div class="col-md-2">{$un['count']}</div>
+					</div>
+				  </a>
+                                  </volist>
+				</div>
+			</div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseMaterial">添加</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+function showList(type,id){
+	if (type=="all"){
+		$("#materials a").show();
+	}else{
+		var show = $("#materials a."+type+id);
+		var hide = $("#materials a:not("+"#materials a."+type+id+")");
+		hide.hide();
+		show.show();
+	}
+}
+function allClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"all",0);
+}
+function rootClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+        showList("root",$(this).attr("href"));
+	//showList.call(this,"root",$(this).attr("href"));
+}
+function leafClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"leaf",$(this).attr("href"));
+}
+$().ready(function(){
+	$(window).resize(function(){
+		$("#materialModal .modal-body").css("height",""+($(window).height()-250)+"px");
+	});
+	$(".all-class").click(allClassClick);
+	$(".root-class").click(rootClassClick);
+	$(".leaf-class").click(leafClassClick);
+	$("#materials a").click(function(e){
+		e.preventDefault();
+		var data = $("#materialModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#materialModal").data("lastActive",$(this));
+		$("#materialModal").data("material",$(this));
+		return false;
+	});
+	var chooseMaterial = function(){
+		var item = $(".template").clone().removeClass("template");
+		var inputs = item.find("input");
+		var materiallink = $("#materialModal").data("material").find(".row").children();
+		for (var i = 0 ; i < 5 ; i ++){
+			inputs.eq(i).val(materiallink.eq(i).text().trim());
+		}
+                inputs.eq(4).attr("placeholder","最大："+materiallink.eq(4).text().trim());
+                inputs.eq(4).data("max",materiallink.eq(5).text().trim());
+                item.find("input[name='count_max[]']").val(parseInt(materiallink.eq(5).text().trim()));
+		item.find("input[name='materialid[]']").val($("#materialModal").data("material").data("id"));
+		item.find("input[name='inventoryid[]']").val($("#materialModal").data("material").data("inventory"));
+		$("tbody").append(item.show());
+                $("#materialModal").data("material").hide();
+	};
+	$("#chooseMaterial").click(chooseMaterial);
+	$("#materials a").dblclick(chooseMaterial);
+	$("table").on('change','.count',function(){
+                var max=parseInt($(this).data("max"));
+                if(parseInt($(this).val()) > max){
+                    $(this).val("");
+                    return;
+                }
+	});
+
+	$("table").on('click',".btn-danger",function(){
+		if (confirm("确认删除？")){
+                        var inventory_id=$(this).next().next().val();
+                        var count=$(this).parent().parent().find("input[name='count_max[]']").val();
+                        $("#materials a").each(function(){
+                            if($(this).data("inventory")==inventory_id){
+                                $(this).children().children().eq(4).text(count);
+                                $(this).show();
+                            }
+                        });
+			$(this).parent().parent().remove();
+		}
+	});
+        /*
+	$("#project_tree").on("click","a",function(e){
+		e.preventDefault();
+		if($(this).attr("href")!="#"){
+			$("#project_title").text($(this).text().trim());
+			$("#resource_name").val($(this).text().trim());
+                        $("#resource_id").val($(this).attr("href").trim());
+                        var data=$("#project_tree").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).parent().addClass("active");
+			$("#project_tree").data("lastActive",$(this).parent());		
+			
+                        var resource_id=$(this).parent().data("id");
+                        $("#warehouse option").hide();
+                        $("#warehouse .resource"+resource_id).show(); 
+                        $("#warehouse_worker option").hide();
+                        $("#warehouse_worker .resource"+resource_id).show(); 
+                        $("#subcontractor option").hide();
+                        $("#subcontractor .resource"+resource_id).show(); 
+                        $(".ui.sidebar").sidebar('hide');
+		}
+        var resource_id=$(this).parent().data("id");
+        var count=$(this).parent().data("count")+1;
+        var date=new Date();
+        var year=date.getFullYear().toString();
+        var month=date.getMonth().toString();
+        var day=date.getDate().toString();
+        var number=year+month+day;
+        $("input[name='plan_number']").val(resource_id+"-"+number+"-"+count);     
+        });
+        
+        */
+
+        $("#warehouse").change(function(){
+            var resource_id=$("#resource_id").val();
+            var warehouse_id=$(this).val();
+            $("#materials a").hide();
+            $("#materials .warehouse"+warehouse_id).show();
+            var count=$("#material_list tr").length;
+            for(var i=1;i<count;i++){
+                //alert(i);
+                $("#material_list").children().eq(1).remove();
+            }
+        });
+        
+        $("#subcontractor").change(function(){
+            var subcontractor_id=$(this).val();
+            $("#subcontractor_worker option").hide();
+            $("#subcontractor_worker .subcontractor"+subcontractor_id).show(); 
+        });
+});
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">往来单位维护</div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href={:U('OperSystemManage/addEnterprise')}>新增单位</a></li>
+          <li><a href={:U('OperSystemManage/listEnterprise')} class="active">已有单位</a>   </li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <form id="enterpriseForm" action={:U('OperSystemManage/editEnterpriseSubmit')} method="POST" class="form-horizontal" role="form">
+                <div class="page-header">
+                    <div class="col-md-4">
+                        <h4>编辑单位信息</h4>
+                    </div>
+                    <div class="col-md-2 col-md-offset-4">
+                        	<input class="btn btn-primary btn-block" type="submit" value="保存" id="submit"/>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteEnterprise',array('enterpriseid'=>$enterpriseRow['enterpriseid']))}>删除</a>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-default btn-block" href={:U('OperSystemManage/listEnterprise')}>取消</a>
+                        </div>
+                    <div style="clear:both"></div>
+                </div>
+                
+                    <input type="hidden" name="enterpriseid" value="{$enterpriseRow.enterpriseid}">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">客户名称</label>
+                        <div class="col-md-4">
+                            <input class="form-control" type="text" name="name" value="{$enterpriseRow.name}"/>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2 col-md-offset-2">
+                            <div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_1part eq 1">
+                                        <input type="checkbox" name="is_1part" value="9" checked="true">甲方
+                                        <else/><input type="checkbox" name="is_1part" value="9">甲方
+                                    </if>
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                     <if condition="$enterpriseRow.is_divideman eq 1">
+                                        <input type="checkbox" name="is_divideman" value="9" checked="true">分包商
+                                        <else/><input type="checkbox" name="is_divideman" value="9">分包商
+                                    </if>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                        	<div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_materialman eq 1">
+                                        <input type="checkbox" name="is_materialman" value="9" checked="true">材料商
+                                        <else/><input type="checkbox" name="is_materialman" value="9">材料商
+                                    </if>
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_machineman eq 1">
+                                        <input type="checkbox" name="is_machineman" value="9" checked="true">机械商
+                                        <else/><input type="checkbox" name="is_machineman" value="9">机械商
+                                    </if>
+                                </label>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_transman eq 1">
+                                        <input type="checkbox" name="is_transman" value="9" checked="true">内部单位
+                                        <else/><input type="checkbox" name="is_transman" value="9">内部单位
+                                    </if>
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_client eq 1">
+                                        <input type="checkbox" name="is_client" value="9" checked="true">客户
+                                        <else/><input type="checkbox" name="is_client" value="9">客户
+                                    </if>
+                                </label>
+                            </div>
+                        </div>
+                         <div class="col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    <if condition="$enterpriseRow.is_otherpart eq 1">
+                                        <input type="checkbox" name="is_otherpart" value="9" checked="true">其他单位
+                                        <else/><input type="checkbox" name="is_otherpart" value="9">其他单位
+                                    </if>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="form-group">
+                    	<label class="col-md-2 control-label">地址</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="address" value="{$enterpriseRow.address}"/>
+                        </div>
+                        <label class="col-md-2 control-label">联系人</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="contact_person" value="{$enterpriseRow.contact_person}"/>
+                        </div>
+                        <label class="col-md-2 control-label">联系电话</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="phone_number" value="{$enterpriseRow.phone_number}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                    	<label class="col-md-2 control-label">初期应付</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" disabled />
+                        </div>
+                        <label class="col-md-2 control-label">初期应收</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" disabled />
+                        </div>
+                        <label class="col-md-2 control-label">网址</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="website" value="{$enterpriseRow.website}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                    	<label class="col-md-2 control-label">传真</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="fax" value="{$enterpriseRow.fax}"/>
+                        </div>
+                        <label class="col-md-2 control-label">邮件地址</label> 
+                        <div class="col-md-2">
+                            <input class="form-control" type="text" name="email" value="{$enterpriseRow.email}"/>
+                        </div>
+                        <label class="col-md-2 control-label">信用度</label> 
+                        <div class="col-md-2">
+                            <select class="form-control" name="credit_rank">
+	                            <option value="高" <if condition="$enterpriseRow.credit_rank eq '高'">selected="true"<else/> </if>>高</option>
+                                <option value="中" <if condition="$enterpriseRow.credit_rank eq '中'">selected="true"<else/> </if>>中</option>
+                                <option value="低" <if condition="$enterpriseRow.credit_rank eq '低'">selected="true"<else/> </if>>低</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+						<div class="col-md-4">
+                        	<div class="form-group">
+                                <label class="col-md-6 control-label">法定代表人</label> 
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" name="legal_person" value="{$enterpriseRow.legal_person}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                            	<label class="col-md-6 control-label">地区</label> 
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" name="service_zone" value="{$enterpriseRow.service_zone}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        	<div class="form-group">
+                                <label class="col-md-6 control-label">税务登记号</label> 
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" name="tax_number" value="{$enterpriseRow.tax_number}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                            	<label class="col-md-6 control-label">邮编</label> 
+                                <div class="col-md-6">
+                                    <input class="form-control" type="text" name="zip_number" value="{$enterpriseRow.zip_number}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label">备注</label> 
+                        <div class="col-md-2">
+                            <textarea class="input-xlarge form-control" name="remark" rows="4">{$enterpriseRow.remark}</textarea>
+                        </div>
+                    </div>
+                </form>
+            <div>
+        </div>
+    </div>  
+</div> 
+</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_enterprise.js" type="text/javascript"></script>
+</body>
+</html>

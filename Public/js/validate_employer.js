@@ -1,0 +1,69 @@
+$().ready(function(){
+	$("#employerForm").validate({
+		rules:{
+			employer_number:{
+				required:true,
+				digits:true,
+				maxlength:15
+			},
+			gender:{
+				required:true
+			},
+			id_number:{
+				pattern:/(^\d{15}$)|(^\d{17}(\d|X|x)$)/
+			},
+			name:{
+				required:true,
+				maxlength:20
+			},
+			email:{
+				email:true,
+				maxlength:30
+			},
+			phone_number:{
+				required:true,
+				phoneCN:true
+			},
+			address:{
+				maxlength:30
+			},
+			companyid:{
+				required:true
+			},
+			departmentid:{
+				required:true
+			},
+			positionid:{
+				required:true
+			},
+			zip_number:{
+				digits:true,
+				rangelength:[6,6]
+			},
+			hometown:{
+				maxlength:20
+			},
+			qq_number:{
+				digits:true,
+				maxlength:15
+			}
+		},
+		messages:{
+			id_number:{
+				pattern:"请输入正确身份证号：15位（一代身份证），18位（二代身份证）"
+			},
+			zip_number:{
+				digits:"请输入正确的邮编",
+				rangelength:"请输入正确的邮编"
+			},
+			qq_number:{
+				digits:"请输入正确的QQ号"
+			}
+		},
+		errorElement:"div"
+	});
+	// var availableemail = ["@163.com", "@126.com", "@sohu.com", "@qq.com", "@sina.com", "@gmail.com"];
+	// $("#email").autocomplete({
+		// source: availableemail
+	// });
+});

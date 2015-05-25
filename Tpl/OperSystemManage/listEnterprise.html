@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">往来单位维护</div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href={:U('OperSystemManage/addEnterprise')}>新增单位</a></li>
+          <li><a href={:U('OperSystemManage/listEnterprise')} class="active">已有单位</a>   </li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <div class="page-header">
+                    <div class="col-md-4">
+                    <h4>已有单位列表</h4>
+                   </div>
+		<div style="clear:both"></div>
+                </div>  
+                <div class="container-fluid">
+                	<div class="row list-row">
+                    	<div class="col-md-2">
+							<div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_all" checked>全部
+                                </label>
+                            </div>
+                            <div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_1part">甲方
+                                </label>
+                            </div>
+                        </div> 
+                        <div class="col-md-2">
+							<div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_divideman">分包商
+                                </label>
+                            </div>
+                            <div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_materialman">材料商
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+							<div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_machineman">机械商
+                                </label>
+                            </div>
+                            <div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_transman">内部单位
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+							<div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_client">客户
+                                </label>
+                            </div>
+                            <div class="radio">
+                            	<label>
+                                	<input type="radio" name="classify" value="is_otherpart">其他单位
+                                </label>
+                            </div>
+                        </div>   	
+                    </div>
+                </div>
+
+                <div class="container-fluid" id="enterprises">
+
+                    <volist name="enterpriseRowArray" id="vo">
+
+                        <div class="row list-row 
+                        <if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                        <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                        <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                        <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                        <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                        <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                        <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                        ">
+                            <label class="control-label col-md-3">{$vo.name}</label>     
+                            <div class="col-md-2 col-md-offset-6">
+                                <a class="btn btn-primary btn-block" href={:U('OperSystemManage/editEnterprise',array('enterpriseid'=>$vo['enterpriseid']))}>编辑</a>
+                            </div>
+                            <div class="col-md-1">
+                                <a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteEnterprise',array('enterpriseid'=>$vo['enterpriseid']))}>删除</a>
+                            </div>
+                        </div>
+                    </volist>
+
+                </div>     
+            <div>
+        </div>
+    </div>  
+</div> 
+</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+$().ready(function(){
+	$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises .row").show();
+		}else{
+			$("#enterprises .row").hide();
+			$("."+c).show();
+		}
+	});
+});
+</script>
+</body>
+</html>

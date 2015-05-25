@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right"> 
+  <nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+ 	<div class="navbar-header navbar-brand">员工维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperHumanResource/addEmployer')}>新增员工</a></li>
+      <li><a href={:U('OperHumanResource/listEmployer')}>已有员工</a>   </li>
+    </ul>
+  </div>
+</nav> 
+		<div class="panel panel-default">			
+			<div class="panel-body">	
+
+			<form id="employerForm" action={:U('OperHumanResource/editEmployerSubmit')} method="POST" class="form-horizontal">
+				<input type="hidden" name="employerid" value="{$employerRow.employerid}"/>
+            <div class="page-header">
+                <div class="col-md-4">
+                    <h4>编辑员工信息</h4>
+                </div>
+                <div class="col-md-2 col-md-offset-4">
+                    <input class="btn btn-primary btn-block" type="submit" value="保存" id="submit"/>
+                </div>
+                <div class="col-md-1">
+                    <a class="btn btn-danger btn-block" href={:U('OperHumanResource/deleteEmployer',array('employerid'=>$employerRow['employerid']))}>删除</a>
+                </div>
+                <div class="col-md-1">
+                    <a class="btn btn-default btn-block" href={:U('OperHumanResource/listEmployer')}>取消</a>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div class="form-group">
+                    <label class="col-md-2 control-label">员工编号</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="员工编号" name="employer_number" value="{$employerRow.employer_number}"/>     
+                    </div>
+                	<label class="col-md-2 control-label">真实姓名</label>
+                    <div class="col-md-2">
+						<input type="text" class="form-control" placeholder="真实姓名" value="{$employerRow.name}" name="name" id="real_name"  />     
+					</div>
+					   <label class="control-label label-pop" id="name_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="真实姓名不能为空"></label>
+					</div>
+					<div class="form-group">
+					<label class="col-md-2 control-label">政治面貌</label>
+						<div class="col-md-2">
+							<select class="form-control"  value="{$employerRow.political_state}" name="political_state">
+								<if condition="$employerRow.political_state eq '普通居民'">
+									<option selected="true">普通居民</option>
+								<else/>
+									<option>普通居民</option>
+								</if>
+								<if condition="$employerRow.political_state eq '中共党员'">
+									<option selected="true">中共党员</option>
+								<else/>
+									<option>中共党员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '中共预备党员'">
+									<option selected="true">中共预备党员</option>
+								<else/>
+									<option>中共预备党员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '共青团员'">
+									<option selected="true">共青团员</option>
+								<else/>
+									<option>共青团员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '民革党员'">
+									<option selected="true">民革党员</option>
+								<else/>
+									<option>民革党员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '民盟盟员'">
+									<option selected="true">民盟盟员</option>
+								<else/>
+									<option>民盟盟员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '民建会员'">
+									<option selected="true">民建会员</option>
+								<else/>
+									<option>民建会员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '民进会员'">
+									<option selected="true">民进会员</option>
+								<else/>
+									<option>民进会员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '农工党党员'">
+									<option selected="true">农工党党员</option>
+								<else/>
+									<option>农工党党员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '致公党党员'">
+									<option selected="true">致公党党员</option>
+								<else/>
+									<option>致公党党员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '九三学社社员'">
+									<option selected="true">九三学社社员</option>
+								<else/>
+									<option>九三学社社员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '台盟盟员'">
+									<option selected="true">台盟盟员</option>
+								<else/>
+									<option>台盟盟员</option>
+								</if>
+								<if condition="$employerRow.political_state eq '港澳同胞'">
+									<option selected="true">港澳同胞</option>
+								<else/>
+									<option>港澳同胞</option>
+								</if>
+							</select>     
+						</div>
+                 
+					<label class="col-md-2 control-label">性别</label>
+                    <div class="col-md-2">
+                    	<div class="radio">
+                        	<if condition="$employerRow.gender eq '男'">
+                        	<label class="raido-inline">
+                            	<input type="radio" name="gender" value="男" checked="checked" />男 
+                            </label>
+                        	<label class="raido-inline">
+                            	<input type="radio" name="gender" value="女" />女  
+                            </label>
+                            <else />
+                            <label class="raido-inline">
+                            	<input type="radio" name="gender" value="男" />男 
+                            </label>
+                        	<label class="raido-inline">
+                            	<input type="radio" name="gender" value="女" checked="checked" />女  
+                            </label>
+                            </if> 
+                        </div>
+                    </div>
+                	
+              
+						<label class="col-md-2 control-label">在职情况</label>
+						<div class="col-md-2">
+                            <div class="radio">
+                            <if condition="$employerRow.is_atposition eq 1">
+                        	<label class="raido-inline">
+                            	<input type="radio" name="is_atposition" value="1" checked="checked" />在职
+                            </label>
+                        	<label class="raido-inline">
+                            	<input type="radio" name="is_atposition" value="0" />非在职  
+                            </label>
+                            <else/>
+                            <label class="raido-inline">
+                            	<input type="radio" name="is_atposition" value="1" />在职
+                            </label>
+                        	<label class="raido-inline">
+                            	<input type="radio" name="is_atposition" value="0" checked="checked" />非在职  
+                            </label>
+                            </if>
+                       		</div>
+						</div>
+						</div>
+				<div class="form-group">
+                	<label class="col-md-2 control-label">身份证号</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="身份证号" value="{$employerRow.id_number}" name="id_number" id="id_number"> 
+                    </div>
+					<label class="control-label label-pop" id="idnumberalert"   data-container="body" data-toggle="popover" data-placement="right" data-content="请输入正确身份证号：15位（一代身份证），18位（二代身份证）"></label>
+                    <label class="col-md-2 control-label">生日</label>		
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datepicker"  value="{$employerRow.birthday}" name="birthday" >
+                    </div>	
+                    <label class="col-md-2 control-label">籍贯</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="籍贯" value="{$employerRow.hometown}" name="hometown" id="real_name"  />
+                    </div>	
+                </div>
+                <div class="form-group">
+                	
+                    <label class="col-md-2 control-label">联系电话</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" placeholder="联系电话" value="{$employerRow.phone_number}" name="phone_number" id="phone_number">   
+					</div>
+					<label class="control-label label-pop" id="phone_number_alert"   data-container="body" data-toggle="popover" data-placement="right" data-content="请输入联系方式"></label>	
+                    <label class="col-md-2 control-label">电子邮箱</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" placeholder="电子邮箱"  value="{$employerRow.email}" name="email" id="email">   
+					</div> 
+                  <label class="col-md-2 control-label">QQ</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" placeholder="QQ号"  value="{$employerRow.qq_number}" name="qq_number">   
+					</div>     
+                </div>			
+                <div class="form-group">
+               		<label class="col-md-2 control-label">地址</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" placeholder="地址"  value="{$employerRow.address}"  name="address" id="phone_number">   
+					</div> 
+                    <label class="col-md-2 control-label">邮编</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" placeholder="邮编" value="{$employerRow.zip_number}" name="zip_number" id="phone_number">   
+					</div> 
+                    <label class="col-md-2 control-label">学历</label>
+						<div class="col-md-2">
+							<select class="form-control"  value="{$employerRow.deploma}" name="deploma">
+								<if condition="$employerRow.deploma eq '小学'">
+									<option selected="true">小学</option>
+								<else/>
+									<option>小学</option>
+								</if>
+								<if condition="$employerRow.deploma eq '初中'">
+									<option selected="true">初中</option>
+								<else/>
+									<option>初中</option>
+								</if>
+								<if condition="$employerRow.deploma eq '技校'">
+									<option selected="true">技校</option>
+								<else/>
+									<option>技校</option>
+								</if>
+								<if condition="$employerRow.deploma eq '中专'">
+									<option selected="true">中专</option>
+								<else/>
+									<option>中专</option>
+								</if>
+								<if condition="$employerRow.deploma eq '高中'">
+									<option selected="true">高中</option>
+								<else/>
+									<option>高中</option>
+								</if>
+								<if condition="$employerRow.deploma eq '大专'">
+									<option selected="true">大专</option>
+								<else/>
+									<option>大专</option>
+								</if>
+								<if condition="$employerRow.deploma eq '本科'">
+									<option selected="true">本科</option>
+								<else/>
+									<option>本科</option>
+								</if>
+								<if condition="$employerRow.deploma eq '硕士'">
+									<option selected="true">硕士</option>
+								<else/>
+									<option>硕士</option>
+								</if>
+								<if condition="$employerRow.deploma eq '博士'">
+									<option selected="true">博士</option>
+								<else/>
+									<option>博士</option>
+								</if>
+								<if condition="$employerRow.deploma eq '其他'">
+									<option selected="true">其他</option>
+								<else/>
+									<option>其他</option>
+								</if>
+							</select>     
+						</div>
+                </div>
+                <div class="form-group">
+                	<label class="col-md-2 control-label">所属公司</label>
+						<div class="col-md-2">
+							<select class="form-control" name="companyid">
+							<volist name="companyRowArray" id="vo">	
+								 <if condition="$employerRow.companyid eq $vo['companyid']"><option value="{$vo.companyid}" selected="true">{$vo.name}</option>
+                  					<else /><option value="{$vo.companyid}">{$vo.name}</option>
+                 				</if>
+							</volist>
+							</select>
+							<br>
+						</div>
+                    <label class="control-label label-pop" id="company_alert"   data-container="body" data-toggle="popover" data-placement="right" data-content="请选择所属公司"></label>
+                	<label class="col-md-2 control-label">所属部门</label>
+                    <div class="col-md-2">
+                       <select class="form-control" name="departmentid">
+							<volist name="departmentRowArray" id="vo">	
+								<if condition="$employerRow.departmentid eq $vo['departmentid']"><option value="{$vo.departmentid}" selected="true">{$vo.name}</option>
+                  <else /><option value="{$vo.departmentid}">{$vo.name}</option>
+                </if>
+							</volist>
+							</select>
+                    </div>
+                    <label class="control-label label-pop" id="department_alert"   data-container="body" data-toggle="popover" data-placement="right" data-content="请选择所属公司"></label>
+                	<label class="col-md-2 control-label">入职时间</label>		
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datepicker" value="{$employerRow.entrytime}" name="entrytime">
+                    </div>
+                 </div>
+                 <div class="form-group">
+                 <label class="col-md-2 control-label">职位</label>
+						<div class="col-md-2">
+							<select class="form-control" name="positionid">
+							<volist name="positionRowArray" id="vo">	
+								<if condition="$employerRow.positionid eq $vo['positionid']"><option value="{$vo.positionid}" selected="true">{$vo.name}</option>
+                  <else /><option value="{$vo.positionid}">{$vo.name}</option>
+                </if>
+							</volist>
+							</select>
+						</div>
+						<label class="contro-label label-pop" id="position_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="请选择职位"></label>               
+                  		<label class="col-md-2 control-label">紧急联系人</label>
+                    <div class="col-md-2">
+                        <select class="form-control" name="contact_employerid">
+							<volist name="employer_idName_array" id="vo">	
+								<if condition="$employerRow.contact_employerid eq $vo['employerid']">
+                   <option value="{$vo.employerid}" selected="true">{$vo.employerid}:{$vo.name}</option>
+                <elseif condition="$employerRow.employerid eq $vo['employerid']" />
+                <else />
+                  <option value="{$vo.employerid}">{$vo.employerid}:{$vo.name}</option>
+                </if>
+							</volist>
+							</select>
+                    </div>
+										<label class="col-md-2 control-label">本单位入职时间</label>		
+                    <div class="col-md-2">
+                        <input type="text" class="form-control datepicker" value="{$employerRow.company_entrytime}" name="company_entrytime">
+                    </div>
+                 </div>
+				
+		</form>			
+		</div>		
+		</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_employer.js" type="text/javascript"></script>
+</body>
+</html>

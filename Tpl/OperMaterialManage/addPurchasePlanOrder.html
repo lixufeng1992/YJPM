@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+	#viewClassTree{
+		min-width:180px;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">材料采购计划单</div>
+        <ul class="nav navbar-nav navbar-right">
+	  <li><a href="{:U('OperMaterialManage/addPurchasePlanOrder')}" class="active">新增采购计划单</a></li>
+          <li><a href="{:U('OperMaterialManage/listPurchasePlanOrder')}">已有采购单</a></li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <form class="form-horizontal" action="{:U('OperMaterialManage/addPurchasePlanOrderSubmit')}" role="form" method="POST">
+                                            <div class="page-header">
+                                                <div class="col-md-4">
+                                                    <h4>新增采购计划单</h4>
+                                                </div>        
+						<div class="col-md-4">						
+							<h4 id="project_title"></h4>
+						</div>				
+							
+						<div class="col-md-1 col-md-offset-1">
+							<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目"></label>
+				
+							<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+						</div>
+						<div class="col-md-2">
+                                                    <input type="hidden" id="resource_id" name="resource_id">
+							<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+						</div>
+						<div style="clear:both"></div>
+					</div>	
+					
+					<div class="form-group">
+						<label class="col-md-2 control-label">计划名称</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="plan_name" />
+						</div>
+						<label class="col-md-2 control-label">计划单号</label>
+						<div class="col-md-2">
+							<input class="form-control readonly" readonly type="text" name="plan_number" />
+						</div>
+						<label class="col-md-2 control-label">计划类型</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="plan_type" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">计划人</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="plan_proposer"/>
+						</div>
+						<label class="col-md-2 control-label">申报日期</label>
+						<div class="col-md-2">
+							<input class="form-control datepicker" type="text" name="declare_date" />
+						</div>
+						<label class="col-md-2 control-label">计划日期</label>
+						<div class="col-md-2">
+							<input class="form-control datepicker" type="text" name="plan_date"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">技术说明</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="5" name="tech_explanation" ></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">备注</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="5" name="plan_remark" ></textarea>
+						</div>
+					</div>
+					<hr>
+					<div class="page-header">	
+						<div class="col-md-2">						
+							<h4>材料列表</h4>
+						</div>
+                                                <div class="col-md-2">
+                                                    <h5 id="amount_title">累计金额：</h5>
+                                                    <input type="hidden" name="amount">
+                                                </div>
+                                                <div class="col-md-2 col-md-offset-6">
+                                                <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#materialModal">新增</button>                               
+                                                </div>
+                                                <div style="clear:both"></div>
+					</div>	
+					<table class="table">
+						<thead>
+							<tr>
+								<th>工种</th>
+								<th>名称</th>
+								<th>规格</th>
+								<th>单位</th>
+								<th>供应商</th>
+                                                                <th>报价（元）</th>
+								<th>数量</th>
+								<th>金额（元）</th>
+								<th>备注</th>
+                                                                <th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="template" style="display:none">
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text"readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+                                                                <td><input class="form-control enquiry_btn" type="text" data-toggle="modal" data-target="#enquiryModal" readonly />
+                                                                    <input type="hidden" name="enquiry_id[]">
+                                                                </td>
+								<td><input class="form-control" type="text" name="enquiry_offer[]" readonly></td>
+								<td><input class="form-control count" type="text" name="count[]"></td>
+								<td><input class="form-control material_price" type="text" readonly></td>
+								<td><input class="form-control" type="text" name="remark[]"></td>
+								<td>
+									<button type="button" class="btn btn-danger">删除</button>
+									<input type="hidden" name="materialid[]" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+                </form>
+                
+            </div>  
+        </div> 
+    </div>
+</div>
+
+	 <div class="ui sidebar left overlay panel panel-default active">
+		<div class="page-header">
+			<h4  style="padding-left:15px">项目与机构列表</h4>
+		</div>
+		<div class="panel-body">
+		<ul class="list-group sidebar-tree col-md-offset-1"  id="project_tree" style="padding-right:16px">				
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+                                        <li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-count="{$vo_level_2.order_number}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item warehouse" href="{$vo_level_2.resource_id}">{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-count="{$vo_level_3.order_number}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item warehouse" href="{$vo_level_2.resource_id}">{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}" data-count="{$vo_level_2.order_number}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item project" href="{$vo_level_2.resource_id}">{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}" data-count="{$vo_level_3.order_number}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item project" href="{$vo_level_2.resource_id}">{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>
+		</ul>
+	</div>
+</div>
+<div class="modal fade" id="enquiryModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">供应商选择</h4>				
+			</div>
+            <br>
+			
+                <div class="row" style="margin-top:20px">
+                    <div class="col-md-5 col-md-offset-1">供应商</div>
+                    <div class="col-md-3">报价（元）</div>                    
+                    <div class="col-md-3">报价日期</div>                    
+                </div>
+            
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enquirys">
+	<volist name="materialEnquiryRowArray" id="vo">
+        <a class="list-group-item {$vo.material_id}" data-id="{$vo.enquiry_id}" style="cursor:pointer">
+          	<div class="row">
+                    <div class="col-md-6">{$vo.enterprise_name}</div>
+                <div class="col-md-3">{$vo.enquiry_offer}</div>                
+                <div class="col-md-3">{$vo.enquiry_offerdate}</div>                
+            </div>
+        </a>
+          </volist>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnquiry">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="materialModal" tabindex="-1" role="dialog" aria-labelledby="materialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="materialLabel">材料选择</h4>
+			<div class="container-fluid" style="margin-top:15px">
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-3">材料分类</div>
+                    <div class="col-md-9">
+						<div class="row">
+							<div class="col-md-2">工种</div>
+							<div class="col-md-3">材料名称</div>
+							<div class="col-md-2">规格</div>
+							<div class="col-md-2">单位</div>
+							<div class="col-md-2">进价</div>
+						</div>
+					</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body">
+		<div class="row" style="height:100%">
+			<div class="col-md-3" style="height:100%;overflow:auto">
+				<ul class="list-group sidebar-tree" id="viewClassTree" >
+					<li class="list-group-item">
+						<span class="glyphicon glyphicon-minus-sign"></span>
+						<a href="0" class="tree-item all-class">全部分类</a>
+					</li>
+					<li class="list-group-item collapse in">
+						<ul class="list-group" id="materialClasses">
+							<!-- 分类树状图中，链接 a 的属性 href 为分类的 id -->
+
+							<!-- 父分类 循环体 begin -->
+							<volist name="materialClassRowArray" id="vo">
+							<li class="list-group-item">
+								<span class="glyphicon glyphicon-plus-sign"></span>
+								<a href="{$vo['classid']}" class="tree-item root-class">{$vo['name']}</a>
+							</li>	
+							<li class="list-group-item collapse">
+								<ul class="list-group">
+									<!-- 子分类 循环体 begin -->
+									<volist name="vo['materialCategoryRowArray']" id="vo1">
+									<li class="list-group-item">
+										<a href="{$vo1['categoryid']}" class="tree-item leaf-class">{$vo1['name']}</a>
+									</li>
+									</volist>
+								</ul>
+							</li>
+							</volist>
+							<!-- 父分类 循环体 end -->
+							
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-9" style="height:100%;overflow:auto">
+				<div class="list-group" id="materials"  >
+				<volist name="materialRowArray" id="vo">
+				  <a href="#" data-id="{$vo['materialid']}" class="list-group-item root{$vo['materialCategoryRow']['classid']} leaf{$vo['categoryid']}">
+					<div class="row">
+						<div class="col-md-2">{$vo['worktype']}</div>
+						<div class="col-md-3">{$vo['name']}</div>
+						<div class="col-md-2">{$vo['specification']}</div>
+						<div class="col-md-2">{$vo['unit']}</div>
+						<div class="col-md-2">{$vo['price_in']}</div>
+					</div>
+				  </a>
+                                  </volist>
+				</div>
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseMaterial">添加</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+function showList(type,id){
+	if (type=="all"){
+		$("#materials a").show();
+	}else{
+		var show = $("#materials a."+type+id);
+		var hide = $("#materials a:not("+"#materials a."+type+id+")");
+		hide.hide();
+		show.show();
+	}
+}
+function allClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"all",0);
+}
+function rootClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+        showList("root",$(this).attr("href"));
+	//showList.call(this,"root",$(this).attr("href"));
+}
+function leafClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"leaf",$(this).attr("href"));
+}
+$().ready(function(){
+	$(window).resize(function(){
+		$("#materialModal .modal-body").css("height",""+($(window).height()-250)+"px");
+	});
+	$(".all-class").click(allClassClick);
+	$(".root-class").click(rootClassClick);
+	$(".leaf-class").click(leafClassClick);
+	$("#materials a").click(function(e){
+		e.preventDefault();
+		var data = $("#materialModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#materialModal").data("lastActive",$(this));
+		$("#materialModal").data("material",$(this));
+		return false;
+	});
+	var chooseMaterial = function(){
+		var item = $(".template").clone().removeClass("template");
+		var inputs = item.find("input");
+		var materiallink = $("#materialModal").data("material").find(".row").children();
+		for (var i = 0 ; i < 4 ; i ++){
+			inputs.eq(i).val(materiallink.eq(i).text().trim());
+		}
+		item.find("input[name='materialid[]']").val($("#materialModal").data("material").data("id"));
+                item.find(".enquiry_btn").click(function(){
+                    var material_id=$(this).parent().parent().children().eq(9).children().eq(1).val();
+                    var show=$("#enquirys a."+material_id)
+                    var hide=$("#enquirys a:not("+"#enquirys a."+material_id+")");
+                    show.show();
+                    hide.hide();
+                    
+        });
+		$("tbody").append(item.show());
+	};
+	$("#chooseMaterial").click(chooseMaterial);
+	$("#materials a").dblclick(chooseMaterial);
+	$("table").on('change','.count',function(){
+		var unitPrice = $(this).parent().prev().children().val();
+		var amount = $(this).val();
+		if (unitPrice && amount){
+			$(this).parent().parent().find(".material_price").val(unitPrice*amount);
+			var sum = 0.0;
+			$(".material_price").each(function(){
+				sum+=Number($(this).val());
+			});
+		        $("#amount_title").text("累计金额："+sum+" 元");
+                        $("#amount_title").next().val(sum);
+                }
+	})
+	$("table").on('click',".btn-danger",function(){
+		if (confirm("确认删除？")){
+			$(this).parent().parent().remove();
+			var sum = 0.0;
+			$(".material_price").each(function(){
+				sum+=Number($(this).val());
+			});
+		        $("#amount_title").text("累计金额："+sum+" 元");
+                        $("#amount_title").next().val(sum);
+		}
+	});
+	$("#project_tree").on("click","a",function(e){
+		e.preventDefault();
+		if($(this).attr("href")!="#"){
+			$("#project_title").text($(this).text().trim());
+			$("#resource_id").val($(this).attr("href").trim());
+                        var data=$("#project_tree").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).parent().addClass("active");
+			$("#project_tree").data("lastActive",$(this).parent());		
+			$(".ui.sidebar").sidebar('hide');
+		}
+        var resource_id=$(this).parent().data("id");
+        var count=$(this).parent().data("count")+1;
+        var date=new Date();
+        var year=date.getFullYear().toString();
+        var month=date.getMonth().toString();
+        var day=date.getDate().toString();
+        var number=year+month+day;
+        $("input[name='plan_number']").val(resource_id+"-"+number+"-"+count);     
+	})
+	$('#enquiryModal').on('show.bs.modal', function (e) {
+		$("#enquiryModal").removeData("enquiry");
+		$("#enquiryModal").data("dataTarget",e.relatedTarget);
+		$("#enterprises a").removeClass("active");
+               
+
+	});
+	$("#chooseEnquiry").click(function(){
+		var data = $("#enquiryModal").data("enquiry");
+		if (data){
+			$($("#enquiryModal").data("dataTarget")).val(data.name);
+			$($("#enquiryModal").data("dataTarget")).next().val(data.id);
+			$($("#enquiryModal").data("dataTarget")).parent().next().children().val(data.price);
+			var count=$($("#enquiryModal").data("dataTarget")).parent().parent().find(".count");
+                        if(count.val()){
+                            $($("#enquiryModal").data("dataTarget")).parent().parent().find(".material_price").val(data.price*count.val());
+                        }
+			var sum = 0.0;
+			$(".material_price").each(function(){
+				sum+=Number($(this).val());
+			});
+		        $("#amount_title").text("累计金额："+sum+" 元");
+                        $("#amount_title").next().val(sum);
+                        $('#enquiryModal').modal('hide');
+		}
+	});
+ 	$("#enquirys a").click(function(e){
+		e.preventDefault();
+		var data = $("#enquiryModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#enquiryModal").data("lastActive",$(this));
+		$("#enquiryModal").data("enquiry",{id : $(this).data("id") , name : $(this).children().children().first().text(), price : $(this).children().children().eq(1).text()});
+		return false;
+	});
+
+        $("#submit").click(function(){
+            var active=$("#project_tree").find(".active");
+            if(!active.is("*")) return false;        
+        });
+
+});
+</script>
+</body>
+</html>

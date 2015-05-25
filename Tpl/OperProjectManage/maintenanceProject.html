@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+<style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+  </style>	
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">  
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">项目维护</div>
+    <ul class="nav navbar-nav navbar-right">
+			<li><a href={:U('OperProjectManage/projectResource')}>项目资源</a>
+			<li><a href={:U('OperProjectManage/maintenanceProject')} class="active">项目维护</a></li>			
+    </ul>
+  </div>
+</nav>  
+		<div class="panel panel-default">			
+			<div class="panel-body">
+			<form id="maintenanceForm" class="form-horizontal" action="{:U('OperProjectManage/editProjectResource')}" method="POST" >
+			<div class="page-header">	
+					<div class="col-md-4">						
+						<h4 id="project_title"></h4>
+					</div>				
+						
+					<div class="col-md-1 col-md-offset-5">
+						<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目资源"></label>
+			
+						<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目资源</a>
+					</div>
+					<div class="col-md-2">
+						<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+					</div>
+					<div style="clear:both"></div>
+			</div>	
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="active">
+				<a href="#basic_info" role="tab" data-toggle="tab">项目基本信息</a>
+			</li>
+			<li>
+				<a class="nowarehouse" href="#basic_setting" role="tab" data-toggle="tab">项目基本设置</a>
+			</li>
+			<li>
+				<a class="nowarehouse" href="#process_setting" role="tab" data-toggle="tab">项目部位设置</a>
+			</li>
+			<li>
+				<a class="nowarehouse" href="#document_info" role="tab" data-toggle="tab">项目相关资料</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+		<!--项目基本信息-->
+		<div class="tab-pane active" id="basic_info">
+		<br>
+			<div class="page-header">	
+					<div class="col-md-4">
+						<h4>基本信息</h4>
+					</div>					
+					<div style="clear:both"></div>
+			</div>	
+			<div class="form-group">
+				<label class="col-md-2 control-label">项目名称</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="prname" id="project_name" readonly placeholder="请点击项目资源选择"/>
+					<input type="hidden" name="resource_id" id="resource_id" />
+				</div>
+				<label class="col-md-2 control-label">材料控制总预算</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name=""  disabled />
+				</div>
+				<label class="col-md-2 control-label">送货地址</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="receivestuff_address" id="receivestuff_address"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">甲方</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control readonly"  readonly name="" data-toggle="modal" data-target="#enterpriseModal"/>
+					<input type="hidden" name="enterprise_1partid" id="enterprise_1partid"/>  
+				</div>
+				<label class="col-md-2 control-label">监理单位</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control readonly"  readonly name="" data-toggle="modal" data-target="#enterpriseModal" />
+					<input type="hidden" name="enterprise_supervisorid" id="enterprise_supervisorid"/>
+				</div>
+				<label class="col-md-2 control-label">接货人电话</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="receiveperson_phonenumber" id="receiveperson_phonenumber"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">总工程量</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="total_quantites" id="total_quantites"/>
+				</div>		
+				<label class="col-md-2 control-label">项目经理</label>
+				<div class="col-md-2">					
+					<input type="text" class="form-control" name="pm_name" id="pm_name"/>
+				</div>		
+				<label class="col-md-2 control-label">实际开工时间</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control datepicker" name="startdate_actually" id="startdate_actually"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">结构层数</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="construct_layers" id="construct_layers"/>
+				</div>		
+				<label class="col-md-2 control-label">副经理</label>
+				<div class="col-md-2">					
+					<input type="text" class="form-control" name="vice_pm_name" id="vice_pm_name"/>
+				</div>		
+				<label class="col-md-2 control-label">实际竣工时间</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control datepicker" name="finishdate_actually" id="finishdate_actually"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">总说明</label>
+				<div class="col-md-10">
+					<textarea type="text" class="input-xlarge form-control" rows="5" name="description" id="description"></textarea>
+				</div>
+			</div>			
+		<hr>
+		<!--
+		<div class="col-md-5 well">
+		<div class="page-header">	
+			<h4>库房设置</h4>
+							
+			<div style="clear:both"></div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">库房设置</label>
+			<label class="control-label label-pop store_alert" data-container="body" data-toggle="popover" data-placement="top" data-content="不能为空"></label>
+			
+			<div class="col-md-6">				
+				<input type="text" class="form-control store_name" name=""/>				
+			</div>
+			<div class="col-md-2">
+				<a class="btn btn-primary btn-block store">添加</a>
+			</div>
+		</div>
+		<div class="store_add">
+		</div>
+		</div>
+		<div class="col-md-5 col-md-offset-1 well">
+		<div class="page-header">	
+			<h4>库管员设置</h4>								
+			<div style="clear:both"></div>
+		</div>
+		<div class="form-group" id="">
+			<label class="col-md-3 control-label">库管员设置</label>
+			<label class="control-label label-pop store_alert" data-container="body" data-toggle="popover" data-placement="top" data-content="不能为空"></label>
+			
+			<div class="col-md-6">				
+				<input type="text" class="form-control store_name" name=""/>				
+			</div>
+			<div class="col-md-2">
+				<a class="btn btn-primary btn-block store">添加</a>
+			</div>
+		</div>
+		<div class="store_add">
+		</div>
+		</div>
+		-->
+		<div class="col-md-6">			
+				<div class="form-group">
+					<label class="col-md-2 control-label">库房设置</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="warehouse_name"/>						
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-primary" href="#" id="add_warehouse">添加</a>
+					</div>					
+				</div>	
+				
+				<div class="form-group collapse">
+					<label class="col-md-2 control-label">修改库房</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="update_warehouse"/>
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-primary" id="update_warehouse_submit">修改</a>
+						</div>
+						<div class="col-md-1">
+							<button class="btn btn-danger" id="delete_warehouse_submit">删除</button>
+						</div>
+				</div>
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">已有库房</label>
+						<div class="col-md-6 list-group" style="padding-left:15px" id="warehouse_list">								
+					
+				</div>
+				</div>		
+			</div>
+		<div class="col-md-6" style="border-left:1px solid #eee">			
+			<div class="form-group">
+					<label class="col-md-2 control-label">库管员设置</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="warehouse_worker_name"/>						
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-primary" href="#" id="add_warehouse_worker">添加</a>
+					</div>					
+				</div>	
+				
+				<div class="form-group collapse">
+					<label class="col-md-2 control-label">修改库管员</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="update_warehouse_worker"/>
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-primary" id="update_warehouse_worker_submit">修改</a>
+						</div>
+						<div class="col-md-1">
+							<button class="btn btn-danger" id="delete_warehouse_worker_submit">删除</button>
+						</div>
+				</div>
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">已有库管员</label>
+						<div class="col-md-6 list-group" id="warehouse_worker_list" style="padding-left:15px">								
+						
+				</div>
+				</div>		
+			</div>
+		
+		</div>
+		<!--项目基本设置-->
+		<div class="tab-pane" id="basic_setting">
+			<br>
+			<div class="page-header">
+				<div class="col-md-4">
+					<h4>当前分包商领料设置</h4>
+				</div>				
+				<div style="clear:both"></div>
+			</div>
+			
+			<div class="col-md-6">
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">添加分包商</label>
+						<label class="control-label label-pop" id="subcontractor_empty_alert" data-container="body" data-toggle="popover" data-placement="top" data-content="请添加项目或机构"></label>
+					<div class="col-md-6">
+						<input type="text" class="form-control readonly" readonly id="subcontractor_name" data-toggle="modal" data-target="#enterpriseModal" />
+						<input type="hidden" id="subcontractor_id" />
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-primary" id="add_subcontractor" href="#">添加</a>
+					</div>
+<div style="clear:both"></div>					
+				</div>	
+				<!--
+				<div class="form-group collapse  ">
+					<label class="col-md-2 control-label">修改分包商</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control update_subconstractor readonly" readonly  data-toggle="modal" data-target="#enterpriseModal">
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-primary update_subconstractor_submit">修改</a>
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-danger delete_subcontrator">删除</a>
+						</div>
+				</div>
+				-->
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">已有分包商</label>
+				<label class="control-label label-pop" id="add_subcontractor_alert" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择项目或机构"></label>
+						<div class="col-md-6 list-group" id="subcontractor_list" data-size="" style="padding-left:15px">									
+				</div>
+				<div class="col-md-1">
+							<a class="btn btn-danger" id="delete_subcontractor_submit">删除</a>
+						</div>
+				</div>				
+			</div>
+			
+			<div class="col-md-6" style="border-left:1px solid #eee">			
+				<div class="form-group">
+					<label class="col-md-2 control-label">添加领料人</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="subcontrator_worker"/>
+						<input type="hidden" />
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-primary" id="add_subcontractor_worker" href="#">添加</a>
+					</div>
+<div style="clear:both"></div>					
+				</div>	
+				
+				<div class="form-group collapse">
+					<label class="col-md-2 control-label">修改领料人</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="update_subcontractor_worker"/>
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-primary" id="update_subcontractor_worker_submit">修改</a>
+						</div>
+						<div class="col-md-1">
+							<a class="btn btn-danger" id="delete_subcontractor_worker_submit">删除</a>
+						</div>
+				</div>
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">已有领料人</label>
+						<div class="col-md-6 list-group" id="sub_worker_list" style="padding-left:15px">
+								
+				</div>
+				</div>		
+			</div>
+			<div style="clear:both"></div>
+
+			<hr>
+			<div class="page-header">
+				<div class="col-md-4">
+					<h4>材料采购流程</h4>
+				</div>				
+				<div style="clear:both"></div>
+			</div>
+				<div class="col-md-6">
+					<label class="col-md-3 control-label">工程材料采购流程</label>
+					<div class="col-md-6">
+						<select class="form-control" name="materialbuyingprocess_setting" id="materialbuyingprocess_setting">
+							<option value="1">可直接采购</option>
+							<option value="2">根据采购计划单</option>
+							<option value="3">根据采购合同</option>
+							<option value="4">部分材料根据采购合同</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label class="col-md-3 control-label">采购计划单审核设置</label>
+					<div class="col-md-6">
+						<select class="form-control" name="materialbuyingplanaudit_setting" id="materialbuyingplanaudit_setting">
+							<option value="1">需要审核</option>
+							<option value="2">不需要审核</option>
+						</select>
+					</div>
+				</div>
+<div style="clear:both"></div>				
+			<hr>
+			<div class="page-header">
+				<div class="col-md-4">
+					<h4>材料采购进场方式</h4>
+				</div>				
+				<div style="clear:both"></div>
+			</div>			
+				<div class="col-md-6">
+					<label class="col-md-3 control-label">进场方式</label>
+					<div class="col-md-6">
+						<select class="form-control" name="infield_pattern" id="infield_pattern">
+							<option value="1">自选</option>
+							<option value="2">采购入库</option>
+							<option value="3">直进项目</option>							
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label class="col-md-3 control-label">默认领料班组</label>
+					<div class="col-md-6">
+						<select class="form-control" name="infield_site" id="infield_site">										
+						</select>
+					</div>
+				</div>
+<div style="clear:both"></div>					
+			<hr>
+			<div class="page-header">
+				<div class="col-md-4">
+					<h4>成本控制设置</h4>
+				</div>				
+				<div style="clear:both"></div>
+			</div>		
+				<div class="col-md-5 hidden">
+				<div class="form-group">
+					<label class="col-md-5 control-label">材料控制金额</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />						
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-5 control-label">总成本控制金额</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>					
+				</div>
+				<div class="checkbox col-md-offset-6">
+					<label><input type="checkbox" name="is_1partmaterial_addtocost" />甲供材记入工程成本<br></label>
+				</div>
+				</div>				
+				<div class="form-group">
+				<div class="col-md-6">
+					<label class="col-md-2 control-label">控制条件</label>
+					<div class="col-md-6 checkbox">
+					<table class="table table-hover" id="controlsetting">						
+						<tbody>							
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_buyingplan_nobudget" />采购计划单发生的材料没有预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_buyingplan_excessbudget" />采购计划单发生的材料超预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialbuying_nobudget" />材料采购单发生的材料没有预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialbuying_excessbudget" />材料采购单发生的材料超预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialout_nobudget" />材料出库单发生的材料没有预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialout_excessbudget" />材料出库单发生的材料超预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialallocate_nobudget" />材料调拨单发生的材料没有预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_materialallocate_excessbudget" />材料调拨单发生的材料超预算时不允许保存<br></label>
+								</td>
+							</tr><tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_otherin_nobudget" />其他入库单发生的材料没有预算时不允许保存<br></label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label><input type="checkbox" value="0" name="refuse_otherin_excessbudget" />其他入库单发生的材料超预算时不允许保存<br></label>
+								</td>
+							</tr>
+						</tbody>
+					</table>					
+				</div>
+			</div>
+			</div>		
+		</div>
+		</form>
+		<!--项目部位设置-->
+		<div class="tab-pane" id="process_setting">
+			<br>
+			<div class="page-header">	
+					<div class="col-md-4">
+						<h4>当前项目部位及进度设置</h4>
+					</div>
+					<div class="col-md-2 col-md-offset-6">
+				<a class="btn btn-success btn-block" id="process_add" >新增</a>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+			
+			<div id="process" class="panel-collapse panel collapse">
+				<div class="form-group">
+					<label class="col-md-2 control-label">部位名称</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" name="" id="process_name" placeholder="点击选择已有项目部位" data-toggle="modal" data-target="#exist_process" readonly />
+					</div>
+					<label class="control-label col-md-1" id="import_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="点击选择已有项目部位"></label>
+					<div class="col-md-1 col-md-offset-5">
+						<input type="submit" class="btn btn-primary btn-block" value="保存" id="add_process_submit" data-flag="0"/>
+					</div>
+					<div class="col-md-1">
+                        <a class="btn btn-default" id="cancel_process">取消</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">工程量</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" id="quantity"/>
+					</div>
+					<label class="col-md-2 control-label">单位</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" id="unit"/>
+					</div>
+					<label class="col-md-2 control-label">单价</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" id="unit_price"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">产值</label>
+					<div class="col-md-2">
+						<input type="text reandonly" readonly class="form-control" id="production_value"/>
+					</div>
+					<label class="col-md-2 control-label">计划成本</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" id="plan_cost"/>
+					</div>
+					<!-- <label class="col-md-2 control-label">材料控制预算</label> -->
+					<div class="col-md-2">
+						<!-- <input type="text" class="form-control" name=""/> -->
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">计划开工日期</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control datepicker" id="plan_start_time"/>
+					</div>
+					<label class="col-md-2 control-label">计划工期</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control" id="plan_duration"/>
+					</div>
+					<label class="col-md-2 control-label">实际开工日期</label>
+					<div class="col-md-2">
+						<input type="text" class="form-control datepicker" id="actual_start_time"/>
+					</div>
+				</div>
+			</div>
+			
+			<table class="table table-hover">
+				<thead>
+					<th>部位名称</th>
+					<th>单位</th>
+					<th>工程量</th>
+					<th>单价</th>
+					<th>产值</th>
+					<th>计划成本</th>
+					<th>计划开工日期</th>
+					<th>计划工期</th>
+					<th>实际开工日期</th>
+					<!-- <th>材料控制预算</th> -->
+					<th>操作<th>
+				</thead>
+				<tbody id="exist_project_process">					
+				</tbody>
+			</table>
+		</div>		
+		<!--项目相关资料-->
+		<div class="tab-pane" id="document_info">
+		<br>
+		<!--
+			<div class="page-header">
+				<div class="col-md-4">
+					<h4>项目相关资料</h4>
+				</div>
+				<div class="col-md-1 col-md-offset-6">
+					<a class="btn btn-info btn-block" data-toggle="collapse" data-target="#document_add">导入文件</a>
+				</div>
+				<div class="col-md-1">
+					<a class="btn btn-info btn-block" data-toggle="collapse" data-target="#document_add">添加</a>
+				</div>
+				<div style="clear:both"></div>
+			</div>			
+			<form class="form-horizontal">
+				<div id="document_add" class="panel-collapse panel collapse">
+					<div class="form-group">
+						<label class="col-md-2 control-label">资料编号</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" name="" />
+						</div>
+						<label class="col-md-2 control-label">资料名称</label>
+						<div class="col-md-2">
+							<input type="text" class="form-control" name="" />
+						</div>
+						<div class="col-md-2 col-md-offset-2">
+							<input type="submit" class="btn btn-primary btn-block" value="保存修改" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="col-md-6 control-label">文件类型</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" name="" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label">创建人</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" name="" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="col-md-6 control-label">修改时间</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" name="" />
+								</div>
+							取消</div>
+							<div class="form-group">
+								<label class="col-md-6 control-label">部门名称</label>
+								<div class="col-md-6">
+									<input type="text" class="form-control" name="" />
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+							<label class="col-md-6 control-label">说明</label>
+							<div class="col-md-6">
+								<textarea class="input-xlarge form-control" rows="3"></textarea> 
+							</div>
+							</div>
+						</div>						
+				</div>
+			</form>
+		</div>
+			<table class="table">
+				<thead>
+					<th>资料编号</th>
+					<th>资料名称</th>
+					<th>文件类型</th>
+					<th>修改时间</th>
+					<th>创建人</th>
+					<th>部门名称</th>
+					<th>说明</th>
+					<th>操作</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<a class="btn btn-primary" data-toggle="modal" data-target="#update_document_btn">修改</a>
+							<a class="btn btn-danger">删除</a>
+						</td>						
+					</tr>
+				</tbody>
+			</table>
+-->
+			<div class="page-header">
+                    <div class="col-md-4">
+                        <h4>项目相关资料</h4>
+                    </div>
+                    <div class="col-md-2 col-md-offset-6">
+                         <a href="#" class="btn btn-success btn-block" data-toggle="modal" data-target="#addDocumentModal">新增</a>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <th>资料编号</th>
+                        <th>资料名称</th>
+                        <th>修改时间</th>
+                        <th>创建人</th>
+                        <th>操作</th>
+                    </thead>
+                    <tbody id="document_list">
+                    </tbody>
+                </table>	
+		</div>
+		</div>
+		</div>
+</div>
+<!--项目资源树形图-->
+	 <div class="ui sidebar left overlay panel panel-default active">
+		<div class="page-header">
+			<h4  style="padding-left:15px">项目与机构列表</h4>
+		</div>
+		<div class="panel-body">
+		<ul class="list-group sidebar-tree col-md-offset-1" id="sidebar" style="padding-right:16px">				
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item warehouse" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item warehouse" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item project" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item project" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>
+		</ul>
+	</div>
+</div>
+<!--项目资源维护
+<div class="modal fade" id="resource_list" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="resource_title"></h4>
+      </div>
+      <div class="modal-body">
+				<form class="form-horizontal">
+				<div class="form-group" id="parent_project">
+					<label class="col-md-4 control-label">上级项目</label>
+					<div class="col-md-7">
+						<input type="text" class="form-control" name="superior_project" id="superior_project"/>
+					</div>
+				</div>
+        <div class="form-group">
+					<label class="col-md-4 control-label">项目类别</label>
+					<div class="col-md-7">
+						<select class="form-control" name="project_type" id="project_type">
+							<option>项目</option>
+							<option>公司机构或仓库</option>
+						</select>
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-md-4 control-label">项目名称</label>
+					<div class="col-md-7">
+						<input type="text" class="form-control" name="name" id="project_name" />
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-md-4 control-label">归属子公司</label>
+					<div class="col-md-7">
+						<select class="form-control" name="subsidiary" id="subsidiary">
+				
+							<volist name="companyRowArray" id="vo">
+								<option value={$vo.companyid}>{$vo.name}</option>
+							</volist>
+				
+							<option value="1">一公司</option>
+							<option value="2">二公司</option>
+						</select>
+					</div>
+					</div>
+					<div class="form-group">
+					<label class="col-md-4 control-label">用户授权</label>
+					<div class="col-md-7">
+						<select class="form-control" name="user_authority" id="user_authority">							
+							<option value="1">路人甲</option>
+							<option value="2">路人乙</option>
+						</select>
+					</div>
+				</div>
+				</form>
+      </div>
+      <div class="modal-footer">        
+        <button type="button" class="btn btn-primary" id="submit_project">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+	
+  </div>
+</div>
+-->
+<!-- 往来单位选择 -->
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>   	
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+        	<volist name="enterpriseRowArray" id="vo">
+        		<a href="{$vo.enterpriseid}" class="list-group-item 
+        		<if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+          		<div class="row">
+            		<div class="col-md-4">{$vo.name}</div>
+                	<div class="col-md-2">{$vo.contact_person}</div>
+                	<div class="col-md-3">{$vo.phone_number}</div>
+                	<div class="col-md-3">{$vo.address}</div>
+            	</div>
+            	</a>
+        	</volist>
+       
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>  
+<!--已有项目部位选择-->
+<div class="modal fade" id="exist_process" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">已有部位选择</h4>				
+			</div>
+            <br>
+			
+                <form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 col-md-offset-1 control-label">部位名称</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" name="" id="modal_process_name"/>
+					</div>					
+					<div class="col-md-2">
+						<a class="btn btn-info" id="view_exist_process">已有部位</a>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+			<div id="exist_process_list" class="panel-collapse collapse in panel">
+			<div class="container-fluid" style="margin-top:15px" >
+                            <div class="row"> 
+                            <div class="form-group">
+				<label class="col-md-3 control-label">项目部位分类</label>
+				<div class="col-md-6">
+				<select class="form-control" id="process_modal_select">
+				<volist name="processClassifyRowArray" id="vo">
+                                      <option value={$vo.process_classify_id}>{$vo.process_classify_name}</option>
+				</volist>
+				</select>
+			    </div>
+			</div>
+                        </div>
+                <div class="row" style="margin-top:20px">
+                    <div class="col-md-4 col-md-offset-1">分类</div>
+                    <div class="col-md-5 col-md-offset-2">名称</div>                    
+                </div>
+            </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="processes">
+	<volist name="processRowArray" id="vo">
+          <a class="list-group-item {$vo.process_classify_id}" href={$vo.process_classify_id}>
+          	<div class="row">
+                    <div class="col-md-4 col-md-offset-1" style="padding-left:1px">{$vo.process_classify_name}</div>
+                <div class="col-md-5 col-md-offset-2">{$vo.process_name}</div>                
+            </div>
+        </a>
+          </volist>
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="choose_Process">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+      </div>
+	</form>								
+    </div>
+  </div>
+</div>
+<!--已有项目部位修改-->
+<!--
+<div class="modal fade" id="update_process" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">项目一</h4>
+			</div>
+			<form class="form-horizontal">
+			<div class="modal-body">
+			
+				<div class="form-group">
+					<label class="col-md-2 control-label">部位名称</label>
+					<div class="col-md-10">
+						<input type="text" class="form-control" name="" id="process_name" placeholder="点击选择已有项目部位" data-toggle="modal" data-target="exist_process" readonly />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">工程量</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+					<label class="col-md-2 control-label">单位</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">单价</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+					<label class="col-md-2 control-label">产值</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">计划开工日期</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control datepicker" name=""/>
+					</div>
+					<label class="col-md-2 control-label">计划工期</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">实际开工日期</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control datepicker" name=""/>
+					</div>
+					<label class="col-md-2 control-label">计划成本</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name=""/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">材料控制预算</label>
+					<div class="col-md-10">
+						<input type="text" class="form-control" id="material_budget" readonly />
+					</div>
+				</div>	
+			
+			</div>
+			 <div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+			</form>
+		</div>
+	</div>
+</div>
+-->
+<!--项目资料修改-->
+<!--
+<div class="modal fade" id="update_document" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">项目一</h4>
+			</div>
+			<form class="form-horizontal">
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-md-2 control-label">资料编号</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+					<label class="col-md-2 control-label">资料名称</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">文件类型</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+					<label class="col-md-2 control-label">修改时间</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">创建人</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+					<label class="col-md-2 control-label">部门名称</label>
+					<div class="col-md-4">
+						<input type="text" class="form-control" name="" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">说明</label>
+					<div class="col-md-10">
+						<textarea class="input-xlarge form-control" rows="3"></textarea> 
+					</div>
+				</div>
+			</div>
+			 <div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+			</form>
+		</div>
+	</div>
+</div>
+-->
+<!--项目资料添加-->
+<div class="modal fade" id="addDocumentModal" tabindex="-1" role="dialog" aria-labelledby="addDocumentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="addDocumentModalLabel">新增项目资料</h4>
+            
+      </div>
+      <form class="form-horizontal" role="form">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">资料编号</label>
+                <div class="col-md-4">
+                	<input class="form-control" type="text" name="serial_number" id="documentid">
+                </div>
+                <div class="col-md-3">
+                	<div class="checkbox">
+                    	<label>
+	                    	<input type="checkbox" id="autoGenerate" name="autoGenerate" value="9">自动生成
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+                <div class="col-md-6">
+                	<input class="form-control" type="text" name="name" id="document_name">
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">备注</label>
+                <div class="col-md-6">
+                	<textarea class="input-xlarge form-control" name="remark" rows="4" id="document_remark"></textarea>
+                </div>
+            </div>
+             <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">上传文件</label>
+                <div class="col-md-6">
+                	<input class="form-control" type="file" name="documentFile" id="documentFile">
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="add_doc_submit">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--项目资料修改-->
+<div class="modal fade" id="editDocumentModal" tabindex="-1" role="dialog" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="editDocumentModalLabel">修改项目资料</h4>
+            
+      </div>
+      <form class="form-horizontal">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">资料编号</label>
+                <div class="col-md-6">
+                    <input type="hidden" id="doc_update_id">
+                	<input class="form-control" type="text" id="doc_update_serial" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+                <div class="col-md-6">
+                	<input class="form-control" type="text" id="doc_update_name">
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">备注</label>
+                <div class="col-md-6">
+                	<textarea class="input-xlarge form-control" id="doc_update_remark" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-2 col-md-offset-1">上传文件</label>
+                <div class="col-md-6">
+                	<input class="form-control" type="file" name="docFile" id="docFile">
+                </div>
+            </div>
+            </div>
+          <div class="modal-footer">
+           <button type="button" class="btn btn-primary" id="update_doc_submit">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--项目资料查看-->
+<div class="modal fade" id="viewDocumentModal" tabindex="-1" role="dialog" aria-labelledby="viewDocumentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="viewDocumentModalLabel">查看项目资料</h4>
+            
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+      	<div class="container-fluid">
+        	<div class="row list-row">
+            	<label class="col-md-2 col-md-offset-1">资料编号</label>
+                <div class="col-md-5" id="doc_id"></div>
+                <div class="col-md-3">
+                    <form role="form" action="{:U('OperProjectManage/editProject_downloadFile')}" method="GET">
+                    <input type="hidden" id="filepath" name="filepath" />
+                	<button type="submit" class="btn btn-block btn-success" target="_blank" >下载</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row list-row">
+            	<label class="col-md-2 col-md-offset-1">资料名称</label>
+                <div class="col-md-7" id="doc_name"></div>
+            </div>
+            <div class="row list-row">
+            	<label class="col-md-2 col-md-offset-1">修改时间</label>
+                <div class="col-md-6" id="doc_date"></div>
+            </div>
+            <div class="row list-row">
+            	<label class="col-md-2 col-md-offset-1">创建人</label>
+                <div class="col-md-7" id="doc_user"></div>
+            </div>
+            <div class="row list-row">
+            	<label class="col-md-2 col-md-offset-1">备注</label>
+                <div class="col-md-7" id="doc_remark"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_maintenance.js" type="text/javascript"></script>
+<script type="text/javascript">	
+	$(function(){
+		//项目资源
+		$("#sidebar").on("click",".tree-item",function(){
+			if($(this).hasClass("unactive")) return false;
+            var data=$("#sidebar").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).parent().addClass("active");
+			$("#sidebar").data("lastActive",$(this).parent());		
+			$("#project_title").text($(this).text());
+			$("#project_name").val($(this).text());
+			
+			if($(this).hasClass("warehouse")){
+				$(".nowarehouse").css("visibility","hidden");
+			}else{
+				$(".nowarehouse").css("visibility","visible");
+			}
+			$(".ui.sidebar").sidebar('toggle');
+			
+			$("#resource_alert").popover("hide");
+			var resource_id=$("#sidebar").find(".active").data("id");
+			$("#resource_id").val(resource_id);
+			var warehouse,warehouse_worker,sub,id,work_sub,work_id;		
+			
+			$.post("{:U('OperProjectManage/getControlSetting')}",{
+				resource_id:resource_id
+			},function(control,textStatus){				
+				//alert(control.length) undefined????;
+				for(var i=2;i<13;i++){
+					if(control[i]==1){
+						$("#controlsetting input").eq(i-2).attr("checked",true);
+						$("#controlsetting input").eq(i-2).val(1);
+					}				
+				}
+			});
+			
+			$.post("{:U('OperProjectManage/getWarehouse')}",{
+				resource_id:resource_id
+			},function(warehouse,textStatus){
+				$("#warehouse_list").empty();
+				for(var i=0;i<warehouse.length;i++){
+					sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+warehouse[i][0]+"\">"+warehouse[i][1]+"</a>");
+					$("#warehouse_list").append(sub);
+					sub.click(function(){
+						var data=$(this).parent().data("lastActive");
+						if(data){
+							data.removeClass("active");
+						}
+						$(this).addClass("active");
+						$(this).parent().data("lastActive",$(this));
+						$("#update_warehouse").val($(this).text());				
+						$(this).parent().parent().prev().collapse("show");
+						return false;
+					});
+				}	
+			});
+			
+			$.post("{:U('OperProjectManage/getWarehouseWorker')}",{
+				resource_id:resource_id
+			},function(warehouse,textStatus){
+				$("#warehouse_worker_list").empty();
+				for(var i=0;i<warehouse.length;i++){
+					sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+warehouse[i][0]+"\">"+warehouse[i][1]+"</a>");
+					$("#warehouse_worker_list").append(sub);
+					sub.click(function(){
+						var data=$(this).parent().data("lastActive");
+						if(data){
+							data.removeClass("active");
+						}
+						$(this).addClass("active");
+						$(this).parent().data("lastActive",$(this));
+						$("#update_warehouse_worker").val($(this).text());				
+						$(this).parent().parent().prev().collapse("show");
+						return false;
+					});
+				}	
+			});
+			
+			$.post("{:U('OperProjectManage/getSubcontractor')}",{
+				resource_id:resource_id
+			},function(result, textStatus){
+				//alert(result.length);
+				$("#subcontractor_list").empty();
+				$("#sub_worker_list").empty();
+				for(var i=0;i<result.length;i++){
+					sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+result[i][0]+"\">"+result[i][1]+"</a>");
+					sub.data("id",result[i][0]);				
+					$("#subcontractor_list").append(sub);
+					sub.click(function(){
+                                            $("#add_subcontractor_alert").popover("hide");
+
+						var data=$(this).parent().data("lastActive");
+						if(data){
+							data.removeClass("active");
+						}
+						$(this).addClass("active");
+						$(this).parent().data("lastActive",$(this));
+						id=$(this).data("id");
+						$.post("{:U('OperProjectManage/getSubcontractorWorker')}",{
+							subcontractor_id:id
+						},function(work, textStatus){
+							//alert(work);
+							$("#sub_worker_list").empty();
+							for(var j=0;j<work.length;j++){
+								work_sub=$("<a class=\"list-group-item collapse "+id+"\" href=\"#\" data-id=\""+work[j][0]+"\">"+work[j][1]+"</a>");
+								work_id=work[j][0];					
+								$("#sub_worker_list").append(work_sub);
+								work_sub.click(function(){
+									var data=$(this).parent().data("lastActive");
+									if(data){
+										data.removeClass("active");
+									}
+									$(this).addClass("active");
+									$(this).parent().data("lastActive",$(this));
+									$(this).parent().parent().prev().find(".update_subconstractor").val($(this).text());				
+									$(this).parent().parent().prev().collapse("show");
+									return false;
+									});
+							}
+							});
+							
+						$("#sub_worker_list").children().addClass("hidden");
+						$("#sub_worker_list").find("."+id).removeClass("hidden");
+						return false;
+					});
+                                 $("#subcontractor_list").data("size",result.length);
+				}
+			});
+			
+			$.post("{:U('OperProjectManage/getStandardProject')}",{
+				resource_id:resource_id
+			},function(standard,textStatus){
+				//alert(standard.infield_site);
+				$("#receivestuff_address").val(standard.receivestuff_address);
+				$("#enterprise_1partid").val(standard.enterprise_1partid);
+				$("#enterprise_1partid").prev().val(standard.enterprise_1part_name);
+				$("#enterprise_supervisorid").val(standard.enterprise_supervisorid);
+				$("#enterprise_supervisorid").prev().val(standard.enterprise_supervisor_name);
+				$("#receiveperson_phonenumber").val(standard.receiveperson_phonenumber);
+				$("#total_quantites").val(standard.total_quantites);
+				$("#pm_name").val(standard.pm_name);
+				$("#startdate_actually").val(standard.startdate_actually);
+				$("#construct_layers").val(standard.construct_layers);
+				$("#vice_pm_name").val(standard.vice_pm_name);
+				$("#finishdate_actually").val(standard.finishdate_actually);
+				$("#description").val(standard.description);
+				$("#materialbuyingprocess_setting").val(standard.materialbuyingprocess_setting);
+				$("#materialbuyingplanaudit_setting").val(standard.materialbuyingplanaudit_setting);
+				$("#infield_pattern").val(standard.infield_pattern);
+				//alert($("#infield_pattern").val());				
+				if($("#infield_pattern").val()=="1"){
+					//把已有库房调入
+					var name;
+					$("#infield_site").empty();
+					$("#infield_site").val(standard.infield_site);
+					$("#warehouse_list").children().each(function(){						
+						name=$(this).text();						
+						var sub=$("<option>"+name+"</option>");					
+						$("#infield_site").append(sub);						
+					});
+				}
+				if($("#infield_pattern").val()=="2"){
+					//把已有分包商调入
+					var name;
+					$("#infield_site").empty();
+					$("#infield_site").val(standard.infield_site);
+					$("#subcontractor_list").children().each(function(){
+						name=$(this).text();
+						var sub=$("<option>"+name+"</option>");					
+						$("#infield_site").append(sub);
+						
+					});
+				}								
+			});
+			
+			$.post("{:U('OperProjectManage/getProjectProcess')}",{
+				resource_id:resource_id
+			},function(process,textStatus){				
+				$("#exist_project_process").empty();
+				var sub;
+				for(var i=0;i<process.length;i++){
+					sub=$("<tr data-resource=\""+resource_id+"\" data-id=\""+process[i]['project_process_id']+"\"><td>"+process[i]['process_name']+"</td><td>"+process[i]['unit']+"</td><td>"+process[i]['quantity']+"</td><td>"+process[i]['unit_price']+"</td><td>"+process[i]['unit_price']*process[i]['quantity']+"</td><td>"+process[i]['plan_cost']+"</td><td>"+process[i]['plan_start_time']+"</td><td>"+process[i]['plan_duration']+"</td><td>"+process[i]['actual_start_time']+"</td><td><a class=\"btn btn-primary btn-block update_process\">编辑</a></td><td><a class=\"btn btn-danger btn-block delete_process\">删除</a></td></tr>");
+					$("#exist_project_process").append(sub);
+					
+					sub.find('.update_process').click(function(){
+					$("#process_name").val($(this).parent().parent().children(":eq(0)").text());			
+					$("#unit").val($(this).parent().parent().children(":eq(1)").text());
+					$("#quantity").val($(this).parent().parent().children(":eq(2)").text());			
+					$("#unit_price").val($(this).parent().parent().children(":eq(3)").text());
+					$("#production_value").val($(this).parent().parent().children(":eq(4)").text());
+					$("#plan_cost").val($(this).parent().parent().children(":eq(5)").text());
+					$("#plan_start_time").val($(this).parent().parent().children(":eq(6)").text());
+					$("#plan_duration").val($(this).parent().parent().children(":eq(7)").text());		
+					$("#actual_start_time").val($(this).parent().parent().children(":eq(8)").text());			
+					$("#material_budget").val($(this).parent().parent().children(":eq(9)").text());
+					var flag=$(this).parent().parent().data("id");
+					$("#add_process_submit").data("flag",flag);
+					$("#process").collapse("show");
+					});
+					
+					sub.find('.delete_process').click(function(){
+                        if(!confirm('确认删除?')){
+			            	return false;
+			            }
+					    var project_process_id=$(this).parent().parent().data("id");
+					    $.post("{:U('OperProjectManage/deleteProjectProcess')}",{
+						project_process_id:project_process_id
+					});
+                    $(this).parent().parent().remove();
+				});
+				
+				}				
+			});
+
+            $.post("{:U('OperProjectManage/getResourceDocument')}",{
+				resource_id:resource_id
+			},function(document,textStatus){
+               	$("#document_list").empty();
+                var tr;
+                for(var i=0;i<document.length;i++){
+                   // alert(document[i].user.name);    
+                    tr=$("<tr class=\"doc_item\" data-detail=\"\" style=\"cursor:pointer\"><td class=\"view_doc\">"+document[i].serial_number+"</td><td class=\"view_doc\">"+document[i].name+"</td><td class=\"view_doc\">"+document[i].update_date+"</td><td class=\"view_doc\">"+document[i].user.name+"["+document[i].user.employer_number+"]</td><td><a class=\"btn btn-primary btn-block edit_document\" href=\"#\">修改</a></td><td><a data-documentid=\""+document[i].documentid+"\" class=\"btn btn-danger btn-block delete_document\" href=\"#\">删除</a></td></tr>");
+                    
+                    tr.data("detail",{id:document[i].documentid,remark:document[i].remark,path:document[i].path,user:document[i].user.name+"["+document[i].user.employer_number+"]"+"  "+document[i].user.company_name+"  "+document[i].user.department_name});
+                    $("#document_list").append(tr);
+
+                    tr.find(".view_doc").click(function(){
+                       $("#viewDocumentModal").modal("show");
+                       var line=$(this).parent();
+                       var doc_data=line.data("detail");
+                       $("#doc_id").text(line.children().eq(0).text());
+                       $("#doc_name").text(line.children().eq(1).text());
+                       $("#doc_date").text(line.children().eq(2).text());
+                       $("#doc_user").text(doc_data.user);
+                       $("#doc_remark").text(doc_data.remark);
+                       $("#filepath").val(doc_data.path);
+                    });
+
+                    tr.find('.edit_document').click(function(){
+                       $(this).parent().parent().addClass("active");
+                       var line=$(this).parent().parent();
+                       var doc_data=line.data("detail");
+                       var id=doc_data.id;
+                       var serial_number=line.children().eq(0).text();
+                       var name=line.children().eq(1).text();
+                       var remark=doc_data.remark;
+                       $("#editDocumentModal").modal("show");
+                       $("#doc_update_id").val(id);
+                       $("#doc_update_serial").val(serial_number);
+                       $("#doc_update_name").val(name);
+                       $("#doc_update_remark").val(remark);
+                       return false;
+                    });
+
+                    tr.find('.delete_document').click(function(){
+                        if(!confirm('确认删除?')){
+			            	return false;
+			            }
+                        var document_id=$(this).data("documentid");
+                        $.get("{:U('OperProjectManage/deleteResourceDocument')}",{
+                            documentid:document_id
+                        });
+                        $(this).parent().parent().remove();
+                    });
+                }
+            });
+        });
+		
+		$("#subcontractor_list>a").click(function(){
+			var data=$(this).parent().data("lastActive");
+				if(data){
+					data.removeClass("active");
+				}
+				$(this).addClass("active");
+				$(this).parent().data("lastActive",$(this));
+				//$(this).parent().parent().parent().next().find("#sub_worker_list").children().addClass("hidden");
+				//$(this).parent().parent().parent().next().find("."+subcontractor_id).removeClass("hidden");				
+				return false;
+		});
+		/*
+		$("#sidebar").on("change","#sidebar",function(){
+			$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+			$('.tree li.parent_li > span').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        } else {
+            children.show('fast');
+            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        }
+        e.stopPropagation();
+			});
+		});
+		
+		//添加平级项目
+		$("#add_equal_project").click(function(){
+			var parent=$("#sidebar").find(".active");
+			if(parent.is("*")){
+				$("#resource_title").text("新建平级项目");
+				$("#parent_project").css("display","none");
+				$("#project_type").val("");
+				$("#project_name").val("");
+				$("#subsidiary").val("");
+				$("#user_authority").val("");				
+				
+				$("#submit_project").click(function(){
+					
+					//alert($("#project_name").val());
+					var sub=$("<li class=\"list-group-item\"><a class=\"tree-item\">"+$("#project_name").val()+"</a></li>");
+					sub.data("project_attr",{superior_project:parent.text(),project_type:$("#project_type").val(),project_name:$("#project_name").val(),subsidiary:$("#subsidiary").val(),user_authority:$("#user_authority").val()});				
+					parent.after(sub);
+					$(resource_list).modal("hide");
+					
+					alert("hello");
+				});
+				
+			}else{
+				return false;
+			}			
+		});
+		
+		//添加子级项目
+		$("#add_child_project").click(function(){
+			var parent=$("#sidebar").find(".active");
+			if(parent.is("*")){
+				$("#resource_title").text("新建子级项目");
+				$("#parent_project").css("display","block");
+				$("#superior_project").val(parent.text());
+				$("#project_type").val("");
+				$("#project_name").val("");
+				$("#subsidiary").val("");
+				$("#user_authority").val("");			
+				
+				$("#submit_project").click(function(){	
+					var span=$("<span class=\"glyphicon glyphicon-plus-sign\"></span>");
+					var sub=$("<li class=\"list-group-item collapse\"><ul class=\"list-group\"><li class=\"list-group-item\"><a class=\"tree-item\">"+$("#project_name").val()+"</a></li></ul></li>");
+					sub.data("project_attr",{superior_project:parent.text(),project_type:$("#project_type").val(),project_name:$("#project_name").val(),subsidiary:$("#subsidiary").val(),user_authority:$("#user_authority").val()});
+					
+					parent.children().before(span);
+					parent.after(sub);				
+					$(resource_list).modal("hide");
+				});
+				
+			}else{
+				return false;
+			}			
+		});
+		
+		
+		//仓库及仓库管理员
+		$(".store").click(function(){
+			var name=$(this).parent().parent().find(".store_name").val();
+			var stored=$("<div class=\"form-group\"><label class=\"col-md-3 control-label\">已添加</label><label class=\"col-md-3 control-label name_changed\">"+name+"</label><div class=\"col-md-1 col-md-offset-3\"><a class=\"btn btn-info store_update\">修改</a></div><div class=\"col-md-1\"><a class=\"btn btn-danger store_delete\">删除</a></div></div><div class=\"form-group\" style=\"display:none\"><div class=\"col-md-6 col-md-offset-3\"><input type=\"text\" class=\"form-control store\" value=\""+name+"\"/></div><div class=\"col-md-2\"><a class=\"btn btn-info btn-block store_update_1\">修改</a></div></div>");
+			stored.find(".store_delete").click(function(){
+				$(this).parent().parent().remove();
+			});
+			stored.find(".store_update").click(function(){				
+				$(this).parent().parent().next().css("display","block");
+				$(this).parent().parent().css("display","none");
+						
+			});
+			stored.find(".store_update_1").click(function(){				
+				$(this).parent().parent().prev().find(".name_changed").html($(this).parent().parent().find(".store").val());
+				$(this).parent().parent().prev().css("display","block");
+				$(this).parent().parent().css("display","none");
+			});
+			if(name!=""){
+				$(this).parent().parent().find(".store_alert").popover("hide");
+				$(this).parent().parent().parent().find(".store_add").before(stored);
+				$(this).parent().prev().find(".store_name").val("");			
+			}
+			if(name==""){
+				$(this).parent().parent().find(".store_alert").popover("show");
+				
+			}
+			return false;
+		});
+		*/
+		
+		//仓库V2
+		$("#add_warehouse").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}
+			var name=$("#warehouse_name").val();
+			if(name=="") return false;
+			var resource_id=$("#sidebar").find(".active").data("id");
+			var sub;
+			$.post("{:U('OperProjectManage/addWarehouse')}",{
+				warehouse_name:name,
+				resource_id:resource_id
+			},function(warehouse,textStatus){
+				sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+warehouse.id+"\">"+name+"</a>");	
+				$("#warehouse_list").append(sub);
+				sub.click(function(){
+					var data=$(this).parent().data("lastActive");
+					if(data){
+						data.removeClass("active");
+					}
+					$(this).addClass("active");
+					$(this).parent().data("lastActive",$(this));
+					$("#update_warehouse").val($(this).text());				
+					$(this).parent().parent().prev().collapse("show");
+					return false;
+				});
+			});			
+			
+			$("#warehouse_name").val("");
+			return false;			
+		});		
+		
+		$("#update_warehouse_submit").click(function(){
+			var name=$("#update_warehouse").val();
+			var active=$("#warehouse_list").find(".active");
+			var id=active.data("id");
+			
+			if(name!=""){
+			$.post("{:U('OperProjectManage/updateWarehouse')}",{
+				warehouse_name:name,
+				warehouse_id:id
+			});
+			
+			active.text(name);
+			$(this).parent().parent().collapse("hide");
+			$("#warehouse_list").find(".active").removeClass("active");				
+			}
+			return false;		
+		});
+		
+		$("#delete_warehouse_submit").click(function(){
+                        if(!confirm('确认删除?')){
+			            	return false;
+			            }
+			var active=$("#warehouse_list").find(".active");
+			var id=active.data("id");
+			
+			$.post("{:U('OperProjectManage/deleteWarehouse')}",{
+				warehouse_id:id
+			});
+			
+			active.remove();
+			$(this).parent().parent().collapse("hide");			
+		});
+		
+		//仓库管理员
+		$("#add_warehouse_worker").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}
+			var name=$("#warehouse_worker_name").val();
+			if(name=="") return false;
+			var resource_id=$("#sidebar").find(".active").data("id");
+			var sub;
+			
+			$.post("{:U('OperProjectManage/addWarehouseWorker')}",{
+				warehouse_worker_name:name,
+				resource_id:resource_id
+			},function(worker,textStatus){				
+				sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+worker.id+"\">"+name+"</a>");	
+				$("#warehouse_worker_list").append(sub);
+				sub.click(function(){
+					var data=$(this).parent().data("lastActive");
+					if(data){
+						data.removeClass("active");
+					}
+					$(this).addClass("active");
+					$(this).parent().data("lastActive",$(this));
+					$("#update_warehouse_worker").val($(this).text());				
+					$(this).parent().parent().prev().collapse("show");
+					return false;
+				});
+			});			
+			
+			$("#warehouse_worker_name").val("");
+			return false;
+		});		
+		
+		$("#update_warehouse_worker_submit").click(function(){
+			var name=$("#update_warehouse_worker").val();
+			var active=$("#warehouse_worker_list").find(".active");
+			var id=active.data("id");
+			
+			if(name!=""){
+			$.post("{:U('OperProjectManage/updateWarehouseWorker')}",{
+				warehouse_worker_name:name,
+				warehouse_worker_id:id
+			});
+			
+			active.text(name);
+			$(this).parent().parent().collapse("hide");
+			$("#warehouse_worker_list").find(".active").removeClass("active");	
+			}
+		});
+		
+		$("#delete_warehouse_worker_submit").click(function(){
+                        if(!confirm('确认删除?')){
+			            	return false;
+			            }
+			var active=$("#warehouse_worker_list").find(".active");
+			var id=active.data("id");
+			
+			$.post("{:U('OperProjectManage/deleteWarehouseWorker')}",{
+				warehouse_worker_id:id
+			});
+			
+			active.remove();
+			$(this).parent().parent().collapse("hide");
+			
+		});
+		
+		//往来单位
+		$('#enterpriseModal').on('show.bs.modal', function (e) {
+			$("#enterpriseModal").removeData("enterprise");
+			$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+			$("#enterprises a").removeClass("active");
+		});
+		
+		$("#chooseEnterprise").click(function(){
+			var data = $("#enterpriseModal").data("enterprise");
+			if (data){
+				$($("#enterpriseModal").data("dataTarget")).val(data.name);
+				$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+				$('#enterpriseModal').modal('hide');
+				}
+		});
+		
+		$("#enterprises a").click(function(e){
+			e.preventDefault();
+			var data = $("#enterpriseModal").data("lastActive");
+			if (data){
+				data.removeClass("active");
+			}
+			$(this).addClass("active");
+			$("#enterpriseModal").data("lastActive",$(this));
+			$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+			return false;
+		});
+		
+		$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$(window).resize(function(){
+			$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		});
+		
+		$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+		});
+	 
+		//分包商设置
+		$("#add_subcontractor").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}
+			var name=$("#subcontractor_name").val();
+			var id=$("#subcontractor_id").val();
+			var resource_id=$('#sidebar').find('.active').data('id');
+                        var size=$("#subcontractor_list").data("size");
+			var sub;
+			
+			if(name!=""){
+			var subcontractor_id;
+			$.post("{:U('OperProjectManage/addSubcontractor')}",{
+				resource_id:resource_id,
+				subcontractor_name:name,
+				enterprise_id:id
+			},function(result, textStatus){
+					//alert(result.id);
+					sub=$("<a class=\"list-group-item collapse\" href=\""+resource_id+"\" data-id=\""+result.id+"\">"+name+"</a>");			
+					$("#subcontractor_list").append(sub);
+					
+					sub.click(function(){ 
+                                            $("#add_subcontractor_alert").popover("hide");
+						var data=$(this).parent().data("lastActive");
+						if(data){
+							data.removeClass("active");
+						}
+						$(this).addClass("active");
+						$(this).parent().data("lastActive",$(this));
+						
+						subcontractor_id=$(this).data("id");
+						//alert(subcontractor_id);
+						$.post("{:U('OperProjectManage/getSubcontractorWorker')}",{
+							subcontractor_id:subcontractor_id
+						},function(work, textStatus){
+							//alert(work[0][1]);
+							$("#sub_worker_list").empty();
+							for(var j=0;j<work.length;j++){
+								work_sub=$("<a class=\"list-group-item collapse "+id+"\" href=\"#\" data-id=\""+work[j][0]+"\">"+work[j][1]+"</a>");
+								work_id=work[j][0];					
+								$("#sub_worker_list").append(work_sub);
+								work_sub.click(function(){
+									var data=$(this).parent().data("lastActive");
+									if(data){
+										data.removeClass("active");
+									}
+									$(this).addClass("active");
+									$(this).parent().data("lastActive",$(this));
+									$(this).parent().parent().prev().find(".update_subconstractor").val($(this).text());				
+									$(this).parent().parent().prev().collapse("show");
+									return false;
+									});
+							}
+							}); 
+
+						$("#sub_worker_list").children().addClass("hidden");
+						$("#sub_worker_list").find("."+id).removeClass("hidden");		
+						return false;
+					});
+			});
+			}
+			$("#subcontractor_name").val("");			
+			$("#subcontractor_empty_alert").popover("hide");
+                        $("#subcontractor_list").data("size",(size+1))
+			return false;
+		});		
+	
+		//领料人设置
+		$("#add_subcontractor_worker").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}
+			var name=$("#subcontrator_worker").val();			
+			var sub=$("#subcontractor_list .active");		
+			var id=sub.data("id");
+                        var size=$("#subcontractor_list").data("size");
+		
+			var worker;
+                        if(size==0){
+                            $("#subcontractor_empty_alert").popover("show");
+                        }else $("#subcontractor_empty_alert").popover("hide");
+
+                        if((!sub.is("*"))&&(size!=0)){
+                            $("#add_subcontractor_alert").popover("show");
+                        }else $("#add_subcontractor_alert").popover("hide");
+			
+                        if(sub.is("*")&&name!=""){
+				$.post("{:U('OperProjectManage/addSubcontractorWorker')}",{
+					subcontractor_worker_name:name,
+					subcontractor_id:id
+				},function(result, textStatus){
+						worker=$("<a class=\"list-group-item "+id+"\" href=\"#\" data-id=\""+result.id+"\">"+name+"</a>");
+						$("#sub_worker_list").append(worker);
+										
+						worker.click(function(){							
+							var data=$(this).parent().data("lastActive");
+							if(data){
+								data.removeClass("active");
+							}
+							$(this).addClass("active");
+							$(this).parent().data("lastActive",$(this));
+							$(this).parent().parent().prev().find(".update_subconstractor").val($(this).text());				
+							$(this).parent().parent().prev().collapse("show");
+						return false;
+						});				
+				});					
+			}
+			
+			$("#subcontrator_worker").val("");			
+			return false;
+		});
+		
+		$("#update_subcontractor_worker_submit").click(function(){
+			var name=$("#update_subcontractor_worker").val();
+			var active=$("#sub_worker_list").find(".active");
+			var id=active.data("id");
+			
+			if(name!=""){
+			active.text(name);
+			$(this).parent().parent().collapse("hide");
+			active.removeClass("active");
+			
+			$.post("{:U('OperProjectManage/updateSubcontractorWorker')}",{
+				subcontractor_worker_name:name,
+				subcontractor_worker_id:id
+			});
+			}
+			return false;
+		});
+		
+		$("#delete_subcontractor_submit").click(function(){
+			var active=$("#subcontractor_list").find(".active");
+			var subcontractor_id=active.data("id");
+			
+			active.parent().parent().parent().next().find("."+subcontractor_id).remove();
+			active.collapse("hide");
+			active.remove();
+			
+			$.post("{:U('OperProjectManage/deleteSubcontractor')}",{
+				subcontractor_id:subcontractor_id
+			});
+		});		
+		
+		$("#delete_subcontractor_worker_submit").click(function(){
+			var active=$("#sub_worker_list").find(".active");
+			var id=active.data("id");
+			
+			$.post("{:U('OperProjectManage/deleteSubcontractorWorker')}",{
+				subcontractor_worker_id:id
+			});
+			
+			active.remove();
+			$(this).parent().parent().collapse("hide");			
+		});		
+		
+		//进场方式
+		$("#infield_pattern").change(function(){
+			if($(this).val()=="0"){
+				//没有选项
+				$("#infield_site").empty();
+			}
+			if($(this).val()=="1"){
+				//把已有库房调入
+				var name;
+				$("#infield_site").empty();
+				$("#warehouse_list").children().each(function(){
+					name=$(this).text();
+					var sub=$("<option>"+name+"</option>");					
+					$("#infield_site").append(sub);
+				});
+			}
+			if($(this).val()=="2"){
+				//把已有分包商调入
+				var name;
+				$("#infield_site").empty();
+				$("#subcontractor_list").children().each(function(){
+					name=$(this).text();
+					var sub=$("<option>"+name+"</option>");					
+					$("#infield_site").append(sub);
+				});
+			}
+		});
+		
+		//项目部位调入
+        /*
+		$("#process_import").click(function(){
+			$("#process_name").attr("placeholder","点击选择已有项目部位");
+			$("#process_name").attr("data-toggle","modal");
+			$("#process_name").attr("data-target","#exist_process");
+			$('#process_name').attr('readonly',true);
+		});
+        */
+		$("#process_add").click(function(){			
+			/*
+            $("#process_name").attr("placeholder","请输入项目部位");
+			$("#process_name").attr("data-toggle",false);
+			$("#process_name").attr("data-target",false);
+			$('#process_name').attr('readonly',false);
+			*/
+            if($("#add_process_submit").data("flag")!=0){
+				$("#process input").val("");
+				$("#add_process_submit").val("保存项目部位");
+				$("#add_process_submit").data("flag",0);
+			}
+			$("#process").collapse("show");
+		});
+	    
+        $("#modal_process_name").click(function(){
+            $("#exist_process_list").collapse("hide");
+        }); 
+        $("#view_exist_process").click(function(){
+            $("#exist_process_list").collapse("show");
+        });    
+        
+
+		//已有项目部位选择
+		$("#processes a").click(function(e){
+			e.preventDefault();
+			var data=$("#exist_process").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).addClass("active");
+			$("#exist_process").data("lastActive",$(this));
+			$("#exist_process").data("process",{id:$(this).attr("href"), name:$(this).children().first().children().first().text()});
+			$("#modal_process_name").val($(this).children().first().children().first().text());
+            return false;
+		});
+		
+		$("#choose_Process").click(function(){
+			/*
+                var data=$("#exist_process").data("process");
+			if(data){
+				$($("#exist_process").data("dataTarget")).val(data.name);
+				$($("#exist_process").data("dataTarget")).next().val(data.id);
+				$('#exist_process').modal('hide');
+			}
+            */
+            $($("#exist_process").data("dataTarget")).val($("#modal_process_name").val());
+				$('#exist_process').modal('hide');
+		});
+
+                $("#process_modal_select").change(function(){
+                        var classify=$(this).val();
+                        $("#processes").children().addClass("hidden");
+                        $("#processes").find("."+classify).removeClass("hidden");
+                        });
+		
+		$("#exist_process").on("show.bs.modal",function(e){
+                        $("#modal_process_name").val("");
+			$("#exist_process").removeData("process");
+			$("#exist_process").data("dataTarget",e.relatedTarget);
+			$("#processes a").removeClass("active");
+		});
+		
+		$("#add_process_submit").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}
+			var resource_id=$('#sidebar').find('.active').data('id');
+			var process_name=$("#process_name").val();
+			var quantity=$("#quantity").val();
+			var unit=$("#unit").val();
+			var unit_price=$("#unit_price").val();	
+			var production_value=(unit_price*quantity).toFixed(2)
+			var plan_start_time=$("#plan_start_time").val();
+			var plan_duration=$("#plan_duration").val();			
+			var actual_start_time=$("#actual_start_time").val();
+			var plan_cost=$("#plan_cost").val();
+			var material_budget=$("#material_budget").val();
+			
+			if($("#add_process_submit").data("flag")==0){
+			$.post("{:U('OperProjectManage/addProjectProcess')}",{
+				resource_id:resource_id,
+				process_name:process_name,
+				quantity:quantity,
+				unit:unit,
+				unit_price:unit_price,				
+				plan_start_time:plan_start_time,
+				plan_duration:plan_duration,
+				actual_start_time:actual_start_time,
+				plan_cost:plan_cost,
+				material_budget:material_budget
+			},function(process,textStatus){
+				//alert(process.id);
+				
+				var sub=$("<tr data-resource=\""+resource_id+"\" data-id=\""+process.id+"\"><td>"+process_name+"</td><td>"+unit+"</td><td>"+quantity+"</td><td>"+unit_price+"</td><td>"+production_value+"</td><td>"+plan_cost+"</td><td>"+plan_start_time+"</td><td>"+plan_duration+"</td><td>"+actual_start_time+"</td><td><a class=\"btn btn-primary btn-block update_process\">编辑</a></td><td><a class=\"btn btn-danger btn-block delete_process\">删除</a></td></tr>");
+				$("#exist_project_process").append(sub);
+				
+				sub.find('.update_process').click(function(){
+					$("#process_name").val($(this).parent().parent().children(":eq(0)").text());			
+					$("#unit").val($(this).parent().parent().children(":eq(1)").text());
+					$("#quantity").val($(this).parent().parent().children(":eq(2)").text());			
+					$("#unit_price").val($(this).parent().parent().children(":eq(3)").text());
+					$("#production_value").val($(this).parent().parent().children(":eq(4)").text());
+					$("#plan_cost").val($(this).parent().parent().children(":eq(5)").text());
+					$("#plan_start_time").val($(this).parent().parent().children(":eq(6)").text());
+					$("#plan_duration").val($(this).parent().parent().children(":eq(7)").text());		
+					$("#actual_start_time").val($(this).parent().parent().children(":eq(8)").text());			
+					$("#material_budget").val($(this).parent().parent().children(":eq(9)").text());
+					var flag=$(this).parent().parent().data("id");
+					$("#add_process_submit").data("flag",flag);
+					$("#process").collapse("show");
+				});
+				
+				sub.find('.delete_process').click(function(){
+					var project_process_id=$(this).parent().parent().data("id");
+					$.post("{:U('OperProjectManage/deleteProjectProcess')}",{
+						project_process_id:project_process_id
+					});
+					$(this).parent().parent().remove();
+				});
+			});
+			}else{
+				var project_process_id=$("#add_process_submit").data("flag");				
+				$.post("{:U('OperProjectManage/updateProjectProcess')}",{				
+					project_process_id:project_process_id,
+					process_name:process_name,
+					unit:unit,
+					quantity:quantity,					
+					unit_price:unit_price,					
+					plan_cost:plan_cost,
+					plan_start_time:plan_start_time,
+					plan_duration:plan_duration,
+					actual_start_time:actual_start_time,					
+					material_budget:material_budget
+				});
+				$update=$("#exist_project_process").find("tr[data-id="+project_process_id+"]");
+				$update.children(":eq(0)").text(process_name);
+				$update.children(":eq(1)").text(unit);
+				$update.children(":eq(2)").text(quantity);
+				$update.children(":eq(3)").text(unit_price);				
+				$update.children(":eq(5)").text(plan_cost);
+				$update.children(":eq(6)").text(plan_start_time);
+				$update.children(":eq(7)").text(plan_duration);
+				$update.children(":eq(8)").text(actual_start_time);
+				$update.children(":eq(9)").text(material_budget);				
+			}
+			$("#process input").val("");
+			$("#add_process_submit").val("保存项目部位");
+			$("#process").collapse("hide");
+			return false;
+		});
+		
+		$("#quantity").blur(function(){
+			var unit_price=$("#unit_price").val();
+			var quantity=$("#quantity").val();
+			if(unit_price!=""){
+				var production_value=(unit_price*quantity).toFixed(2);
+				$("#production_value").val(production_value);
+			}			
+		});
+		
+		$("#unit_price").blur(function(){
+			var unit_price=$("#unit_price").val();
+			var quantity=$("#quantity").val();
+			if(quantity!=""){
+				var production_value=(unit_price*quantity).toFixed(2);
+				$("#production_value").val(production_value);
+			}			
+		});
+
+		//添加资料
+        /*
+        $("#document_list").on("click",".doc_item",function(){
+            var data=$("#document_list").data("lastActive");
+            if(data){
+                $(this).removeClass("active");
+            }
+            $(this).addClass("active");
+            $("#document_list").data("lastActive",$(this));
+        });
+*/
+        $("#autoGenerate").change(function(){
+            if($(this).is(":checked")){
+                $("#documentid").prop("disabled",true);
+            }else $("#documentid").prop("disabled",false); 
+        });
+
+        $("#add_doc_submit").click(function(){
+            var active=$("#sidebar").find(".active");
+            if(!active.is("*")) return false;
+			var resource_id=$('#sidebar').find('.active').data('id');
+            var auto_generate;
+            if($("#autoGenerate").is(":checked")){
+                auto_generate=1;   
+            }else auto_generate=0;
+            var document_id=$("#documentid").val();
+            var document_name=$("#document_name").val();
+            var document_remark=$("#document_remark").val();
+
+            $("#loading")
+            .ajaxStart(function(){
+                $(this).show();    
+            })
+            .ajaxComplete(function(){
+                $(this).hide();    
+            });
+
+            $.ajaxFileUpload({
+                url:'{:U('OperProjectManage/addResourceDocument')}',
+                secureuri:false,
+                fileElementId:'documentFile',
+                dataType:'json',
+                data:{
+                    resource_id:resource_id,
+                    check:auto_generate,
+                    document_id:document_id,
+                    document_name:document_name,
+                    document_remark:document_remark
+                },
+                success:function(document){
+                    $("#addDocumentModal").modal("hide");
+                    var tr;
+                    tr=$("<tr class=\"doc_item\" data-detail=\"\" style=\"cursor:pointer\"><td class=\"view_doc\">"+document.serial_number+"</td><td class=\"view_doc\">"+document.name+"</td><td class=\"view_doc\">"+document.date+"</td><td class=\"view_doc\">"+document.user.name+"["+document.user.employer_number+"]</td><td><a class=\"btn btn-primary btn-block edit_document\" href=\"#\">修改</a></td><td><a data-documentid=\""+document.id+"\" class=\"btn btn-danger btn-block delete_document\">删除</a></td></tr>");
+
+                    tr.data("detail",{id:document.id,remark:document.remark,path:document.path,user:document.user.name+"["+document.user.employer_number+"]"+"  "+document.user.company_name+"  "+document.user.department_name});
+                    $("#document_list").append(tr);
+
+                    tr.find(".view_doc").click(function(){
+                       $("#viewDocumentModal").modal("show");
+                       var line=$(this).parent();
+                       var doc_data=line.data("detail");
+                       $("#doc_id").text(line.children().eq(0).text());
+                       $("#doc_name").text(line.children().eq(1).text());
+                       $("#doc_date").text(line.children().eq(2).text());
+                       $("#doc_user").text(doc_data.user);
+                       $("#doc_remark").text(doc_data.remark);
+                       $("#filepath").val(doc_data.path);
+                    });
+
+                    tr.find('.edit_document').click(function(){
+                       $(this).parent().parent().addClass("active");
+                       var line=$(this).parent().parent();
+                       var doc_data=line.data("detail");
+                       var id=doc_data.id;
+                       var serial_number=line.children().eq(0).text();
+                       var name=line.children().eq(1).text();
+                       var remark=doc_data.remark;
+                       $("#editDocumentModal").modal("show");
+                       $("#doc_update_id").val(id);
+                       $("#doc_update_serial").val(serial_number);
+                       $("#doc_update_name").val(name);
+                       $("#doc_update_remark").val(remark);
+                       return false;
+                    });
+
+                    tr.find('.delete_document').click(function(){
+                        if(!confirm('确认删除?')){
+			            	return false;
+			            }
+                        var document_id=$(this).data("documentid");
+                        $.get("{:U('OperProjectManage/deleteResourceDocument')}",{
+                            documentid:document_id
+                        });
+                        $(this).parent().parent().remove();
+                        return false;
+                    });
+                }
+            });
+            return false;
+        });
+        //修改资料
+        $("#update_doc_submit").click(function(){
+            var doc_id=$("#doc_update_id").val();
+            var serial=$("#doc_update_serial").val();
+            var doc_name=$("#doc_update_name").val();
+            var doc_remark=$("#doc_update_remark").val();
+            
+            var line=$("#document_list").find(".active");
+            var doc_data=line.data("detail");
+
+            var date=new Date();
+            line.data("detail",{id:doc_id,remark:doc_remark,user:doc_data.user});
+            line.children().eq(1).text(doc_name);
+            line.children().eq(2).text(date.toLocalDateString);
+
+            $.ajaxFileUpload({
+                url:'{:U('OperProjectManage/editResourceDocument')}',
+                secureuri:false,
+                fileElementId:'docFile',
+                dataType:'json',
+                data:{
+                    document_id:doc_id,
+                    serial_number:serial,
+                    doc_name:doc_name,
+                    doc_remark:doc_remark
+                },
+                success:function(doc){
+                    $("#editDocumentModal").modal("hide");
+                    alert(doc);    
+                }
+ 
+            });
+           return false;
+        });
+
+		$("#submit").click(function(){
+			if(!($("#sidebar").find(".active").is("*"))){
+				$("#resource_alert").popover("show");
+				return false;
+			}		
+		});
+        	
+		$("#controlsetting input").click(function(){			
+			$("#controlsetting input:checked").val(1);
+			$("#controlsetting input").not(":checked").val(0);
+		});
+
+    $("#cancel_process").click(function(){
+        $("#process input").val("");
+        $("#add_process_submit").val("保存");
+        $("#process").collapse("hide");        
+    });        
+});	
+</script>
+</body>
+</html>

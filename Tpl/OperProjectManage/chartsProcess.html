@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+  .demo-container {
+	box-sizing: border-box;
+	/*width: 850px;*/
+	/*height: 250px;*/
+	padding: 20px 15px 15px 15px;
+	margin: 15px auto 30px auto;
+	border: 1px solid #ddd;
+	background: #fff;
+	background: linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+	box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+	-o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.demo-placeholder {
+	width: 100%;
+	height: 250px;
+	font-size: 14px;
+	line-height: 1.2em;
+}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">项目形象进度</div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#" class="active">项目形象进度</a></li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <div class="page-header">
+                    <div class="col-md-4">
+                        <h4>{$resourceRow['resource_name']}</h4>
+                    </div>
+                    <div class="col-md-2 col-md-offset-6">
+                        <button class="btn btn-info btn-block" type="button" onClick="$('.ui.sidebar').sidebar('toggle')">项目列表</button>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="container-fluid">
+                <volist name="processRowArray" id="vo">
+                	<div class="demo-container">
+					<div class="row">
+						<div class="col-md-10">{$vo['process_name']}</div>
+						<div class="col-md-2"><button href="#" data-toggle="collapse" data-target="#part_{$vo.project_process_id}" class="btn btn-block btn-primary">具体进度</button></div>
+					</div>
+					<div class="demo-placeholder" id="partGraph_{$vo.project_process_id}"></div>
+					<div class="collapse" id="part_{$vo.project_process_id}">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>填写日期</th>
+								<th>填写人</th>
+								<th>确认日期</th>
+								<th>本期完成工程量</th>
+								<th>本期完成百分比</th>
+								<th width="20%">备注</th>
+							</tr>
+						</thead>
+						<volist name="vo['processPeriodworkRowArray']" id="vo2">
+						<tbody>
+							<tr>
+								<td>{$vo2['create_date']}</td>
+								<td>{$vo2['showName']}</td>
+								<td>{$vo2['confirm_date']}</td>
+								<td>{$vo2['period_count']}</td>
+								<td><php>
+									echo sprintf("%.2f",$vo2['period_count']/$vo['quantity']*100)."%";
+								</php></td>
+								<td>{$vo2['remark']}</td>
+							</tr>
+						</tbody>
+						</volist>
+					</table>
+					</div>
+                </div>
+                </volist>
+
+
+
+                
+				<!-- <div class="demo-container">
+					<div class="row">
+						<div class="col-md-10">水泥稳定砂砾部位形象进度</div>
+						<div class="col-md-2"><button href="#" data-toggle="collapse" data-target="#part2" class="btn btn-block btn-primary">显示进度设置</button></div>
+					</div>
+					<div class="demo-placeholder" id="graph2"></div>
+					<div class="collapse" id="part2">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>填写日期</th>
+								<th>填写人</th>
+								<th>确认日期</th>
+								<th>本期完成工程量</th>
+								<th>本期完成百分比</th>
+								<th width="20%">备注</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>2014-09-15</td>
+								<td>张某某</td>
+								<td>2014-09-16</td>
+								<td>50000</td>
+								<td>15.83%</td>
+								<td>这里是备注这里是备注这里是备注这里是备注这里是备注这里是备注</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+                </div> -->
+				
+            </div>  
+        </div> 
+    </div>
+</div>
+
+<div class="ui sidebar left overlay panel panel-default <if condition="$treeExist eq true">active</if>">
+    <div class="page-header">
+            <h4  style="padding-left:15px">项目列表</h4>
+    </div>
+	<div class="panel-body">
+    	<ul class="list-group sidebar-tree">
+            <volist name="resourceRowArray" id="vo1">
+                <if condition="($vo1['resource_level'] eq 1) AND ($vo1.resource_type eq 2)">
+
+                    <!-- 有子级 --><if condition="$vo1['resource_haschildren'] eq 1">
+                    <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+                        <a href="#" class="tree-item">{$vo1['resource_name']}</a>
+                    </li>
+                    <li class="list-group-item collapse in">
+                        <ul class="list-group">
+                            <volist name="resourceRowArray" id="vo2">
+                                <if condition="($vo2['resource_level'] eq 2) AND ($vo2.resource_type eq 2) AND ($vo2['resource_father_id'] eq $vo1['resource_id'])">
+                                <!-- 有子级 --><if condition="$vo2['resource_haschildren'] eq 1">
+                                    <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+                                        <a href="{:U('OperProjectManage/chartsProcess',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}</a>
+                                    </li>
+                                    <li class="list-group-item collapse in">
+                                        <ul class="list-group">
+                                            <volist name="resourceRowArray" id="vo3">
+                                                <if condition="($vo3['resource_level'] eq 3) AND ($vo3.resource_type eq 2) AND ($vo3['resource_father_id'] eq $vo2['resource_id'])">
+                                                    <!-- 无子级 --><if condition="$vo3['resource_haschildren'] neq 1">
+                                                        <li class="list-group-item">
+                                                        <a href="{:U('OperProjectManage/chartsProcess',array('resource_id'=>$vo3['resource_id']))}" class="tree-item">{$vo3['resource_name']}
+                                                        </a>
+                                                        </li>
+                                                    </if>
+                                                </if>
+                                            </volist>
+                                        </ul>
+                                    </li>
+                                    </if>
+                                     <!-- 无子级 --><if condition="$vo2['resource_haschildren'] neq 1">
+                                     <li class="list-group-item">
+                                        <a href="{:U('OperProjectManage/chartsProcess',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}
+                                        </a>
+                                    </li>
+                                    </if>
+                                </if>
+                            </volist>
+                        </ul>
+                    </li>
+                    </if>
+                    <!-- 无子级 --><if condition="($vo1['resource_level'] eq 1) AND ($vo1['resource_haschildren'] neq 1)">
+                        <li class="list-group-item">
+                            <a href="{:U('OperProjectManage/chartsProcess',array('resource_id'=>$vo1['resource_id']))}" class="tree-item">{$vo1['resource_name']}
+                            </a>
+                        </li>
+                    </if>
+                </if>
+            </volist>
+        </ul>
+    </div>
+</div>
+
+<include file="./Tpl/Part/script.html" />
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="__PUBLIC__/js/excanvas.min.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="__PUBLIC__/js/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="__PUBLIC__/js/jquery.flot.resize.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	<volist name="processRowArray" id="vo">
+	$("#partGraph_{$vo['project_process_id']}").plot([
+	//计划
+	{
+	label:"计划",
+	data:[[0.5,{$vo['plan_duration']}]],
+	color:"rgb(0,112,192)",
+	yaxis:2,
+	remark:"工期："+{$vo['plan_duration']}+"<br>开工日期：{$vo['plan_start_time']}"
+	},{
+	data:[[4.5,{$vo['quantity']}]],
+	color:"rgb(0,112,192)",
+	yaxis:3,
+	remark:"工程量："+{$vo['quantity']}
+	},
+	//实际
+	{
+	label:"实际",
+	data:[[1,{$vo['actualDuration']}]],
+	color:"rgb(134,164,74)",
+	yaxis:2,
+	remark:"工期："+"{$vo['actualDuration']}"+"<br>开工日期：{$vo['actual_start_time']}<br>所用计划工期："+Math.round({$vo['actualDuration']*100/$vo['plan_duration']}*100)/100+"%<br>剩余工期："+ Math.max({$vo['plan_duration']-$vo['actualDuration']},0)
+	},{
+	data:[[5,{$vo['actual_quntitySum']}]],
+	color:"rgb(134,164,74)",
+	yaxis:3,
+	remark:"完成工程量："+{$vo['actual_quntitySum']}+"<br>完成百分比："+
+	Math.round({$vo['actual_quntitySum']/$vo['quantity']}*10000)/100+"%<br>剩余工程量"+{$vo['quantity']-$vo['actual_quntitySum']}
+	}
+	],{series:{bars:{show:true,barWidth:0.5}},yaxis:{show:false},xaxis:{min:-2,max:17,ticks:[[1,"工期"],[5,"工程量"]]},grid:{borderWidth:{top:0,bottom:2,left:0,right:0},hoverable: true}});	
+	</volist>
+
+	$("<div id='tooltip'></div>").css({
+		position: "absolute",
+		display: "none",
+		border: "1px solid #fdd",
+		padding: "2px",
+		"background-color": "#fee",
+		opacity: 0.80
+	}).appendTo("body");
+	$(".demo-placeholder").bind("plothover", function (event, pos, item) {
+		if (item) {
+			var x = item.datapoint[0].toFixed(2),
+				y = item.datapoint[1].toFixed(2);
+			$("#tooltip").html(""+item.series.remark)
+				.css({top: item.pageY+5, left: item.pageX+5})
+				.fadeIn(200);
+		} else {
+			$("#tooltip").hide();
+		}
+	});
+});
+</script>
+</body>
+</html>

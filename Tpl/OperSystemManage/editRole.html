@@ -1,0 +1,139 @@
+<!--
+<html>
+<head>
+   <title>编辑角色</title>
+ </head>
+ <body>
+编辑角色<br/>
+ 	<form action={:U('OperSystemManage/editRoleSubmit')} method="POST">
+ 		<input type="hidden" name="rolename_old" value={$rolename} />
+ 		角色名：<input type="text" name="rolename" value={$rolename} /><br/>
+ 		功能列表：<br/>
+ 		<volist name="operationRowArray" id="vo">
+ 			<if condition="in_array($vo['operationid'],$operationidArray)">
+ 				<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}<br/>
+ 				<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
+ 			</if>
+ 		</volist>
+ 		<input type="submit" value="修改"/>
+ 	</form>
+ </body>
+</html>
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+    <div class="navbar-header navbar-brand">角色维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperSystemManage/addRole')}>新增角色</a></li>
+      <li><a href={:U('OperSystemManage/listRole')} class="active">已有角色</a>   </li>
+    </ul>
+  </div>
+</nav> 
+  <div class="panel-group"> 
+		<div class="panel panel-default">				
+			<div class="panel-body">	
+			<form id="roleForm" class="form-horizontal" action={:U('OperSystemManage/editRoleSubmit')} method="POST">
+           		<div class="page-header">
+                    <div class="col-md-4">
+                        <h4>编辑角色信息</h4>
+                    </div>
+                    <div class="col-md-2 col-md-offset-4">
+                        <input class="btn btn-primary btn-block" type="submit" value="保存"/>
+                    </div>				
+                    <div class="col-md-1">
+                        <a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteRole',array('roleid'=>$roleid))}>删除</a>
+                    </div>
+                    <div class="col-md-1">
+                        <a class="btn btn-default btn-block" href={:U('OperSystemManage/listRole')}>取消</a>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            		<input type="hidden" name="roleid" value="{$roleid}"/>
+                <div class="form-group">
+                	<label class="control-label col-md-2">角色名</label>
+					<div class="col-md-2">
+							<input type="text" class="form-control" value="{$rolename}" name="rolename" id="rolename" />
+					</div> 
+                	
+                </div>
+				<br>
+               
+				<div>					
+					<table class="table">
+						<thead>
+							<th>项目管理</th>
+							<th>人力资源</th>
+							<th>系统管理</th>
+						</thead>
+					<tbody>
+						<tr>
+							<td>
+								<volist name="operationRowArray" id="vo">
+								<if condition="$vo['operationid'] lt 200">
+                                 	<div class="checkbox">
+                                        <label>	
+									<if condition="in_array($vo['operationid'],$operationidArray)">
+										<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}
+										<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
+									</if>
+                                    	</label>
+		                            </div>
+								</if>
+								</volist>
+							</td>							
+							<td>
+								<volist name="operationRowArray" id="vo">
+								<if condition="($vo['operationid'] gt 700) and ($vo['operationid'] lt 800)">
+                                <div class="checkbox">
+                                        <label>	
+									<if condition="in_array($vo['operationid'],$operationidArray)">
+										<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}
+										<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
+									</if>
+                                    </label>
+		                            </div>
+								</if>
+								</volist>
+							</td>
+							<td>
+              <volist name="operationRowArray" id="vo">
+								<if condition="$vo['operationid'] gt 1000">
+                                <div class="checkbox">
+                                        <label>	
+									<if condition="in_array($vo['operationid'],$operationidArray)">
+										<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}
+										<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
+									</if>
+                                    </label>
+		                            </div>
+								</if>
+							</volist>
+            </td>            
+          </tr>
+					</tbody>
+				</table>		
+			 </div>			 
+			</form>	
+			</div>
+		</div>
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_role.js" type="text/javascript"></script>
+</body>
+</html>

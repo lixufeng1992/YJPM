@@ -1,0 +1,228 @@
+<!--
+<html>
+<head>
+   <title>新增用户</title>
+ </head>
+ <body>
+    nclude file="./Tpl/Part/header.html" /><br/><br/><br/>
+    新增用户<br/>
+    {$message}<br/>
+    从员工中选择：
+        <select name="employerid">
+            <volist name="employer_idName_array" id="vo">
+                <option value={$vo.employerid}>{$vo.employerid}:{$vo.name}</option>
+            </volist>
+        </select>
+
+
+    <br/>
+ 	
+    <form action={:U('OperSystemManage/addUserSubmit')} method="POST">
+ 		用户名：<input type="text" name="username" /><br/>
+        密码：<input type="password" name="password" /><br/>
+        密码确认：<input type="password" name="passwordconfirm" /><br/>
+    	真实姓名：<input type="text" name="real_name"/><br/>
+    	部门：<input type="text" name="department"/><br/>
+    	职位：<input type="text" name="position"/><br/>
+    	
+    	身份证号：<input type="text" name="id_number"/><br/>
+    	性别：
+    		<input type="radio" name="gender" value="男" checked="checked" />男 
+            <input type="radio" name="gender" value="女" />女 <br/>
+              
+        联系方式：<input type="text" name="phone_number"/><br/>
+        email：<input type="text" name="email"/><br/>
+    	学历：<input type="text" name="deploma"/><br/>
+        生日：<input type="text" name="birthday"/><br/>
+        工资：<input type="text" name="salary"/><br/>
+        入职时间：<input type="text" name="entrytime"/><br/>
+        <volist name="roleRowArray" id="vo">	
+            <input type="radio" name="roleid" value="{$vo.roleid}"/>{$vo.rolename}<br/>
+        </volist>
+
+ 		<!--
+ 		<input type="hidden" name="rolename_old" value={$rolename} />
+ 		角色名：<input type="text" name="rolename" value={$rolename} /><br/>
+ 		功能列表：<br/>
+ 		<volist name="operationRowArray" id="vo">
+ 			<if condition="in_array($vo['operationid'],$operationidArray)">
+ 				<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}<br/>
+ 				<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
+ 			</if>
+ 		</volist>
+ 	
+ 		<input type="submit" value="提交"/>
+ 	</form>
+ </body>
+</html>
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">用户维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperSystemManage/addUser')} class="active">新增用户</a></li>
+      <li><a href={:U('OperSystemManage/listUser')}>已有用户</a></li>
+    </ul>
+  </div>
+</nav>
+
+	<div class="panel panel-default">	
+	<div class="panel-body">
+		<form id="userForm" action="{:U('OperSystemManage/addUserSubmit')}" method="POST" class="form-horizontal">
+            <div class="page-header">
+                <div class="col-md-4">
+                    <h4>新增用户</h4>
+                </div>
+                <div class="col-md-2 col-md-offset-6">
+                    <input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+                </div>
+                <div style="clear:both"></div>
+            </div>	
+			<div class="form-group">
+                <label class="col-md-2 control-label">所属公司</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="companyid">
+                        <volist name="companyRowArray" id="vo">
+                            <option value="{$vo.companyid}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">所属部门</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="departmentid">
+                        <volist name="departmentRowArray" id="vo">
+                            <option value="{$vo.departmentid}">{$vo.name}</option>
+                        </volist>
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">员工姓名</label>              
+                <div class="col-md-2">
+                    <select class="form-control" name="employerid" id="employer">
+                        <option value="">请选择[括号内为员工编号]</option>
+                        <volist name="employerBriefArray" id="vo">
+                            <option value="{$vo.employerid}">{$vo.name}[{$vo.employer_number}]</option>
+                        </volist>
+                    </select>
+                </div>
+                
+            </div>
+            <hr>
+    		<div class="form-group">
+            	<label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control"  name="username" value="" id="username" />
+                </div>
+           		<label class="col-md-2 control-label">角色</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="roleid" id="role">
+                        <option value="">请选择</option>
+                        <volist name="roleRowArray" id="vo">
+                            <option value="{$vo.roleid}">{$vo.rolename}</option>
+                        </volist>
+                    </select>
+                </div>
+				<label class="col-md-2 control-label">联系方式</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control"  name="phone_number" />
+				</div>	
+            </div>
+    		<div class="form-group">
+            	<div class="col-md-4">
+                	<div class="form-group">
+                        <label class="col-md-6 control-label">登录密码</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="password" id="login_password"  value="123456"  data-container="body" data-toggle="popover" data-content="默认登录密码：123456" data-trigger="hover" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-6 control-label">授权密码</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="verify_password" id="verify_password" value="123456" data-container="body" data-toggle="popover" data-content="默认授权密码：123456" data-trigger="hover"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                	<div class="form-group">
+                        <label class="col-md-6 control-label">登录密码确认</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="password_confirm" id="login_password_confirm" value="123456"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-6 control-label">授权密码确认</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="verify_password_confirm" id="verify_password_confirm" value="123456"/>
+                        </div>
+                    </div>
+                </div>
+                <label class="col-md-2 control-label">用户备注</label>
+                <div class="col-md-2">
+                    <textarea type="text" class="input-xlarge form-control"  name="remark" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">项目授权模式</label>
+                <div class="col-md-2">
+                	<div class="radio">
+                    	<label>
+                        	<input type="radio" name="project_authority_mode" value="1" checked="checked" />部门所属
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                        	<input type="radio" name="project_authority_mode" value="2" />独立授权
+                        </label>
+                    </div>
+                </div>
+                <label class="col-md-2 control-label">权限设置</label>
+				<div class="col-md-2">
+                	<div class="checkbox">
+                    	<label>
+                        	<input type="checkbox" name="is_admin" value="9"/>是否是部门管理员
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        	<input type="checkbox" name="is_leader" value="9"/>是否是领导
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        	 <input type="checkbox" name="is_salary_forbidden" value="9"/>是否员工工资禁看
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        	 <input type="checkbox" name="is_materialprice_forbidden" value="9"/>是否材料单价禁看
+                        </label>
+                    </div>
+				</div>
+            </div>
+	</form>
+	</div>
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_user.js" type="text/javascript"></script>
+<script type="text/javascript">
+$().ready(function(){
+	$("input[data-toggle='popover']").popover();
+});
+</script>
+</body>
+</html>

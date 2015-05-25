@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">    
+ <nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">员工维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperHumanResource/addEmployer')}>新增员工</a></li>
+      <li><a href={:U('OperHumanResource/listEmployer')}>已有员工</a>   </li>
+      <li><a href={:U('OperHumanResource/searchEmployer')} class="active">搜索员工</a> </li>
+    </ul>
+  </div>
+</nav>
+<div class="panel panel-default">			
+    <div class="panel-body">	
+        <div class="page-header">
+        	<h4>搜索员工</h4>	
+        </div>
+        <form id="search-form" class="form-horizontal" action="#" method="POST">
+        	<div class="form-group">
+            	<label class="col-md-2 control-label">姓名</label>
+                <div class="col-md-2">
+                    <input class="form-control" type="text" name="name" />
+                </div>
+                <label class="col-md-2 control-label">入职时间</label>
+                <div class="col-md-2">
+                    <input class="form-control datepicker" type="text" name="entrytime" />
+                </div>
+                <label class="col-md-2 control-label">学历</label>
+                <div class="col-md-2">
+                    <select class="form-control"  name="deploma">
+                        <option>其他</option>
+                        <option>小学</option>
+                        <option>初中</option>
+                        <option>高中</option>
+                        <option>技校</option>
+                        <option>中专</option>
+                        <option>大专</option>
+                        <option>本科</option>
+                        <option>硕士</option>
+                        <option>博士</option>
+                    </select>     
+                </div>
+                
+            </div>
+        </form>		
+    
+    </div>
+</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+</body>
+</html>
+
+	

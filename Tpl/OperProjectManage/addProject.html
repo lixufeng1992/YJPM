@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+   <div class="navbar-header navbar-brand">项目开拓</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperProjectManage/addProject')} class="active">新增项目</a></li>
+      <li><a href={:U('OperProjectManage/listProject')}>已有项目</a></li>
+    </ul>
+  </div>
+</nav> 
+  
+  <div class="panel-group"> 
+		<div class="panel panel-default">			
+		<div class="panel-body">		
+        <form id="projectForm" class="form-horizontal" role="form" action="{:U('OperProjectManage/addProjectSubmit')}" method="POST">
+            <div class="page-header">
+                <div class="col-md-4">
+                    <h4>新增项目</h4>
+                </div>
+                <div class="col-md-2 col-md-offset-6">
+                    <input class="btn btn-primary btn-block" type="submit" id="submit" value="新增"/>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+       		<div class="page-header">
+                <div class="col-md-4">
+                    <h4>项目基本信息</h4>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        	<div class="form-group">
+            	<label class="col-md-2 control-label">项目名称</label>
+                <div class="col-md-3">
+                    <input class="form-control" type="text" name="projectname" />
+                </div>
+                <label class="col-md-2 col-md-offset-n1 control-label">项目地址</label>
+                <div class="col-md-3">
+                    <input class="form-control" type="text" name="project_address" />
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="col-md-2 control-label">当前状态</label>
+                <div class="col-md-2">
+                	<select name="currentstatusid" placeholder="请选择" class="form-control select-create-false">
+                            <option>请选择</option>
+                            <volist name="projectstatuscategoryRowArray" id="vo">
+                                <optgroup label={$vo.name}>
+                                    <volist name="projectstatusRowArray" id="vo1">
+                                        <if condition="$vo1['categoryid'] eq $vo['categoryid']">
+                                            <option value={$vo1.statusid}>{$vo1.name}</option>  
+                                        </if>
+                                    </volist>
+                                </optgroup>
+                            </volist>
+                        </select>
+                </div>
+                <label class="col-md-2 control-label">业务员</label>
+                <div class="col-md-2">
+                    <select name="clerkname"  placeholder="" class="select-create-true">
+                            <option></option>
+                            <volist name="clerknameArray" id="vo">
+                                <option value={$vo.name}>{$vo.name}</option>
+                            </volist>            
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">项目类型</label>
+                <div class="col-md-2">
+                    <select name="project_type"  placeholder="" class="select-create-true">
+                    <option></option>
+                    <volist name="projecttypeRowArray" id="vo">
+                        <option value="{$vo.name}">{$vo.name}</option>
+                    </volist>                       
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+          		<label class="col-md-2 control-label">合同对方</label>
+                <div class="col-md-2">
+                    <select name="constract_counterparty"  placeholder="" class="select-create-true">
+                        <option></option>
+                        <option value="甲方">甲方</option>
+                        <option value="建筑承包商">建筑承包商</option>     
+                        </select>
+                </div>
+                <label class="col-md-2 control-label">标书类型</label>
+                <div class="col-md-2">
+              	  <select name="biddoc_type"  placeholder="" class="select-create-true">
+                        <option></option>
+                        <option value="议标">议标</option>           
+                        <option value="投标">投标</option>
+                        <option value="简单方案">简单方案</option>
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">中标价格</label>
+                <div class="col-md-2">
+                    <input class="form-control" type="text" name="getbid_price" />
+                </div>	
+            </div>            
+            <div class="form-group">
+            	 <label class="col-md-2 control-label">建设单位</label>
+                 <div class="col-md-2">
+                    <input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#enterpriseModal" />
+                    <input type="hidden" name="build_enterpriseid">
+                </div>
+                 <label class="col-md-2 control-label">甲方项目负责人</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="a_project_director_name" />
+                </div>
+                 <label class="col-md-2 control-label">联系电话</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="a_project_director_phone" />
+                </div>
+            </div>
+            <div class="form-group">
+            	 <label class="col-md-2 control-label">设计单位</label>
+                 <div class="col-md-2">
+                    <input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#enterpriseModal" />
+                    <input type="hidden" name="design_enterpriseid">
+                </div>
+                 <label class="col-md-2 control-label">甲方技术负责人</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="a_technology_director_name" />
+                </div>
+                 <label class="col-md-2 control-label">联系电话</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="a_technology_director_phone" />
+                </div>
+            </div>
+            <div class="form-group">
+            	 <label class="col-md-2 control-label">施工单位</label>
+                 <div class="col-md-2">
+                    <input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#enterpriseModal" />
+                    <input type="hidden" name="construct_enterpriseid">
+                </div>
+                 <label class="col-md-2 control-label">施工单位负责人</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="constructunit_director_name" />
+                </div>
+                 <label class="col-md-2 control-label">联系电话</label>
+                 <div class="col-md-2">
+                    <input class="form-control" type="text" name="constructunit_director_phone" />
+                </div>
+            </div>
+            <div class="form-group">
+            	 <label class="col-md-2 control-label">中介单位</label>
+                 <div class="col-md-2">
+                    <input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#enterpriseModal" />
+                    <input type="hidden" name="mediator_enterpriseid">
+                </div>
+                <label class="col-md-2 control-label">中介协议</label>
+                <div class="col-md-2">
+                	<input class="form-control" type="text" name="mediator_constract" />
+                </div>
+            </div>
+            <hr>
+            
+            <div class="form-group">
+                    <div class="col-md-8">
+                        <div class="page-header">
+                            <div class="col-md-4">
+                                <h4>项目概述</h4>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">建筑面积</label>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" name="covered_area" />
+                            </div>
+                            <label class="col-md-3 control-label">使用用途</label>
+                            <div class="col-md-3">
+                                <select name="use_purpose"  placeholder="" class="select-create-true">
+                                    <option></option>
+                                    <option value="办公">办公</option>           
+                                    <option value="商场">商场</option>
+                                    <option value="宾馆">宾馆</option>
+                                    <option value="住宅">住宅</option>           
+                                    <option value="餐饮">餐饮</option>
+                                    <option value="娱乐">娱乐</option>
+                                    <option value="医院">医院</option>           
+                                    <option value="综合">综合</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">信息来源</label>
+                            <div class="col-md-3">
+                                <select name="info_source"  placeholder="" class="select-create-true">
+                                    <option></option>
+                                    <option value="甲方">甲方</option>           
+                                    <option value="建筑承包商">建筑承包商</option>
+                                    <option value="设计院">设计院</option>
+                                </select>
+                            </div>
+                            <label class="col-md-3 control-label">项目规模</label>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" name="scale" />
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-4" style="border-left:1px solid #eee">
+                        <h5 style="font-weight:700">项目基本情况</h5>
+                        <textarea class="input-xlarge form-control" name="project_basic_info" rows="6" ></textarea>
+                    </div> 
+                </div>
+            <hr>
+            <div class="page-header">
+                <div class="col-md-4">
+                    <h4>投标时间记录</h4>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div class="form-group disable-group">
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label style="font-weight:700">
+                        	<input name="isknown_bid_date" type="checkbox" class="switch-checkbox">招标时间
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                	<input class="form-control datepicker" type="text" name="biddate_date" />
+                </div>
+                <label class="col-md-2 control-label">提前提醒天数</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="biddate_preremind_days" />
+                </div> 
+                <label class="col-md-2 col-md-offset-n1 control-label">提醒人</label>
+                <div class="col-md-2">
+                	<input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#notifyPersonModal"  />
+                    <input type="hidden" name="biddate_reminder_userid">
+                </div>
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="biddate_is_finished">已招标
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group disable-group">
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label style="font-weight:700">
+                        	<input name="isknown_questionanswer_date" type="checkbox" class="switch-checkbox">答疑时间
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                	<input class="form-control datepicker" type="text" name="questionanswerdate_date" />
+                </div>
+                <label class="col-md-2 control-label">提前提醒天数</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="questionanswerdate_preremind_days" />
+                </div> 
+                <label class="col-md-2 col-md-offset-n1 control-label">提醒人</label>
+                <div class="col-md-2">
+                	<input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#notifyPersonModal" />
+                    <input type="hidden" name="questionanswerdate_reminder_userid">
+                </div>
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="questionanswerdate_is_finished">已答疑
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group disable-group">
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label style="font-weight:700">
+                        	<input name="isknown_submitbiddoc_date" type="checkbox" class="switch-checkbox">提交标书时间
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                	<input class="form-control datepicker" type="text" name="submitbiddocdate_date" />
+                </div>
+                <label class="col-md-2 control-label">提前提醒天数</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="submitbiddocdate_preremind_days" />
+                </div> 
+                <label class="col-md-2 col-md-offset-n1 control-label">提醒人</label>
+                <div class="col-md-2">
+                	<input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#notifyPersonModal" />
+                    <input type="hidden" name="submitbiddocdate_reminder_userid">
+                </div>
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="submitbiddocdate_is_finished">已提交
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group disable-group">
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label style="font-weight:700">
+                        	<input name="isknown_startbid_date" type="checkbox" class="switch-checkbox">开标时间
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                	<input class="form-control datepicker" type="text" name="startbiddate_date" />
+                </div>
+                <label class="col-md-2 control-label">提前提醒天数</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="startbiddate_preremind_days" />
+                </div> 
+                <label class="col-md-2 col-md-offset-n1 control-label">提醒人</label>
+                <div class="col-md-2">
+                	<input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#notifyPersonModal" />
+                    <input type="hidden" name="startbiddate_reminder_userid">
+                </div>
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="startbiddate_is_finished">已开标
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="disable-group">
+            <div class="form-group">
+                <div class="col-md-2"> 
+                    <div class="checkbox">
+                        <label style="font-weight:700">
+                        	<input name="isknown_margin_date" type="checkbox" class="switch-checkbox">保证金时间
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                	<input class="form-control datepicker" type="text" name="margindate_date" />
+                </div>
+                <label class="col-md-2 control-label">提前提醒天数</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="margindate_preremind_days" />
+                </div> 
+                
+                <label class="col-md-2 col-md-offset-n1 control-label">提醒人</label>
+                <div class="col-md-2">
+                	<input class="form-control input-readonly" type="text" readonly data-toggle="modal" data-target="#notifyPersonModal" />
+                    <input type="hidden" name="margindate_reminder_userid">
+                </div>
+                
+            </div>
+            <div class="form-group">
+           		<label class="col-md-2 col-md-offset-4 control-label">金额</label>
+                <div class="col-md-1">
+                	<input class="form-control" type="text" name="margindate_amount" />
+                </div> 
+	            <div class="col-md-3 col-md-offset-1"> 
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="margindate_is_submit">已交纳
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="margindate_is_getback">已收回
+                        </label>
+                </div>
+            </div>
+         </div> 
+        </form>
+	</div>  
+  </div> 
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>   	
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+            <volist name="enterpriseRowArray" id="vo">
+                <a href="{$vo.enterpriseid}" class="list-group-item 
+                <if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+                <div class="row">
+                    <div class="col-md-4">{$vo.name}</div>
+                    <div class="col-md-2">{$vo.contact_person}</div>
+                    <div class="col-md-3">{$vo.phone_number}</div>
+                    <div class="col-md-3">{$vo.address}</div>
+                </div>
+                </a>
+            </volist>
+
+
+
+          <!-- <a href="1" class="list-group-item is_1part">
+          	<div class="row">
+            	<div class="col-md-4">Dapibus ac facilisis in</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a>
+          <a href="2" class="list-group-item is_client">
+         	 <div class="row">
+            	<div class="col-md-4">Morbi leo risus</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a>
+          <a href="3" class="list-group-item is_transman">
+          	<div class="row">
+            	<div class="col-md-4">Vestibulum at eros</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a>
+          <a href="4" class="list-group-item is_transman is_client">
+          	<div class="row">
+            	<div class="col-md-4">Dapibus ac facilisis in</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a>
+          <a href="5" class="list-group-item is_otherpart">
+          	<div class="row">
+            	<div class="col-md-4">Porta ac consectetur ac</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a>
+          <a href="6" class="list-group-item is_machineman is_otherpart">
+          	<div class="row">
+            	<div class="col-md-4">Morbi leo risus</div>
+                <div class="col-md-2">张5</div>
+                <div class="col-md-3">13333333333</div>
+                <div class="col-md-3">陕西省西安市碑林区咸宁西路28号</div>
+            </div>
+          </a> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="notifyPersonModal" tabindex="-1" role="dialog" aria-labelledby="notifyPersonModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="notifyPersonModalLabel">提醒人选择</h4>
+         <div class="container-fluid" style="margin-top:15px">
+                <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">查询子公司</label>
+                    <div class="col-md-3">
+                        <select id="company" class="form-control">
+                            <option value="0">全部</option>
+                            <volist name="companyRowArray" id="vo">
+                                <option value="{$vo.companyid}">{$vo.name}</option>
+                            </volist>
+                            <!-- <option value="0">全部</option>
+                            <option value="1">一分公司</option>
+                            <option value="2">二分公司</option> -->
+                        </select>
+                    </div>
+                    <label class="col-md-3 control-label">查询部门</label>
+                    <div class="col-md-3">
+                        <select id="department" class="form-control">
+                            <option value="0">全部</option>
+                            <volist name="departmentRowArray" id="vo">
+                                <option value="{$vo.departmentid}">{$vo.name}</option>
+                            </volist>
+                            <!-- <option value="0">全部</option>
+                            <option value="1">财务部</option>
+                            <option value="2">市场部</option> -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">归属公司</div>
+                    <div class="col-md-3">部门名称</div>
+                    <div class="col-md-3">用户名称</div>
+                    <div class="col-md-3">手机</div>
+                </div>
+                </form>
+         </div>    
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="persons">
+        <volist name="userRowArray" id="vo">
+        <a href="{$vo['userid']}" class="list-group-item company-{$vo['companyid']} department-{$vo['departmentid']}">
+            <div class="row">
+                <div class="col-md-3">
+                    <volist name="companyRowArray" id="vo1">
+                        <if condition="$vo1['companyid'] eq $vo['companyid']">
+                            {$vo1['name']}
+                        </if>
+                    </volist>
+                </div>
+                <div class="col-md-3">
+                    <volist name="departmentRowArray" id="vo1">
+                        <if condition="$vo1['departmentid'] eq $vo['departmentid']">
+                            {$vo1['name']}
+                        </if>
+                    </volist>
+                </div>
+
+                <div class="col-md-3">
+                    <volist name="employerRowArray" id="vo1">
+                        <if condition="$vo1['employerid'] eq $vo['employerid']">
+                            {$vo1['name']}
+                        </if>
+                    </volist>
+                </div>
+                <div class="col-md-3">{$vo['phone_number']}</div>
+            </div>
+        </a>
+        </volist>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseNotifyPerson">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_project.js" type="text/javascript"></script>
+<script type="text/javascript">
+function displayCompanyDepartment(){
+	var companyid = $("#company").val();
+	var departmentid = $("#department").val();
+	var aToShow = $("#persons a"+(companyid==0?"":".company-"+companyid)+(departmentid==0?"":".department-"+departmentid));
+	$("#persons a").removeClass("active").not(aToShow).hide();
+	$("#notifyPersonModal").removeData("notifyPerson");
+	aToShow.show();
+}
+$(function(){	
+  $(".switch-checkbox").parents(".disable-group").find("input").not($(".switch-checkbox")).prop("disabled",true);
+  $(".switch-checkbox").click(function(){
+		if(this.checked){
+			$(this).parents(".disable-group").find("input").not(this).prop("disabled",false);			
+		}else{
+			$(this).parents(".disable-group").find("input").not(this).prop("disabled",true);
+			$(this).parents(".disable-group").find("input").not(this).val("");
+			$(this).parents(".disable-group").find("input:checkbox").not(this).prop("checked",false);
+			$(this).parents(".disable-group").find("div.error").hide();
+		}
+	});
+	$('#enterpriseModal').on('show.bs.modal', function (e) {
+		$("#enterpriseModal").removeData("enterprise");
+		$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+		$("#enterprises a").removeClass("active");
+	});
+	$("#chooseEnterprise").click(function(){
+		var data = $("#enterpriseModal").data("enterprise");
+		if (data){
+			$($("#enterpriseModal").data("dataTarget")).val(data.name);
+			$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+			$('#enterpriseModal').modal('hide');
+		}
+	});
+ 	$("#enterprises a").click(function(e){
+		e.preventDefault();
+		var data = $("#enterpriseModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#enterpriseModal").data("lastActive",$(this));
+		$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+		return false;
+	});
+	$("#notifyPersonModal").on('show.bs.modal', function (e) {
+		$("#notifyPersonModal").removeData("notifyPerson");
+		$("#notifyPersonModal").data("dataTarget",e.relatedTarget);
+		$("#persons a").removeClass("active");
+	});
+	$("#chooseNotifyPerson").click(function(){
+		var data = 	$("#notifyPersonModal").data("notifyPerson");
+		if (data){
+			$($("#notifyPersonModal").data("dataTarget")).val(data.names);
+			$($("#notifyPersonModal").data("dataTarget")).next().val(data.ids);
+			$('#notifyPersonModal').modal('hide');
+		}
+	});
+	$("#persons a").click(function(e){
+		e.preventDefault();
+		$(this).toggleClass("active");
+		var ids = "";
+		var names = "";
+		$("#persons a.active").each(function(){
+			ids += $(this).attr("href") + ",";
+			//names += $(this).children().first().children().eq(1).text()+ ";";
+            names += $(this).children().first().children().eq(2).text().trim()+ ";";
+		})
+		names = names.substr(0,names.length - 1);
+		$("#notifyPersonModal").data("notifyPerson",{ids : ids , names : names});
+		return false;	
+	});
+	$("#company").change(displayCompanyDepartment);
+	$("#department").change(displayCompanyDepartment);
+	$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+	$("#notifyPersonModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+	$(window).resize(function(){
+		$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$("#notifyPersonModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+	});
+	$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+	});
+});
+</script>
+</body>
+</html>

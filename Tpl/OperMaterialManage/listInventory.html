@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+<style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+  </style>	
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">  
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">库存情况</div>
+    <ul class="nav navbar-nav navbar-right">
+			<li><a href={:U('OperMaterialManage/listInventory')} class="active">库存情况</a></li>			
+    </ul>
+  </div>
+</nav>  
+		<div class="panel panel-default">			
+			<div class="panel-body">
+			<div class="page-header">	
+					<div class="col-md-4">						
+						<h4 id="material_title">全部库房</h4>
+					</div>				
+						
+					<div class="col-md-2 col-md-offset-6">
+						<a class="btn btn-info btn-block" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+                        <div class="col-md-4" style="border-right:1px solid #eee">
+                            <div class="page-header">
+                                <h4>库房信息</h4>
+                            </div>
+                            <table class="table" style="cursor:pointer">
+                                <thead>
+                                    <th>库房名称</th>
+                                    <th>所属项目资源</th>
+                                </thead>
+                                <tbody id="warehouse_list">
+                                <volist name="warehouseRowArray" id="warehouse">
+                                <tr class="resource{$warehouse[resource_id]}" data-id="{$warehouse['warehouse_id']}">
+                                        <td>{$warehouse.warehouse_name}</td>
+                                        <td>{$warehouse.resource_name}</td>
+                                    </tr>
+                                </volist>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="page-header">
+                                <h4>材料信息</h4>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <th>工种</th>
+                                    <th>名称</th>
+                                    <th>规格</th>
+                                    <th>单位</th>
+                                    <th>数量</th>
+                                </thead>
+                                <tbody id="material_list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+<!--项目资源树形图-->
+	 <div class="ui sidebar left overlay panel panel-default active">
+		<div class="page-header">
+			<h4  style="padding-left:15px">项目与机构列表</h4>
+		</div>
+		<div class="panel-body">
+		<ul class="list-group sidebar-tree col-md-offset-1" id="sidebar" style="padding-right:16px">				
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item warehouse" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item warehouse" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item project" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item project" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>
+		</ul>
+	</div>
+</div>
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<!-- <script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_materialEnquiry.js" type="text/javascript"></script> -->
+<script>
+$(function(){
+        $("#sidebar").on("click",".tree-item",function(){
+                    var data=$("#sidebar").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+		$(this).parent().addClass("active");
+		$("#sidebar").data("lastActive",$(this).parent());
+                $("#material_title").text($(this).text());
+                var href=$(this).parent().data("id");
+                $("#warehouse_list tr").addClass("hidden");
+                if(href==0){
+                    $("#warehouse_list tr").removeClass("hidden");
+                }
+                $("#warehouse_list").find(".resource"+href).removeClass("hidden");
+		$(".ui.sidebar").sidebar('toggle');
+                return false;        
+        });
+        
+    $("#warehouse_list tr").click(function(){
+        var data=$("#warehouse_list").data("lastActive");
+        if(data){
+            data.removeClass("active");
+        }
+        $(this).addClass("active");
+        $("#warehouse_list").data("lastActive",$(this));
+
+        var warehouse_id=$(this).data("id");
+        $("#material_list").empty();
+        $.get('{:U('OperMaterialManage/getInventory')}',{
+                warehouse_id:warehouse_id
+                },function(material,textStatus){
+                var material_item;
+                for(var i=0;i<material.length;i++){
+                material_item=$("<tr><td>"+material[i].material.worktype+"</td><td>"+material[i].material.name+"</td><td>"+material[i].material.parameter+"</td><td>"+material[i].material.unit+"</td><td>"+material[i].count+"</td></tr>");
+                $("#material_list").append(material_item);
+            }
+        });
+                
+    });        
+});
+</script>
+</body>
+</html>
+

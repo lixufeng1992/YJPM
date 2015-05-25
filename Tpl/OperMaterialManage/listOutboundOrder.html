@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	tbody tr{
+		cursor:pointer;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right" style="min-width:1500px">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">材料出库单</div>
+        <ul class="nav navbar-nav navbar-right">
+	  <li><a href="{:U('OperMaterialManage/addOutboundOrder')}">新增材料出库单</a></li>
+          <li><a href="{:U('OperMaterialManage/listOutboundOrder')}" class="active">已有材料出库单</a></li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <div class="page-header">
+                                                <div class="col-md-4">
+                                                <h4>已有材料出库单</h4>
+                                                </div>
+					<div class="col-md-4">
+					<h4 id="project_title"></h4>
+					</div>
+					<div class="col-md-1 col-md-offset-1">
+						<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+					</div>
+					<div class="col-md-2">
+                                            <form action="{:U('OperMaterialManage/editOutboundOrder')}" method="POST">
+                                                <input type="hidden" name="outbound_id">
+                                                <input disabled href="#" class="btn btn-primary btn-block" id="to_edit_link" type="submit" value="编辑" />
+					    </form>
+                                        </div>
+					<div style="clear:both"></div>
+				</div>
+                <table class="table">
+					<thead>
+						<tr>
+							<th>审核</th>
+							<th>对应单据</th>
+							<th>项目名称</th>
+							<th>出库日期</th>
+							<th>经办人</th>
+							<th>金额（元）</th>
+							<th>库房</th>
+							<th>库管员</th>
+							<th>领料班组</th>
+							<th>领料人</th>
+							<th>创建人</th>
+							<th>审核人</th>
+                                                        <th>操作</th>
+						<tr>
+					</thead>
+					<tbody id="plan_list">
+                                        <volist name="outboundOrderRowArray" id="vo">
+                                        <tr class="resource{$vo.resource_id}" data-id="{$vo.outbound_id}">
+                                                <td>
+                                                    <if condition="$vo.verify eq 1">
+                                                    已审核
+                                                    <else />未审核
+                                                    </if>
+                                                </td>
+                                                <td>{$vo.outbound_number}</td>
+                                                <td>{$vo.resource_name}</td>
+                                                <td>{$vo.outbound_date}</td>
+                                                <td>{$vo.plan_proposer}</td>
+                                                <td>{$vo.amount}</td>
+                                                <td>{$vo.warehouse}</td>
+                                                <td>{$vo.warehouse_worker}</td>
+                                                <td>{$vo.subcontract}</td>
+                                                <td>{$vo.subcontract_worker}</td>
+                                                <td>{$vo.creator}</td>
+                                                <td>
+                                                    <if condition="$vo.verify eq 1">{$vo.verify_user}
+                                                    </if>
+                                                </td>
+                                                <td>
+                                                    <if condition="$vo.verify eq 1">
+                                                    <button class="btn btn-danger btn-block verify" data-state="1">取消审核</button>
+                                                    <else /><button class="btn btn-success btn-block verify" data-state="0">通过审核</button>
+                                                    </if>
+                                                </td>
+                                        </tr>
+                                        </volist>
+					</tbody>
+				</table>
+            </div>  
+        </div> 
+    </div>
+</div>
+
+	 <div class="ui sidebar left overlay panel panel-default active">
+		<div class="page-header">
+			<h4  style="padding-left:15px">项目与机构列表</h4>
+		</div>
+		<div class="panel-body">
+		<ul class="list-group sidebar-tree col-md-offset-1"  id="project_tree" style="padding-right:16px">				
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item warehouse" href="{$vo_level_2.resource_id}">{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item warehouse" href="{$vo_level_2.resource_id}">{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a class="tree-item unactive" href="#">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item project" href="{$vo_level_2.resource_id}">{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item project" href="{$vo_level_2.resource_id}">{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>
+		</ul>
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+$().ready(function(){
+	$("#project_tree").on("click","a",function(e){
+		e.preventDefault();
+                var resource_id=$(this).attr("href");
+		if(resource_id!="#"){
+			$("#project_title").text($(this).text().trim());
+			$("#resource_id").val($(this).attr("href").trim());
+                        $("#plan_list tr:not("+"#plan_list tr.resource"+resource_id+")").hide();
+                        $("#plan_list tr.resource"+resource_id).show();
+			$(".ui.sidebar").sidebar('hide');
+		}
+	})
+	 $("table").on("click","tr",function(){
+		var data=$("table").data("lastActive");
+		if(data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");			
+		$("table").data("lastActive",$(this));
+		$("input[name='outbound_id']").val($(this).data("id"));
+                
+                $verify_state=$(this).find('.verify').data("state");
+                if($verify_state==0){
+                    $("#to_edit_link").attr("disabled",false);
+                }
+                if($verify_state==1){
+                    $("#to_edit_link").attr("disabled",true);
+                }
+    });
+    
+    $("#plan_list .verify").click(function(){
+        var outbound_id=$(this).parent().parent().data("id");
+        var verify_user=$(this).parent().prev();
+        var state;
+        if($(this).data("state")==1){
+            $(this).text("通过审核");
+            $(this).parent().parent().children().first().text("未审核");
+            $(this).removeClass("btn-danger");
+            $(this).addClass("btn-success");
+            $(this).data("state",0);
+
+            state=0;
+
+            $.post("{:U('OperMaterialManage/OutboundOrderUpdateVerify')}",{
+                    outbound_id:outbound_id,
+                    state:state
+                    },function(user,textStatus){
+                        verify_user.text("");
+                        });
+            $("#to_edit_link").attr("disabled",false);
+            return false;
+        }        
+        if($(this).data("state")==0){
+            $(this).text("取消审核");
+            $(this).parent().parent().children().first().text("已审核");
+            $(this).removeClass("btn-success");
+            $(this).addClass("btn-danger");
+            $(this).data("state",1);
+
+            state=1;
+
+            $.post("{:U('OperMaterialManage/OutboundOrderUpdateVerify')}",{
+                    outbound_id:outbound_id,
+                    state:state
+                    },function(user,textStatus){
+                        verify_user.text(user.name);
+                    });
+            $("#to_edit_link").attr("disabled",true);
+            return false;
+        }        
+    });
+
+});
+</script>
+</body>
+</html>
+

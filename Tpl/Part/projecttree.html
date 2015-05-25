@@ -1,0 +1,46 @@
+<volist name="resourceRowArray" id="vo_level_1">
+<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info project" id="project_level_1" data-id="{$vo_level_1.resource_id}">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a href="#" class="add_type tree-item">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item project" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item project" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>

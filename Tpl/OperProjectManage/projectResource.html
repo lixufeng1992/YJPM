@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" /> 	
+<style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+  </style>		
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">  
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">项目维护</div>
+    <ul class="nav navbar-nav navbar-right">			
+      <li><a href={:U('OperProjectManage/projectResource')} class="active">项目资源</a></li>   
+			<li><a href={:U('OperProjectManage/maintenanceProject')}>项目维护</a>   </li> 
+    </ul>
+  </div>
+</nav>  
+<div class="panel panel-default">			
+	<div class="panel-body">			
+		<div class="page-header">	
+			<div class="col-md-4">
+				<h4>项目资源</h4>			
+			</div>				
+			<div style="clear:both"></div>
+		</div>
+		<div class="col-md-3">			
+				<div class="page-header">					
+					<div class="col-md-5">
+						<h4 style="padding-left:15px">已有项目资源</h4>
+					</div>
+					<div class="col-md-1">
+						<label class="control-label label-pop" id="project_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="请选择项目或机构"></label>
+					</div>
+					<div style="clear:both"></div>	
+				</div>
+		<ul class="list-group sidebar-tree col-md-offset-1" id="sidebar">				
+		<!--
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info warehouse" id="warehouse_level_1" data-id="{$vo_level_1.resource_id}">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a href="#" class="add_type tree-item">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item warehouse" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item warehouse" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info project" id="project_level_1" data-id="{$vo_level_1.resource_id}">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a href="#" class="add_type tree-item">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item project" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item project" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+		</volist>
+		-->
+		<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info warehouse" id="warehouse_level_1" data-id="{$vo_level_1.resource_id}">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a href="#" class="add_type tree-item">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item warehouse" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item warehouse" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+		</volist>
+		
+<volist name="resourceRowArray" id="vo_level_1">
+<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info project" id="project_level_1" data-id="{$vo_level_1.resource_id}">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				</if>
+				<a href="#" class="add_type tree-item">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item project" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}" data-project="{$vo_level_2.project_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item project" data-level="{$vo_level_3.resource_level}" data-id="{$vo_level_3.resource_id}" data-project="{$vo_level_3.project_id}">
+									<if condition="$vo_level_3.resource_haschildren eq 1">
+									<span class="glyphicon glyphicon-plus-sign"></span>
+									</if>
+									<a class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+</volist>
+
+		</ul>	
+		</div>
+		<div class="col-md-9" style="border-left:1px solid #eee">
+			<div class="page-header">	
+				<div class="col-md-4">
+					<h4 id="project_title"></h4>
+				</div>
+				<div class="col-md-2">
+						<a class="btn btn-info project_alert" data-toggle="collapse" data-target="#add_equip_project" id="add_equip_project_btn">添加平级</a>
+				</div>
+				<div class="col-md-2">
+						<a class="btn btn-info project_alert" data-toggle="collapse" data-target="#add_child_project" id="add_child_project_btn">添加子级</a>
+					</div>
+					<div class="col-md-2">
+						<a class="btn btn-primary project_alert" data-toggle="collapse" data-target="#update_project" id="update_project_btn">修改项目</a>
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-danger project_alert" data-toggle="collapse" data-target="#delete_project" id="delete_project_btn">删除项目</button>
+					</div>				
+				<div style="clear:both"></div>
+			</div>	
+		
+		<div class="panel-collapse panel collapse in check" id="add_equip_project">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 control-label">添加平级</label>
+					<label class="col-md-2 control-label">名称</label>
+					<div class="col-md-3">
+						<input type="text" class="form-control resource_select project_input_alert" name="" id="add_equip_project_name"/>
+						<input type="hidden" name="" />
+					</div>
+					<div class="col-md-2 col-md-offset-2">
+						<input type="submit" class="btn btn-primary btn-block" name="" value="保存" id="add_equip_project_submit"/>
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-default btn-block cancel">取消</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 col-md-offset-2 control-label" id="">归属子公司</label>
+					<div class="col-md-3">
+						<select class="form-control subsidiary" name="">
+								<option value="0">无</option>
+								<volist name="companyRowArray" id="company">							
+								<option value="{$company.companyid}">{$company.name}</option>						
+							</volist>
+						</select>
+					</div>
+					<label class="col-md-2 control-label">用户授权</label>
+					<div class="col-md-3">
+						<select class="form-control authority" name="">
+							<option value="0">无</option>
+							<volist name="userAuthorityRowArray" id="user">
+								<option value="{$user.userid}">{$user.username}</option>								
+							</volist>
+						</select>
+					</div> 
+				</div>
+			</form>
+		</div>
+		<div class="panel-collapse panel collapse in check" id="add_child_project">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 control-label">添加子级</label>
+					<label class="col-md-2 control-label">名称</label>
+					<div class="col-md-3">
+						<input type="text" class="form-control resource_select project_input_alert" name="" id="add_child_project_name"/>
+						<input type="hidden" name="" />
+					</div>
+					<div class="col-md-2 col-md-offset-2">
+						<input type="submit" class="btn btn-primary btn-block" name="" value="保存" id="add_child_project_submit"/>
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-default btn-block cancel">取消</a>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 col-md-offset-2 control-label">归属子公司</label>
+					<div class="col-md-3">
+						<select class="form-control subsidiary" name="">
+								<option value="0">无</option>
+								<volist name="companyRowArray" id="company">							
+								<option value="{$company.companyid}">{$company.name}</option>						
+							</volist>
+						</select>
+					</div>
+					<label class="col-md-2 control-label">用户授权</label>
+					<div class="col-md-3">
+						<select class="form-control authority" name="">
+							<option value="0">无</option>
+							<volist name="userAuthorityRowArray" id="user">
+								<option value="{$user.userid}">{$user.username}</option>								
+							</volist>
+						</select>
+					</div> 
+				</div>
+			</form>
+		</div>
+		<div class="panel-collapse panel collapse check in" id="update_project">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 control-label">修改</label>
+					<label class="col-md-2 control-label">名称</label>
+					<div class="col-md-3">
+						<input type="text" class="form-control project_input_alert" name="" id="update_project_name"/>
+						<input type="hidden" name="" />
+					</div>
+					<div class="col-md-2 col-md-offset-2">
+						<input type="submit" class="btn btn-primary btn-block" name="" value="保存" id="update_project_submit"/>
+					</div>
+					<div class="col-md-1">
+						<a class="btn btn-default btn-block cancel">取消</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 col-md-offset-2 control-label">归属子公司</label>
+					<div class="col-md-3">
+						<select class="form-control subsidiary" id="update_select">
+								<option value="0">无</option>
+								<volist name="companyRowArray" id="company">							
+								<option value="{$company.companyid}">{$company.name}</option>						
+							</volist>
+						</select>
+					</div>
+					<label class="col-md-2 control-label">用户授权</label>
+					<div class="col-md-3">
+						<select class="form-control authority" name="" id="authority_user">
+							<option value="0">无</option>
+							<volist name="userAuthorityRowArray" id="user">
+								<option value="{$user.userid}">{$user.username}</option>								
+							</volist>
+						</select>
+					</div> 
+				</div>
+			</form>
+		</div>
+		</div>
+	</div>
+</div>
+<!--项目选择-->
+<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="projectModalLabel">项目选择</h4>    
+				
+			</div>
+			<br>
+			<form class="from-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 control-label">项目名称</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" name="" id="project_name"/>
+					</div>					
+					<div class="col-md-2">
+						<a class="btn btn-info" data-toggle="collapse" data-target="#project_list">已有项目</a>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+		 </form>
+			<div id="project_list" class="panel-collapse collapse panel">
+							<div class="container-fluid" style="margin-top:15px" >
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-2">项目名称</div>
+                    <div class="col-md-2">业务员</div>
+                    <div class="col-md-3">施工单位</div>
+                    <div class="col-md-3">设计单位</div>
+										<div class="col-md-2">当前状态</div>
+                </div>
+            </div>
+      
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="projects">          
+					<volist name="projectRowArray" id="vo_project">
+						<a href="{$vo_project.projectid}" class="list-group-item">
+							<div class="row">
+							<div class="col-md-2">{$vo_project.projectname}</div>
+							<div class="col-md-2">{$vo_project.clerkname}</div>
+							<div class="col-md-3">{$vo_project.buildenterprisename}</div>
+							<div class="col-md-3">{$vo_project.designenterprisename}</div>
+							<div class="col-md-2">{$vo_project.currentstatusname}</div>
+							</div>
+						</a>
+					</volist>
+        </div>
+      </div>
+		</div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseProject">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>  
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />		
+<script>
+	$(function(){
+		$("#project_alert").popover("show");	
+		$("#sidebar").on("click",".tree-item",function(){
+		$("#project_alert").popover("hide");	
+			if($(this).hasClass("add_type")){
+				$("#add_equip_project_btn").css("visibility","hidden");
+				$("#update_project_btn").css("visibility","hidden");
+				$("#delete_project_btn").css("visibility","hidden");
+			}else{
+				$("#add_equip_project_btn").css("visibility","visible");
+				$("#update_project_btn").css("visibility","visible");
+				$("#delete_project_btn").css("visibility","visible");
+			}
+                        var level=$(this).parent().data("level");
+                        if(level>=3){
+                            $("#add_child_project_btn").css("visibility","hidden");
+                        }else $("#add_child_project_btn").css("visibility","visible");
+			var data=$("#sidebar").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).parent().addClass("active");
+			$("#sidebar").data("lastActive",$(this).parent());	
+			$("#project_title").text($(this).text());		
+			$("#update_project_name").val($(this).text());
+			
+			var resource_id=$("#sidebar").find(".active").data("id");			
+			$.post("{:U('OperProjectManage/getSubsidiary')}",{
+				resource_id:resource_id
+			},function(subsidiary,textStatus){
+				//alert(subsidiary);
+				$("#update_select").val(subsidiary);			
+			});
+			
+			$.post("{:U('OperProjectManage/getAuthorityUser')}",{
+				resource_id:resource_id
+			},function(authorityuser,textStatus){
+				$("#authority_user").val(authorityuser);
+			})
+			//$("#add_equip_project").collapse("show");
+			$("#add_equip_project_name").val("");
+			//$("#add_child_project").collapse("show");
+			$("#add_child_project_name").val("");
+			//$("#update_project").collapse("show");
+					
+			$(".check").collapse("hide");
+		
+		});
+	
+		$(".project").on("click",function(){
+			$(".resource_select").addClass("readonly");
+			$(".resource_select").attr({readonly:'ture'});
+			$(".resource_select").attr("data-toggle","modal");
+			$(".resource_select").attr("data-target","#projectModal");
+		});	
+		
+		$(".warehouse").on("click",function(){
+			$(".resource_select").removeClass("readonly");
+			$(".resource_select").removeAttr("readonly");
+			$(".resource_select").removeAttr("data-toggle");
+			$(".resource_select").removeAttr("data-target");
+		});
+		
+		$("#projectModal").on("show.bs.modal",function(e){
+			$("#project_name").val("");
+			$("#projectModal").removeData("project");
+			$("#projectModal").data("dataTarget",e.relatedTarget);
+			$("#projects a").removeClass("active");
+			
+			var project_id;
+			$("#sidebar .project").each(function(){
+				project_id=$(this).data("project");
+				$("#projects a").each(function(){
+					if($(this).attr("href")==project_id){
+						$(this).css("display","none");
+					}
+				});
+			});
+		});
+		
+		$("#projects a").click(function(e){
+			e.preventDefault();
+			var data=$("#projectModal").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+			$(this).addClass("active");
+			var projectName=$(this).children().first().children().first().text();
+			$("#project_name").val(projectName);			
+			$("#projectModal").data("lastActive",$(this));
+			$("#projectModal").data("project",{id:$(this).attr("href"),name:projectName});
+		});
+		
+		$("#project_name").focus(function(){
+			$("#projectModal").removeData("project");			
+			$("#projects a").removeClass("active");
+			$("#project_name").val("");
+			$("#project_list").collapse("hide");
+		});
+		
+		$("#chooseProject").click(function(){
+			var data=$("#projectModal").data("project");
+			if(data){
+				$($("#projectModal").data("dataTarget")).val(data.name);				
+				$($("#projectModal").data("dataTarget")).next().val(data.id);					
+				$("#projectModal").modal("hide");
+			}
+			if(!data){
+				if($("#project_name").val()!=""){
+					$($("#projectModal").data("dataTarget")).val($("#project_name").val());
+					$($("#projectModal").data("dataTarget")).next().val(0);
+					$("#projectModal").modal("hide");
+				}else{
+					return false;
+				}
+			}
+		});
+		
+		$(".cancel").click(function(){
+			$(this).parent().parent().parent().parent().collapse("hide");
+		});
+		
+		$("#add_equip_project_submit").click(function(){					
+			var active=$("#sidebar").find(".active");
+                        if(!active.is("*")) return false;
+			var resource_type;
+			var name=$("#add_equip_project_name").val();
+                        //alert(name);
+			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+			var user_authority=$(this).parent().parent().next().find(".authority").val();
+			var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
+			var resource_level=$("#sidebar").find(".active").data('level');
+			var resource_haschildren=0;
+			//alert(user_authority);
+			var project_id=$("#add_equip_project_name").next().val();
+			/*
+			alert(project_id);
+			if(project_id==""){
+				project_id=0;
+			}
+			*/
+			var sub;
+			if(name!=""){
+				if($("#sidebar").find(".active").hasClass("warehouse")){
+					resource_type=1;
+					sub=$("<li class=\"list-group-item warehouse\" data-level=\""+resource_level+"\"><a href=\"#\" class=\"tree-item\">"+name+"</a></li>");
+					sub.click(function(){
+						$(".resource_select").removeClass("readonly");
+						$(".resource_select").removeAttr("readonly");
+						$(".resource_select").removeAttr("data-toggle");
+						$(".resource_select").removeAttr("data-target");
+					});
+				}
+				if($("#sidebar").find(".active").hasClass("project")){
+					resource_type=2;
+					sub=$("<li class=\"list-group-item project\" data-level=\""+resource_level+"\" data-project=\""+project_id+"\"><a href=\"#\" class=\"tree-item\">"+name+"</a></li>");
+					sub.click(function(){
+						$(".resource_select").addClass("readonly");
+						$(".resource_select").attr({readonly:'ture'});
+						$(".resource_select").attr("data-toggle","modal");
+						$(".resource_select").attr("data-target","#projectModal");
+					});
+				}
+				$("#sidebar").find(".active").before(sub);
+				$("#add_equip_project").collapse("hide");
+				$("#add_equip_project_name").val("");
+				
+				$.post("{:U('OperProjectManage/addProjectResource')}",{
+					project_id:project_id,
+					resource_name:name,
+					resource_type:resource_type,
+					resource_father_id:resource_father_id,
+					resource_user_authority:user_authority,
+					resource_belonged_subsidiary:belonged_subsidiary,
+					resource_level:resource_level,
+					resource_haschildren:resource_haschildren
+				},function(result, textStatus){
+					//alert(result.id);
+					$("#sidebar").find(".active").prev().attr("data-id",result.id);
+				});
+				
+			}else{
+				return false;
+			}
+		});
+		
+		$("#add_child_project_submit").click(function(){
+			var active=$("#sidebar").find(".active");	
+			if(!active.is("*")) return false;
+			var name=$("#add_child_project_name").val();
+			var resource_type;
+			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+			var user_authority=$(this).parent().parent().next().find(".authority").val();
+			var resource_father_id=active.data("id");
+			var resource_haschildren=1;
+			
+			var project_id=$("#add_child_project_name").next().val();
+			if(active.attr("id")=="warehouse_level_1" || active.attr("id")=="project_level_1"){
+				active.data("level",1);
+			}
+			var resource_level=active.data('level')+1;	
+			//alert(project_id);
+			var sub;			
+			var plus=$("<span class=\"glyphicon glyphicon-plus-sign\"></span>");				
+			plus.click(function(){
+				$(this).parent().next().collapse('toggle');
+			});
+			if(name!=""){		
+				if(active.is(":has(span)")){	
+					if(active.hasClass("warehouse")){
+						resource_type=1;
+						sub=$("<li class=\"list-group-item warehouse\" data-level=\""+resource_level+"\"><a class=\"tree-item\">"+name+"</a></li>");
+						sub.click(function(){
+							$(".resource_select").removeClass("readonly");
+							$(".resource_select").removeAttr("readonly");
+							$(".resource_select").removeAttr("data-toggle");
+							$(".resource_select").removeAttr("data-target");
+						});					
+						active.next().children().children().last().after(sub);
+						active.data("level",active.data('level')+1);
+					}
+					if(active.hasClass("project")){
+						resource_type=2;
+						sub=$("<li class=\"list-group-item project\" data-level=\""+resource_level+"\" data-project=\""+project_id+"\"><a class=\"tree-item\">"+name+"</a></li>");
+						sub.click(function(){
+							$(".resource_select").addClass("readonly");
+							$(".resource_select").attr({readonly:'ture'});
+							$(".resource_select").attr("data-toggle","modal");
+							$(".resource_select").attr("data-target","#projectModal");
+						});						
+						active.next().children().children().last().after(sub);
+						active.data("level",active.data('level')+1);
+					}
+					/*
+					if(active.find("a").hasClass("add_type")){						
+						active.children().last().before(plus);
+					}
+					*/
+				}else{
+					if(active.hasClass("warehouse")){
+						resource_type=1;
+						sub=$("<li class=\"list-group-item collapse in\"><ul class=\"list-group\"><li class=\"list-group-item warehouse\" data-level=\""+resource_level+"\"><a class=\"tree-item\">"+name+"</a></li></ul></li>");
+						sub.click(function(){
+							$(".resource_select").removeClass("readonly");
+							$(".resource_select").removeAttr("readonly");
+							$(".resource_select").removeAttr("data-toggle");
+							$(".resource_select").removeAttr("data-target");
+						});
+						active.after(sub);
+					}
+					if(active.hasClass("project")){
+						resource_type=2;
+						sub=$("<li class=\"list-group-item collapse in\"><ul class=\"list-group\"><li class=\"list-group-item project\" data-level=\""+resource_level+"\" data-project=\""+project_id+"\"><a class=\"tree-item\" >"+name+"</a></li></ul></li>");
+						sub.click(function(){
+							$(".resource_select").addClass("readonly");
+							$(".resource_select").attr({readonly:'ture'});
+							$(".resource_select").attr("data-toggle","modal");
+							$(".resource_select").attr("data-target","#projectModal");
+						});
+						active.after(sub);
+					}				
+					active.children().before(plus);			
+				}
+				$("#add_child_project").collapse("hide");
+				$("#add_child_project_name").val("");
+				
+				$.post("{:U('OperProjectManage/addProjectResource')}",{
+					project_id:project_id,
+					resource_name:name,
+					resource_type:resource_type,
+					resource_father_id:resource_father_id,
+					resource_user_authority:user_authority,
+					resource_belonged_subsidiary:belonged_subsidiary,
+					resource_level:resource_level,
+					resource_haschildren:resource_haschildren
+				},function(result, textStatus){
+					//alert(result.id);
+					active.next().children().children().last().attr("data-id",result.id);
+				});
+				
+			}else{
+				return false;
+			}
+		});		
+
+		$("#update_project_submit").click(function(){
+			var active=$("#sidebar").find(".active");
+			if(!active.is("*")) return false;
+			var id=active.attr("data-id");
+			var name=$("#update_project_name").val();
+			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+			var user_authority=$(this).parent().parent().next().find(".authority").val();
+			
+			$.post("{:U('OperProjectManage/updateProjectResource')}",{
+				resource_id:id,
+				resource_name:name,
+				resource_user_authority:user_authority,
+				resource_belonged_subsidiary:belonged_subsidiary
+			});
+			
+			$("#sidebar").find(".active").find("a").text(name);
+			$("#update_project").collapse("hide");
+			$("#update_project_name").val("");
+			$("#project_title").text(name);	
+		});
+		
+		$(".project_alert").click(function(){
+			var active=$("#sidebar").find(".active");
+			if(!active.is("*")){
+				$("#project_alert").popover("show");
+				$(this).attr("data-toggle","");
+				return false;
+			}else{
+				$("#project_alert").popover("hide");
+				$(this).attr("data-toggle","collapse");
+			}
+		});
+
+        $(".project_input_alert").click(function(){
+			var active=$("#sidebar").find(".active");
+			if(!active.is("*")){
+				$("#project_alert").popover("show");
+				$(this).attr("data-toggle","");
+				return false;
+			}else{
+				$("#project_alert").popover("hide");
+				$(this).attr("data-toggle","modal");
+			}
+		});
+		
+		$("#delete_project_btn").click(function(){
+			if(!confirm('确认删除?')){
+				return false;
+			}
+			var active=$("#sidebar").find(".active");
+			var id=active.attr("data-id");
+			var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
+			var children_num=active.parent().find("li").size();
+			var haschildren;
+			
+			if(children_num==1){
+				haschildren=0;
+			}else{
+				haschildren=1;
+			}
+			
+			if(active.is(":has(span)")){
+				var alert=$("<label class=\"control-label label-pop\" id=\"active_alert\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"left\" data-content=\"含有子级，不能删除\"></label>");
+				active.children().first().before(alert);
+				$("#active_alert").popover("show");
+				return false;
+			}else{
+				if(children_num==1){
+					active.parent().parent().prev().find("span").remove();
+					active.parent().parent().remove();
+				}else{
+					active.remove();
+				}
+			}
+			
+			var project_id=active.data("project");
+			$("#projects a").each(function(){
+				if($(this).attr("href")==project_id){
+					$(this).css("display","block");
+				}
+			});
+			$.post("{:U('OperProjectManage/deleteProjectResource')}",{
+				resource_id:id,
+				resource_father_id:resource_father_id,
+				resource_haschildren:haschildren
+			});
+                        $("#active_alert").popover("hide");
+		});
+	});
+</script>
+
+</body>
+</html>

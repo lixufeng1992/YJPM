@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+   <div class="navbar-header navbar-brand">承包合同</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{:U('OperProjectManage/addContract')}" class="active">新增承包合同</a></li>
+      <li><a href="{:U('OperProjectManage/listContract')}">已有承包合同</a></li>
+    </ul>
+  </deiv>
+</nav>
+	<div class="panel panel-default">			
+			<div class="panel-body">
+			<form class="form-horizontal" id="addContractForm" action="{:U('OperProjectManage/addContractSubmit')}" method="POST" enctype="multipart/form-data">
+			<div class="page-header">	
+					<div class="col-md-4">						
+						<h4 id="project_title">{$resourceRow['resource_name']}</h4>
+					</div>				
+						
+					<div class="col-md-1 col-md-offset-5">
+						<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目"></label>
+			
+						<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+					</div>
+					<div class="col-md-2">
+						<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存" <if condition="$infoReadOnly eq true">disabled</if>/>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+			<div class="page-header">
+				<div class="col-md-4">						
+					<h4>基本信息</h4>
+				</div>		
+					<div style="clear:both"></div>
+			</div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">项目名称</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="resource_name" id="resource_name" value="{$resourceRow['resource_name']}" readonly/>
+         <input type="hidden" name="resource_id" id="resource_id" value="{$resourceRow['resource_id']}">
+        </div>
+        <label class="col-md-2 control-label">合同名称</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="contract_name" <if condition="$infoReadOnly eq true">readonly</if> />
+        </div>
+				<label class="col-md-2 control-label">合同编号</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="contract_number" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+      </div>
+			<div class="form-group">
+        <label class="col-md-2 control-label">责任人</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="duty_officer" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+        <label class="col-md-2 control-label">公司</label>
+        <div class="col-md-2">
+        	<select class="form-control" name="companyid" />
+				<option value="0">请选择</option>
+                <volist name="companyRowArray" id="vo">
+                    <option value="{$vo['companyid']}">{$vo['name']}</option>
+                </volist>
+			</select>
+        </div>
+
+				<label class="col-md-2 control-label">部门</label>
+        <div class="col-md-2">
+        	<select class="form-control" name="departmentid" />
+						<option value="0">请选择</option>
+                        <volist name="departmentRowArray" id="vo">
+                    <option value="{$vo['departmentid']}">{$vo['name']}</option>
+                </volist>
+					</select>
+        </div>
+		      </div>
+
+        <div class="form-group">
+        <label class="col-md-2 control-label">项目经理</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="project_manager" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+
+        <!--未做-->
+       	<label class="col-md-2 control-label">订立形式</label>
+        <div class="col-md-2">
+        	<select class="select-create-true" name="build_pattern"/>
+						<option></option>
+						<option value="口头合同">口头合同</option>
+						<option value="书面合同">书面合同</option>
+					</select>
+        </div>
+        <!--未做-->
+        <label class="col-md-2 control-label">经营方式</label>
+        <div class="col-md-2">
+         <select class="select-create-true" name="operation_mode" />
+						<option></option>
+						<option value="自营">自营</option>
+						<option value="承包联合经营">承包联合经营</option>
+					</select>
+        </div>
+		</div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">签订日期</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker" type="text" name="sign_date" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+        <label class="col-md-2 control-label">合同开始日期</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker duration" type="text" name="contract_start_date" id="start_time" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+				<label class="col-md-2 control-label">合同结束日期</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker duration" type="text" name="contract_finish_date" id="end_time" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">合同天数</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="" id="contract_days" readonly/>
+        </div>
+        <label class="col-md-2 control-label">合同金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="contract_amount_money" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+        <label class="col-md-2 control-label">采购来源</label>
+        <!--未做-->
+        <div class="col-md-2">
+         <select class="select-create-true" name="buying_from" />
+						<option></option>
+						<option value="招标">招标</option>
+						<option value="单一采购">单一采购</option>
+						<option value="竞争性谈判">竞争性谈判</option>
+					</select>
+        </div>
+
+				      </div>
+			<div class="form-group">
+                <!--未做-->
+       	<label class="col-md-2 control-label">施工状态</label>
+        <div class="col-md-2">
+        	<select class="select-create-true" name="operation_status" />
+						<option></option>
+						<option value="在建">在建</option>
+						<option value="完工">完工</option>
+						<option value="竣工">竣工</option>
+					</select>
+        </div>
+        <label class="col-md-2 control-label">工程类型</label>
+        <!--未做-->
+        <div class="col-md-2">
+         <select class="select-create-true" name="project_type" />
+						<option></option>
+						<option value="高支模">高支模</option>
+						<option value="深基坑">深基坑</option>
+					</select>
+        </div>
+				<label class="col-md-2 control-label">工程类别</label>
+        <div class="col-md-2">
+            <!--未做-->
+         <select class="select-create-true" name="project_category" />
+						<option></option>
+						<option value="园林">园林</option>
+						<option value="建筑">建筑</option>
+						<option value="安装">安装</option>
+						<option value="市政">市政</option>
+						<option value="装饰">装饰</option>
+						<option value="消防">消防</option>
+						<option value="水利">水利</option>
+						<option value="公路">公路</option>
+						<option value="其他">其他</option>
+					</select>
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">施工地点</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="address" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+        <label class="col-md-2 control-label">总工程量</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="total_quantities" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+			<label class="col-md-2 control-label">项目规模</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="scale" <if condition="$infoReadOnly eq true">readonly</if>/>
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">合同主要内容</label>
+        <div class="col-md-10">
+					<textarea class="input-xlarge form-control" name="main_content" rows="3"></textarea> 
+        </div>
+			</div>
+			<div class="form-group">
+                <!--???-->
+				<label class="col-md-2 control-label">甲方</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control readonly"  readonly name="a_part_enterprise_name" data-toggle="modal" data-target="#enterpriseModal"/>
+					<input type="hidden" name="a_part_enterpriseid" id="a_part_enterpriseid"/>  
+				</div>
+				<label class="col-md-2 control-label">负责人</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="a_part_director" id=""/>
+				</div>
+				<label class="col-md-2 control-label">监理单位</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control readonly"  readonly name="" data-toggle="modal" data-target="#enterpriseModal" />
+					<input type="hidden" name="supervisor_enterpriseid" id="supervisor_enterpriseid"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-2 control-label">乙方</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control readonly"  readonly name="b_part_enterprise_name" data-toggle="modal" data-target="#enterpriseModal"/>
+					<input type="hidden" name="b_part_enterpriseid" id="b_part_enterpriseid"/>  
+				</div>
+				<label class="col-md-2 control-label">负责人</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="b_part_director" id="b_part_director"/>
+				</div>
+       	    <label class="col-md-2 control-label">期初已收款</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="accept_amount_start" />
+        </div>
+	      </div>
+
+			<div class="page-header">
+				<div class="col-md-4">						
+					<h4>预算信息</h4>
+				</div>		
+					<div style="clear:both"></div>
+			</div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">预算金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="budget_amount" />
+        </div>
+        <label class="col-md-2 control-label">负责人</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="budget_director" />
+        </div>
+				<label class="col-md-2 control-label">编制时间</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker" type="text" name="budget_create_date" />
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">编制人</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="budget_create_person" />
+        </div>
+        <label class="col-md-2 control-label">报送时间</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker" type="text" name="budget_submit_date" />
+        </div>
+				<label class="col-md-2 control-label">审定金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="budget_confirm_amount" />
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">备注</label>
+        <div class="col-md-10">
+					<textarea class="input-xlarge form-control" name="budget_remark" rows="3"></textarea> 
+        </div>
+			</div>
+			<div class="page-header">
+				<div class="col-md-4">						
+					<h4>决算信息</h4>
+				</div>		
+					<div style="clear:both"></div>
+			</div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">决算金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="finalcost_amount" />
+        </div>
+        <label class="col-md-2 control-label">负责人</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="finalcost_director" />
+        </div>
+				<label class="col-md-2 control-label">编制时间</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker" type="text" name="finalcost_create_date" />
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">编制人</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="finalcost_create_person" />
+        </div>
+        <label class="col-md-2 control-label">报送时间</label>
+        <div class="col-md-2">
+         <input class="form-control datepicker" type="text" name="finalcost_submit_date" />
+        </div>
+				<label class="col-md-2 control-label">审定金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="finalcost_confirm_amount" />
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">备注</label>
+        <div class="col-md-10">
+					<textarea class="input-xlarge form-control" name="finalcost_remark" rows="3"></textarea> 
+        </div>
+			</div>
+
+			<div class="page-header">
+				<div class="col-md-4">						
+					<h4>审计信息</h4>
+				</div>		
+					<div style="clear:both"></div>
+			</div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">审计金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="audit_amount" />
+        </div>
+        <label class="col-md-2 control-label">审定金额</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="audit_confirm_amount" />
+        </div>
+				<label class="col-md-2 control-label">质保金</label>
+        <div class="col-md-2">
+         <input class="form-control" type="text" name="audit_qualityassurance_amount" />
+        </div>
+      </div>
+			<div class="form-group">
+       	<label class="col-md-2 control-label">备注</label>
+        <div class="col-md-10">
+					<textarea class="input-xlarge form-control" name="audit_remark" rows="3"></textarea> 
+        </div>
+			</div>
+			
+		</form>
+		</div>
+	</div>
+</div>
+<!--项目资源树形图-->
+
+
+
+	<div class="ui sidebar left overlay panel panel-default <if condition="$treeExist eq true">active</if>">
+    <div class="page-header">
+            <h4  style="padding-left:15px">项目列表</h4>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group sidebar-tree">
+            <volist name="resourceRowArray" id="vo1">
+                <if condition="($vo1['resource_level'] eq 1) AND ($vo1.resource_type eq 2)">
+
+                    <!-- 有子级 --><if condition="$vo1['resource_haschildren'] eq 1">
+                    <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+                        <a href="#" class="tree-item">{$vo1['resource_name']}</a>
+                    </li>
+                    <li class="list-group-item collapse in">
+                        <ul class="list-group">
+                            <volist name="resourceRowArray" id="vo2">
+                                <if condition="($vo2['resource_level'] eq 2) AND ($vo2.resource_type eq 2) AND ($vo2['resource_father_id'] eq $vo1['resource_id'])">
+                                <!-- 有子级 --><if condition="$vo2['resource_haschildren'] eq 1">
+                                    <li class="list-group-item"><span class="glyphicon glyphicon-plus-sign"></span>
+                                        <a href="{:U('OperProjectManage/addContract',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}</a>
+                                    </li>
+                                    <li class="list-group-item collapse in">
+                                        <ul class="list-group">
+                                            <volist name="resourceRowArray" id="vo3">
+                                                <if condition="($vo3['resource_level'] eq 3) AND ($vo3.resource_type eq 2) AND ($vo3['resource_father_id'] eq $vo2['resource_id'])">
+                                                    <!-- 无子级 --><if condition="$vo3['resource_haschildren'] neq 1">
+                                                        <li class="list-group-item">
+                                                        <a href="{:U('OperProjectManage/addContract',array('resource_id'=>$vo3['resource_id']))}" class="tree-item">{$vo3['resource_name']}
+                                                        </a>
+                                                        </li>
+                                                    </if>
+                                                </if>
+                                            </volist>
+                                        </ul>
+                                    </li>
+                                    </if>
+                                     <!-- 无子级 --><if condition="$vo2['resource_haschildren'] neq 1">
+                                     <li class="list-group-item">
+                                        <a href="{:U('OperProjectManage/addContract',array('resource_id'=>$vo2['resource_id']))}" class="tree-item">{$vo2['resource_name']}
+                                        </a>
+                                    </li>
+                                    </if>
+                                </if>
+                            </volist>
+                        </ul>
+                    </li>
+                    </if>
+                    <!-- 无子级 --><if condition="($vo1['resource_level'] eq 1) AND ($vo1['resource_haschildren'] neq 1)">
+                        <li class="list-group-item">
+                            <a href="{:U('OperProjectManage/addContract',array('resource_id'=>$vo1['resource_id']))}" class="tree-item">{$vo1['resource_name']}
+                            </a>
+                        </li>
+                    </if>
+                </if>
+            </volist>
+        </ul>
+    </div>
+</div>
+
+
+
+<!-- 往来单位选择 -->
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>   	
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+        	<volist name="enterpriseRowArray" id="vo">
+        		<a href="{$vo.enterpriseid}" class="list-group-item 
+        		<if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+          		<div class="row">
+            		<div class="col-md-4">{$vo.name}</div>
+                	<div class="col-md-2">{$vo.contact_person}</div>
+                	<div class="col-md-3">{$vo.phone_number}</div>
+                	<div class="col-md-3">{$vo.address}</div>
+            	</div>
+            	</a>
+        	</volist>
+       
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div> 
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_add_contract.js" type="text/javascript"></script>
+<script>
+$(function(){
+  //往来单位
+		$('#enterpriseModal').on('show.bs.modal', function (e) {
+			$("#enterpriseModal").removeData("enterprise");
+			$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+			$("#enterprises a").removeClass("active");
+		});
+		
+		$("#chooseEnterprise").click(function(){
+			var data = $("#enterpriseModal").data("enterprise");
+			if (data){
+				$($("#enterpriseModal").data("dataTarget")).val(data.name);
+				$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+				$('#enterpriseModal').modal('hide');
+				}
+		});
+		
+		$("#enterprises a").click(function(e){
+			e.preventDefault();
+			var data = $("#enterpriseModal").data("lastActive");
+			if (data){
+				data.removeClass("active");
+			}
+			$(this).addClass("active");
+			$("#enterpriseModal").data("lastActive",$(this));
+			$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+			return false;
+		});
+		
+		$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$(window).resize(function(){
+			$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		});
+		
+		$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+		});
+		
+		//合同天数
+		$(".duration").change(function(){
+			if(($("#start_time").val()!="") && ($("#end_time").val()!="")){
+				var start=new Date($("#start_time").val());
+				var end=new Date($("#end_time").val());
+				var duration=end.getTime()-start.getTime();
+				var day=Math.floor(duration/(3600*24*1000))+1;
+				//alert(day);
+				$("#contract_days").val(day);
+			}
+		});
+});
+</script>
+</body>
+</html>

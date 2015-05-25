@@ -1,0 +1,243 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+  padding-top:50px;
+  font-family:"微软雅黑", "黑体";
+}
+.selectize-dropdown,
+.selectize-input,
+.selectize-input input{
+	font-family:"微软雅黑", "黑体";
+}
+#left-menu{
+  background:#393939;
+  padding:0;
+  color:#aeb2b7;
+  width:160px;
+  position:fixed;
+  top:50px;
+  left:0;
+  overflow:hidden;
+  z-index:1000;
+  /*float:left;*/
+}
+#left-affix{
+  padding:0;
+  overflow:auto;
+  width:160px;
+}
+#left-accordion{
+  margin-top:20px;
+}
+#left-accordion .left-title{
+  font-size:20px;
+}
+#left-accordion .panel-heading{
+  padding:0;
+}
+#left-accordion .panel-heading a{
+  display:block;
+  background:#282828;
+  color:#aeb2b7;
+  padding:15px 20px;
+}
+#left-accordion .panel-heading a:hover{
+  text-decoration:none;
+}
+#left-accordion .panel-heading a.collapsed{
+  background:#393939;
+}
+#left-accordion a.collapsed:hover{
+  background:#3F3F3F;
+  color:#d84c31;
+  text-decoration:none;
+}
+#left-accordion .collapse.in{
+  background:#282828;
+}
+#left-accordion .collapsing.showing{
+  background:#282828;
+}
+#left-accordion .collapsing.hiding{
+  background:#393939;
+}
+#left-accordion .panel-body{
+  border:0;
+  padding:0;
+}
+#left-accordion .panel-body a{
+  display:block;
+  color:#aeb2b7;
+  padding:10px 10px 10px 20px;
+  text-decoration:none;
+}
+#left-accordion a:hover{
+  background:#3F3F3F;
+  color:#d84c31;
+}
+#left-accordion.panel-group .panel{
+  border:0;
+  margin:0;
+}
+#headernav{
+  margin:0; 
+  border:0;
+  border-radius:0;
+  background:#393939;
+}
+#headernav a{
+  color:#aeb2b7;
+}
+#headernav a:hover{
+  color:#d84c31;
+}
+#bodynav{
+  position:fixed;
+  top:50px;
+  left:160px;
+  /*width:83.33333333%;*/
+  z-index:1030;
+  border-radius:0;
+  border-top:0;
+  border-left:0;
+  border-right:0;
+}
+#bodynav a{
+  margin:0 15px 0 15px;
+  padding-top:22px;
+  padding-bottom:8px;
+}
+#bodynav a.active{
+  border-bottom:solid 3px #d84c31;
+  padding-bottom:5px;
+}
+#bodynav a:hover{
+  border-bottom:solid 3px #E88F80;
+  padding-bottom:5px;
+}
+#right{
+	margin-top:70px;
+	margin-left:160px;
+	padding:0 15px 0 15px;
+	min-width:864px
+}
+.page-header{
+	margin-top:0;
+}
+.label-pop{
+	float:left;
+	width:0;
+	height:30px;
+}
+.list-row{
+	margin-bottom:15px;
+}
+.col-md-offset-n1{
+	margin-left:-8.33333333%;
+	z-index:-1
+}
+.panel{
+	background-color:transparent;
+}
+.form-control[readonly]{
+	cursor:pointer;
+	background-color:#fff;
+}
+.input-readonly{
+	cursor:pointer;
+	background-color:#fff;
+}
+.input-readonly[disabled]{
+	cursor:not-allowed;
+	background-color:#eee;
+}
+.ui.sidebar.panel.panel-default{
+	background:#fff;
+	top:100px;
+	left:160px;
+	overflow:auto;
+}
+.sidebar-tree{
+	display:inline-block;
+	min-width:243px;
+	margin-right:15px;
+}
+.sidebar-tree .list-group-item{
+	padding-top:0px;
+	padding-bottom:0px;
+	white-space:nowrap;
+}
+.list-group-item:hover{
+	color:#555;
+	background-color:#f5f5f5;
+}
+.sidebar-tree .list-group-item.collapse:hover,
+.sidebar-tree .list-group-item.collapsing:hover{
+	background-color:transparent;
+}
+.sidebar-tree .list-group-item .list-group{
+	margin-top:-1px;
+	margin-bottom:-1px;
+	margin-right:-16px;
+	padding-left:20px;
+}
+.sidebar-tree .list-group-item.collapsing{
+	padding-left:0px;
+	border-left-color:transparent;
+	border-bottom-color:transparent;
+}
+.sidebar-tree .list-group-item.collapse{
+	display:none;
+	padding-left:0px;
+	border-left-color:transparent;
+	border-bottom-color:transparent;
+}
+.sidebar-tree .list-group-item.collapse.in{
+	display:block;
+}
+.sidebar-tree .list-group .list-group-item:first-child{
+	border-top-left-radius:0;
+	border-top-right-radius:0;
+}
+.sidebar-tree .list-group .list-group-item:last-child{
+	border-bottom-right-radius:0;
+	border-bottom-left-radius:0;
+}
+.sidebar-tree .glyphicon{
+	cursor:pointer;
+}
+.sidebar-tree .glyphicon-plus-sign,.sidebar-tree .glyphicon-minus-sign{
+	position:absolute;
+	top:8px;
+}
+.glyphicon+.tree-item{
+	margin-left:20px;
+}
+.sidebar-tree .tree-item{
+	/*width:100%;*/
+	margin-left:20px;
+	cursor:pointer;
+	display:block;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-decoration:none;
+	color:#333;
+}
+div.error{
+	color:red;
+}
+.frontpage_img{
+  width: 100%;
+}
+.frontpage_loginarea{
+  position:fixed;
+  width: 100%;
+  z-index: 1;
+}
+.frontpage_carouselarea{
+  margin-top: -100px;
+}
+.msgreminder_items{
+  padding-left:30px;
+  padding-top:12px;
+}

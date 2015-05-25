@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+<style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+  </style>	
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">  
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">材料询价</div>
+    <ul class="nav navbar-nav navbar-right">
+			<li><a href={:U('OperMaterialManage/materialEnquiry')} class="active">材料询价</a></li>			
+    </ul>
+  </div>
+</nav>  
+		<div class="panel panel-default">			
+			<div class="panel-body">
+			<div class="page-header">	
+					<div class="col-md-4">						
+						<h4 id="material_title">全部材料</h4>
+					</div>				
+						
+					<div class="col-md-2 col-md-offset-6">
+						<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择材料"></label>
+			
+					    <a class="btn btn-info btn-block" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">材料分类</a>
+					</div>
+					<div style="clear:both"></div>
+			</div>
+                        <div class="col-md-7" style="border-right:1px solid #eee">
+                            <div class="page-header">
+                                <div class="col-md-2">
+                                <h4>材料信息</h4>
+                                </div>
+				<label class="control-label label-pop" id="material_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="请选择材料"></label>
+					<div style="clear:both"></div>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <th>材料名称</th>
+                                    <th>工种</th>
+                                    <th>品牌</th>
+                                    <th>单位</th>
+                                    <th>规格</th>
+                                </thead>
+                                <tbody id="material_list">
+                                <volist name="materialRowArray" id="vo">
+                                    <tr class="root{$vo['materialCategoryRow']['classid']} leaf{$vo['categoryid']}" data-id="{$vo['materialid']}" style="cursor:pointer">
+                                        <td>{$vo['name']}</td>
+                                        <td>{$vo['worktype']}</td>
+                                        <td>{$vo['brand']}</td>
+                                        <td>{$vo['unit']}</td>
+                                        <td>{$vo['specification']}</td>
+                                    </tr>
+                                </volist>
+                                </tbody>
+                            </table>
+                        </div>        
+                        <div class="col-md-5">
+                            <div class="page-header">
+                                <div class="col-md-6">
+                                <h4>供应商信息</h4>
+                                </div>
+                                <div class="col-md-2 col-md-offset-4">
+                                    <a class="btn btn-success btn-block" href="#"  id="add_button">新增</a>
+                                </div>
+					<div style="clear:both"></div>
+                            </div>
+                            <div class="collapse" id="add_enquiry">
+                            <form id="form_material_supply_info" class="form-horizontal">
+				<div class="form-group">
+                                    <label class="col-md-2 control-label">供应商</label>
+                                    <div class="col-md-4">
+                                <input type="text" class="form-control readonly"  readonly id="enterprise_name" data-toggle="modal" data-target="#enterpriseModal"/>
+                                    <input type="hidden" id="enterprise_id">
+				  </div>
+
+                                <div class="col-md-4 col-md-offset-2">
+                                    <a class="btn btn-primary btn-block" href="#" id="add_enquiry_submit" data-type="1" data-update="">保存</a>
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">报价</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" name="enquiry_offer" id="enquiry_offer">
+                                    </div>
+                                    <label class="col-md-2 control-label">报价日期</label>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control datepicker" name="offer_date" id="offer_date">
+                                    </div>
+                                </div>
+                            </form>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                <th>供应商</th>
+                                <th>报价</th>
+                                <th>报价日期</th>
+                                <th>操作</th>
+                                <th></th>
+                                </thead>
+                                <tbody id="enquiry_list">
+                                </tbody>
+                            </table>
+                        </div>        
+                    </div>
+                </div>
+            </div>
+	<div class="ui sidebar left overlay panel panel-default">
+		<div class="page-header">
+			<h4  style="padding-left:15px">项目列表</h4>
+		</div>
+		<div class="panel-body">
+		<ul class="list-group sidebar-tree col-md-offset-1" id="sidebar" style="padding-right:16px">				
+                    <li class="list-group-item">
+			<span class="glyphicon glyphicon-minus-sign"></span>
+                        <a href="0" class="tree-item">全部分类</a>
+                    </li>
+                    <li class="list-group-item collapse in">
+                        <ul class="list-group">
+                        <volist name="materialClassRowArray" id="level_1">
+                            <li class="list-group-item">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                            <a href="root{$level_1['classid']}" class="tree-item">{$level_1['name']}</a>
+                            </li>
+                            <li class="list-group-item collapse">
+                                <ul class="list-group">
+                                    <volist name="level_1['materialCategoryRowArray']" id="level_2">
+                                        <li class="list-group-item">
+                                            <a href="leaf{$level_2['categoryid']}" class="tree-item">{$level_2['name']}</a>
+                                        </li> 
+                                    </volist>
+                                    <li class="list-group-item">
+                                </ul>
+                            </li>
+                        </volist>
+                        </ul>
+                    </li>
+                </ul>
+                </div>
+        </div>
+<!-- 往来单位选择 -->
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>   	
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+        	<volist name="enterpriseRowArray" id="vo">
+        		<a href="{$vo.enterpriseid}" class="list-group-item 
+        		<if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+          		<div class="row">
+            		<div class="col-md-4">{$vo.name}</div>
+                	<div class="col-md-2">{$vo.contact_person}</div>
+                	<div class="col-md-3">{$vo.phone_number}</div>
+                	<div class="col-md-3">{$vo.address}</div>
+            	</div>
+            	</a>
+        	</volist>
+       
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+  </div>
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<!-- <script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_materialEnquiry.js" type="text/javascript"></script> -->
+<script>
+$(function(){
+        $("#sidebar").on("click",".tree-item",function(){
+                    var data=$("#sidebar").data("lastActive");
+			if(data){
+				data.removeClass("active");
+			}
+		$(this).parent().addClass("active");
+		$("#sidebar").data("lastActive",$(this).parent());
+                $("#material_title").text($(this).text());
+                var href=$(this).attr("href");
+                $("#material_list tr").addClass("hidden");
+                if(href==0){
+                    $("#material_list tr").removeClass("hidden");
+                }
+                $("#material_list").find("."+href).removeClass("hidden");
+		$(".ui.sidebar").sidebar('toggle');
+                return false;        
+        });
+        
+    $("#material_list tr").click(function(){
+        $("#enterprise_name").val("");
+        $("#enquiry_offer").val("");
+        $("#offer_date").val("");
+        $("#material_alert").popover("hide");
+        $("#add_enquiry").collapse("hide");
+        var data=$("#material_list").data("lastActive");
+        if(data){
+            data.removeClass("active");
+        }
+        $(this).addClass("active");
+        $("#material_list").data("lastActive",$(this));
+        var material_id=$(this).data("id");
+        $("#enquiry_list").empty();
+        $.get('{:U('OperMaterialManage/getEnquiry')}',{
+                material_id:material_id
+                },function(enquiryRow,textStatus){
+                var enquiry_item;
+                for(var i=0;i<enquiryRow.length;i++){
+                enquiry_item=$("<tr data-enterprise=\""+enquiryRow[i].enterprise_id+"\" data-material=\""+enquiryRow[i].material_id+"\" data-id=\""+enquiryRow[i].enquiry_id+"\"><td>"+enquiryRow[i].enterprise_name+"</td><td>"+enquiryRow[i].enquiry_offer+"</td><td>"+enquiryRow[i].enquiry_offerdate+"</td><td><a class=\"update_enquiry btn btn-info btn-block\" href=\"#\">修改</a></td><td><a class=\"delete_enquiry btn btn-danger\" href=\"#\">删除</a></td></tr>");
+                $("#enquiry_list").append(enquiry_item);
+
+                enquiry_item.find(".update_enquiry").click(function(){
+                    $("#add_enquiry").collapse("show");
+                    $("#enterprise_name").val($(this).parent().parent().children().eq(0).text());
+                    $("#enterprise_name").attr("disabled",true);
+                    $("#enquiry_offer").val($(this).parent().parent().children().eq(1).text());
+                    $("#offer_date").val($(this).parent().parent().children().eq(2).text());
+                    
+                    $("#enterprise_id").val($(this).parent().parent().data("enterprise"));
+                    $("#add_enquiry_submit").data("type",2);
+                    $("#add_enquiry_submit").data("update",$(this).parent().parent().data("id"));
+                    
+                    return false;    
+                });
+
+                enquiry_item.find(".delete_enquiry").click(function(){
+                    if(!confirm('确认删除?')){
+			    return false;
+                    }
+                    var enquiry_id=$(this).parent().parent().data("id");
+                    var enterprise_id=$(this).parent().parent().data("enterprise");
+                    $.post('{:U('OperMaterialManage/deleteEnquiry')}',{
+                        enquiry_id:enquiry_id
+                    });
+                    $(this).parent().parent().remove();
+                    $("#enterprises a").each(function(){
+                        if($(this).attr("href")==enterprise_id){
+                            $(this).css("display","block");
+                        }
+                        });
+                });    
+                }    
+                });    
+                    $("#enterprises a").each(function(){
+                            $(this).css("display","block");
+                        });
+    });        
+  //往来单位
+		$('#enterpriseModal').on('show.bs.modal', function (e) {
+			$("#enterpriseModal").removeData("enterprise");
+			$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+			$("#enterprises a").removeClass("active");
+
+                        var enterprise_id;
+                        $("#enquiry_list tr").each(function(){
+                            enterprise_id=$(this).data("enterprise");
+                            $("#enterprises a").each(function(){
+                                if($(this).attr("href")==enterprise_id){
+                                    $(this).css("display","none");
+                                }
+                                });
+                        });
+		});
+		
+		$("#chooseEnterprise").click(function(){
+			var data = $("#enterpriseModal").data("enterprise");
+			if (data){
+				$($("#enterpriseModal").data("dataTarget")).val(data.name);
+				$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+				$('#enterpriseModal').modal('hide');
+				}
+		});
+		
+		$("#enterprises a").click(function(e){
+			e.preventDefault();
+			var data = $("#enterpriseModal").data("lastActive");
+			if (data){
+				data.removeClass("active");
+			}
+			$(this).addClass("active");
+			$("#enterpriseModal").data("lastActive",$(this));
+			$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+			return false;
+		});
+		
+		$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$(window).resize(function(){
+			$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		});
+		
+		$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+		});
+
+    $("#add_button").click(function(){
+        var active=$("#material_list").find(".active");
+        if(active.length==0){
+            $("#material_alert").popover("show");
+            return false;
+        }
+        $("#material_alert").popover("hide");
+        $("#add_enquiry").collapse("show");
+        $("#enterprise_name").val("");
+        $("#enquiry_offer").val("");
+        $("#offer_date").val("");
+        $("#add_enquiry_submit").data("type",1);
+        $("#enterprise_name").attr("disabled",false);
+        
+    });
+
+    $("#add_enquiry_submit").click(function(){
+        var active=$("#material_list").find(".active");
+        if(active.length==0){
+            $("#material_alert").popover("show");
+            return false;
+        }
+        $("#material_alert").popover("hide");
+        
+        var material_id=active.data("id");
+        var enterprise_id=$("#enterprise_id").val();
+        var enterprise_name=$("#enterprise_name").val();
+        var enquiry_offer=$("#enquiry_offer").val();
+        var offer_date=$("#offer_date").val();
+        var add_type=$("#add_enquiry_submit").data("type");
+        var enquiry_item;
+        
+        if(add_type==1&&enterprise_id){
+        $.post('{:U('OperMaterialManage/addEnquiry')}',{
+                enterprise_id:enterprise_id,
+                enquiry_offer:enquiry_offer,
+                offer_date:offer_date,
+                material_id:material_id
+                },function(enquiry,textStatus){
+                enquiry_item=$("<tr data-enterprise=\""+enterprise_id+"\" data-material=\""+material_id+"\" data-id=\""+enquiry+"\"><td>"+enterprise_name+"</td><td>"+enquiry_offer+"</td><td>"+offer_date+"</td><td><a class=\"update_enquiry btn btn-info btn-block\" href=\"#\">修改</a></td><td><button class=\"delete_enquiry btn btn-danger\" href=\"#\">删除</button></td></tr>");
+                $("#enquiry_list").append(enquiry_item);
+                
+                enquiry_item.find(".update_enquiry").click(function(){
+                    $("#add_enquiry").collapse("show");
+                    $("#enterprise_name").val($(this).parent().parent().children().eq(0).text());
+                    $("#enterprise_name").attr("disabled",true);
+                    $("#enquiry_offer").val($(this).parent().parent().children().eq(1).text());
+                    $("#offer_date").val($(this).parent().parent().children().eq(2).text());
+                    
+                    $("#enterprise_id").val($(this).parent().parent().data("enterprise"));
+                    $("#add_enquiry_submit").data("type",2);
+                    $("#add_enquiry_submit").data("update",$(this).parent().parent().data("id"));
+                    return false;
+                });
+
+                enquiry_item.find(".delete_enquiry").click(function(){
+                    if(!confirm('确认删除?')){
+			    return false;
+                    }
+                    var enquiry_id=$(this).parent().parent().data("id");
+                    var enterprise_id=$(this).parent().parent().data("enterprise");
+                    $.post('{:U('OperMaterialManage/deleteEnquiry')}',{
+                        enquiry_id:enquiry_id
+                    });
+                    $(this).parent().parent().remove();
+                    $("#enterprises a").each(function(){
+                        if($(this).attr("href")==enterprise_id){
+                            $(this).css("display","block");
+                        }
+                        });
+                });    
+                });
+        $("#enterprise_name").val("");
+        $("#enquiry_offer").val("");
+        $("#offer_date").val("");
+        $("#enterprise a").attr("href").eq(enterprise_id) 
+        }
+
+        if(add_type==2){
+            var enquiry_id=$(this).data("update");
+            $.post('{:U('OperMaterialManage/updateEnquiry')}',{
+                enquiry_id:enquiry_id,
+                enterprise_id:enterprise_id,
+                enquiry_offer:enquiry_offer,
+                offer_date:offer_date,
+                });
+            $("#enquiry_list").children().each(function(){
+                if($(this).data("id")==enquiry_id){
+                    $(this).children().eq(0).text(enterprise_name);
+                    $(this).children().eq(1).text(enquiry_offer);
+                    $(this).children().eq(2).text(offer_date);
+                }        
+            });
+        $("#enterprise_name").val("");
+        $("#enquiry_offer").val("");
+        $("#offer_date").val("");
+        $("#add_enquiry").collapse("hide");
+        }
+        return false;
+
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!--
+<html>
+<head>
+   <title>新增用户</title>
+ </head>
+ <body>
+    nclude file="./Tpl/Part/header.html" /><br/><br/><br/>
+    新增用户<br/>
+    {$message}<br/>
+    从员工中选择：
+        <select name="employerid">
+            <volist name="employer_idName_array" id="vo">
+                <option value={$vo.employerid}>{$vo.employerid}:{$vo.name}</option>
+            </volist>
+        </select>
+
+
+    <br/>
+ 	
+    <form action={:U('OperSystemManage/addUserSubmit')} method="POST">
+ 		用户名：<input type="text" name="username" /><br/>
+        密码：<input type="password" name="password" /><br/>
+        密码确认：<input type="password" name="passwordconfirm" /><br/>
+    	真实姓名：<input type="text" name="real_name"/><br/>
+    	部门：<input type="text" name="department"/><br/>
+    	职位：<input type="text" name="position"/><br/>
+    	
+    	身份证号：<input type="text" name="id_number"/><br/>
+    	性别：
+    		<input type="radio" name="gender" value="男" checked="checked" />男 
+            <input type="radio" name="gender" value="女" />女 <br/>
+              
+        联系方式：<input type="text" name="phone_number"/><br/>
+        email：<input type="text" name="email"/><br/>
+    	学历：<input type="text" name="deploma"/><br/>
+        生日：<input type="text" name="birthday"/><br/>
+        工资：<input type="text" name="salary"/><br/>
+        入职时间：<input type="text" name="entrytime"/><br/>
+        <volist name="roleRowArray" id="vo">	
+            <input type="radio" name="roleid" value="{$vo.roleid}"/>{$vo.rolename}<br/>
+        </volist>
+
+ 		<!--
+ 		<input type="hidden" name="rolename_old" value={$rolename} />
+ 		角色名：<input type="text" name="rolename" value={$rolename} /><br/>
+ 		功能列表：<br/>
+ 		<volist name="operationRowArray" id="vo">
+ 			<if condition="in_array($vo['operationid'],$operationidArray)">
+ 				<input type="checkbox" name="operation_{$vo['operationid']}" value="9" checked="true"/>{$vo.operationname}<br/>
+ 				<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
+ 			</if>
+ 		</volist>
+ 	
+ 		<input type="submit" value="提交"/>
+ 	</form>
+ </body>
+</html>
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">用户维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{:U('OperSystemManage/addUser')}">新增用户</a></li>
+      <li><a href="{:U('OperSystemManage/listUser')}" class="active">已有用户</a></li>
+    </ul>
+  </div>
+</nav>
+
+	<div class="panel panel-default">	
+	<div class="panel-body">
+		<form id="userForm" action="{:U('OperSystemManage/editUserSubmit')}" method="POST" class="form-horizontal">
+            <input type="hidden" name="userid" value="{$userid}"/>
+            <div class="page-header">
+                <div class="col-md-8">
+                    <h4>编辑用户信息：{$username}</h4>
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+                </div>
+				<div class="col-md-1">
+					<a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteUser',array('userid'=>$userid))}>删除</a>
+				</div>
+                <div class="col-md-1">
+                    <a class="btn btn-default btn-block" href="{:U('OperSystemManage/listUser')}">取消</a>
+                </div>        
+                <div style="clear:both"></div>
+            </div>
+			<div class="form-group">
+                <label class="col-md-2 control-label">所属公司</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="companyid">
+                        <option value="">请选择</option>
+                        <volist name="companyRowArray" id="vo">
+                            <if condition="$companyid eq $vo['companyid']">
+                                <option value="{$vo.companyid}" selected>{$vo.name}</option>
+                            <else/><option value="{$vo.companyid}">{$vo.name}</option>
+                            </if>
+                        </volist>
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">所属部门</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="departmentid">
+                        <option value="">请选择</option>
+                        <volist name="departmentRowArray" id="vo">
+                            <if condition="$departmentid eq $vo['departmentid']">
+                                <option value="{$vo.departmentid}" selected>{$vo.name}</option>
+                            <else/><option value="{$vo.departmentid}">{$vo.name}</option>
+                            </if>
+                        </volist>
+                    </select>
+                </div>
+                <label class="col-md-2 control-label">员工姓名</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="employerid" id="employer">
+                        <option value="">请选择[括号内为员工编号]</option>
+                        <volist name="employerBriefArray" id="vo">
+                            <if condition="$employerid eq $vo['employerid']">
+                                <option value="{$vo.employerid}" selected>{$vo.name}[{$vo.employer_number}]</option>
+                            <else/><option value="{$vo.employerid}">{$vo.name}[{$vo.employer_number}]</option>
+                            </if>
+                        </volist>
+                    </select>
+                </div>
+                
+            </div>
+            <hr>
+            
+    		<div class="form-group">
+            	<label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control"  name="username" value="{$username}" id="username" readonly/>
+                </div>
+           		<label class="col-md-2 control-label">角色</label>
+                <div class="col-md-2">
+                    <select class="form-control" name="roleid" id="role">
+                        <option value="">请选择</option>
+                        <volist name="roleRowArray" id="vo">
+                        <if condition="$vo.roleid eq $myRoleid">
+                            <option value="{$vo.roleid}" selected>{$vo.rolename}</option>
+                        <else/><option value="{$vo.roleid}">{$vo.rolename}</option>
+                        </if>
+                        </volist>
+                    </select>
+                </div>
+				<label class="col-md-2 control-label">联系方式</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control"  name="phone_number" value="{$phone_number}"/>
+				</div>	
+            </div>
+    		<div class="form-group">
+            	<div class="col-md-4">
+                	<div class="form-group">
+                        <label class="col-md-6 control-label">登录密码</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="password" id="login_password"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-6 control-label">授权密码</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="verify_password" id="verify_password"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                	<div class="form-group">
+                        <label class="col-md-6 control-label">登录密码确认</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="password_confirm" id="login_password_confirm"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-6 control-label">授权密码确认</label>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control"  name="verify_password_confirm" id="verify_password_confirm"/>
+                        </div>
+                    </div>
+                </div>
+                <label class="col-md-2 control-label">用户备注</label>
+                <div class="col-md-2">
+                    <textarea type="text" class="input-xlarge form-control"  name="remark" rows="3">{$remark}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">项目授权模式</label>
+                <div class="col-md-2">
+                	<div class="radio">
+                    	<label>
+                            <if condition="$project_authority_mode eq 1">
+                        	   <input type="radio" name="project_authority_mode" value="1" checked="checked" />部门所属
+                            <else/><input type="radio" name="project_authority_mode" value="1"/>部门所属
+                            </if>
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <if condition="$project_authority_mode eq 2">
+                        	   <input type="radio" name="project_authority_mode" value="2" checked/>独立授权
+                            <else/><input type="radio" name="project_authority_mode" value="2"/>独立授权
+                            </if>
+                        </label>
+                    </div>
+                </div>
+                <label class="col-md-2 control-label">权限设置</label>
+				<div class="col-md-2">
+                	<div class="checkbox">
+                    	<label>
+                        <if condition="$is_admin eq 1">
+                        	<input type="checkbox" name="is_admin" checked/>是否是部门管理员
+                        <else/><input type="checkbox" name="is_admin"/>是否是部门管理员
+                        </if>
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        <if condition="$is_leader eq 1">
+                            <input type="checkbox" name="is_leader" checked/>是否是领导
+                        <else/><input type="checkbox" name="is_leader"/>是否是领导
+                        </if>
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        <if condition="$is_salary_forbidden eq 1">
+                            <input type="checkbox" name="is_salary_forbidden" checked/>是否员工工资查看
+                        <else/><input type="checkbox" name="is_salary_forbidden"/>是否员工工资查看
+                        </if>
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                    	<label>
+                        <if condition="$is_materialprice_forbidden eq 1">
+                            <input type="checkbox" name="is_materialprice_forbidden" checked/>是否材料单价禁看
+                        <else/><input type="checkbox" name="is_materialprice_forbidden"/>是否材料单价禁看
+                        </if>
+                        </label>
+                    </div>
+				</div>
+            </div>
+    
+	</form>
+	</div>
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/validate_user.js" type="text/javascript"></script>
+</body>
+</html>

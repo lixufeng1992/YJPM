@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	tbody tr{
+		cursor:pointer;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right" style="min-width:1500px">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">材料采购单</div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{:U('OperMaterialManage/addPurchaseOrder')}">新增材料采购单</a></li>
+          <li><a href="{:U('OperMaterialManage/listPurchaseOrder')}" class="active">已有材料采购单</a></li>
+        </ul>
+      </div>
+    </nav> 
+    <div class="panel-group"> 
+        <div class="panel panel-default">			
+            <div class="panel-body">		
+                <div class="page-header">
+                                                <div class="col-md-4">
+                                                <h4>已有材料采购单</h4>
+                                                </div>
+					<div class="col-md-4">
+						<h4 id="project_name"></h4>
+					</div>
+					<div class="col-md-1 col-md-offset-1">
+						<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+					</div>
+					<div class="col-md-2">
+						<a disabled href="#" class="btn btn-primary btn-block" id="to_edit_link">编辑</a>
+					</div>
+					<div style="clear:both"></div>
+				</div>
+                <table class="table">
+					<thead>
+							<th>审核</th>
+							<th>对应单据</th>
+							<th>采购单位</th>
+							<th>项目名称</th>
+							<th>发生日期</th>
+							<th>经办人</th>
+							<th>金额</th>
+							<th>默认库房</th>
+							<th>默认库管</th>
+							<th>进场方式</th>
+							<th>创建人</th>
+							<th>创建时间</th>
+							<th>审核人</th>
+							<th>审核时间</th>
+							<th>操作</th>
+					</thead>
+					<tbody>
+						<volist name="purchaseOrderArray" id="order">
+						<tr data-id="{$order.order_id}" class="project{$order.project_id}" <if condition="$order[checked] eq 1">disabled="true"<else/></if>>
+							<td class="check_state"><if condition="$order[checked] eq 1">已审核<else/>未审核</if></td>
+							<td>{$order.document}</td>
+							<td>{$order.enterprise_name}</td>
+							<td>{$order.project_name}</td>
+							<td>{$order.happen_date}</td>
+							<td>{$order.transactor}</td>
+							<td>{$order.price}</td>
+							<td>{$order.default_warehouse}</td>
+							<td>{$order.default_administrator}</td>
+							<td>{$order.in_method}</td>
+							<td>{$order.creater_name}</td>
+							<td>{$order.create_date}</td>
+							<td class="checker"><if condition="$order[checked] eq 1">{$order.checker_name}<else/></if></td>
+							<td class="check_date"><if condition="$order[checked] eq 1">{$order.check_date}<else/></if></td>
+							<td>
+							<if condition="$order[checked] eq 1">
+							<button class="btn btn-danger checked">取消审核</button>
+							<else/>
+							<button class="btn btn-success unchecked">通过审核</button>
+							</if>
+						</tr>
+						</volist>
+						
+					</tbody>
+				</table>
+            </div>  
+        </div> 
+    </div>
+</div>
+
+<!--左侧资源树图-->
+<div class="ui sidebar left overlay panel panel-default active">
+	<div class="page-header">
+		<h4 style="padding-left:15px">项目与机构列表</h4>
+	</div>
+	<div class="panel-body">
+		<ul class="list-group sidebar-tree" id="project_tree">
+			<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-minus-sign"></span>
+				</if>
+				<a href="#" class="tree-item">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item">
+										<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+		</volist>
+		
+<volist name="resourceRowArray" id="vo_level_1">
+<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">				
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-minus-sign"></span>
+				</if>
+				<a href="#" class="tree-item">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">				
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item">
+									<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>								
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>					
+					</volist>
+				</ul>
+			</li>
+			</if>			
+			</if>
+</volist>
+		</ul>
+	</div>
+</div>
+
+
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+$().ready(function(){
+	 $("tbody").on("click","tr:not([disabled])",function(e){
+		var data=$("table").data("lastActive");
+		if(data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");			
+		$("table").data("lastActive",$(this));
+        $("#to_edit_link").attr("href","{:U('OperMaterialManage/editPurchaseOrder')}?order_id="+$(this).data("id"));
+		$("#to_edit_link").removeAttr("disabled");
+    });
+	$("table").on("click",".checked",function(e){
+		var btn = $(this);
+		var tr =btn.parent().parent(); 
+		$.post("{:U('OperMaterialManage/uncheckPurchaseOrder')}",
+		{order_id:tr.data("id")},
+		function(result){
+			tr.find(".checker").text("");
+			tr.find(".check_date").text("");
+			tr.find(".check_state").text("未审核");
+			tr.attr("disabled",false);
+			btn.removeClass("checked").removeClass("btn-danger").addClass("btn-success").addClass("unchecked").text("通过审核");
+		},'json');
+		return false;
+	})
+	$("table").on("click",".unchecked",function(e){
+		var btn = $(this);
+		var tr =btn.parent().parent(); 
+		$.post("{:U('OperMaterialManage/checkPurchaseOrder')}",
+		{order_id:tr.data("id")},
+		function(result){
+			tr.find(".checker").text(result[0]);
+			tr.find(".check_date").text(result[1]);
+			tr.find(".check_state").text("已审核");
+			tr.attr("disabled",true);
+			btn.removeClass("unchecked").removeClass("btn-success").addClass("btn-danger").addClass("checked").text("取消审核");
+			if ($("table").data("lastActive") && $("table").data("lastActive").data("id")==tr.data("id")){
+				$("table").data("lastActive").removeClass("active");
+				$("table").removeData("lastActive");
+				$("#to_edit_link").attr("href","#");
+				$("#to_edit_link").attr("disabled",true);
+			}
+		},'json');
+		return false;
+	})
+	$("#project_tree").on("click","a",function(e){
+		e.preventDefault();
+		if($(this).attr("href")!="#"){
+			$("tbody tr:not(.project"+$(this).attr("href")+")").hide();
+			$(".project"+$(this).attr("href")).show();
+			$("#project_name").text($(this).text().trim());
+		}else{
+			$("tbody tr").show();
+			$("#project_name").text("所有采购单");
+		}
+		$(".ui.sidebar").sidebar("hide");
+	})
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!--
+<html>
+ <head>
+   <title>用户中心</title>
+ </head>
+ <body>
+ 	nclude file="./Tpl/Part/header.html" /><br/><br/><br/>
+ 	用户名：{$userRow.username}<br/>
+ 	所属公司：{$companyName}<br/>
+ 	部门：{$departmentName}<br/>
+ 	联系电话：{$userRow.phone_number}<br/>
+ 	角色：{$roleName}<br/>
+ 	<a href={:U('OperSystemManage/changePassword')}>修改密码</a><br/>
+ </body>
+</html>
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">个人信息</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperSystemManage/userCenter')} class="active">个人信息</a></li>
+      <li><a href={:U('OperSystemManage/userPassword')}>登录密码</a></li>
+      <li><a href={:U('OperSystemManage/userVerifyPassword')}>授权密码</a></li>
+    </ul>
+  </div>
+</nav>
+	<div class="panel panel-default">		
+		<div class="panel-body">
+			<div class="page-header">
+			<h4>基础信息</h4>
+			</div>
+			<div class="col-md-3">
+				<label class="col-md-4">用户名</label>
+				<div class="col-md-7">
+					<input type="text" class="form-control" value="{$userRow.username}" readonly  />
+					<br>
+				</div>
+			</div>
+			<div class="col-md-10">
+			</div>
+			<div class="col-md-3">
+				<label class="col-md-4">联系电话</label>
+				<div class="col-md-7">
+					<input type="text" class="form-control" value="{$userRow.phone_number}" readonly  />
+					<br>
+				</div>
+			</div>
+			<div class="col-md-10">
+			</div>
+			<div class="col-md-3">
+				<label class="col-md-4">所属公司</label>
+				<div class="col-md-7">
+					<input type="text" class="form-control" value="{$companyName}" readonly  />
+					<br>
+				</div>
+			</div>
+			<div class="col-md-10">
+			</div>
+			<div class="col-md-3">
+				<label class="col-md-4">所属部门</label>
+				<div class="col-md-7">
+					<input type="text" class="form-control" value="{$departmentName}" readonly  />
+					<br>
+				</div>
+			</div>
+			<div class="col-md-10">
+			</div>
+			<div class="col-md-3">
+				<label class="col-md-4">角色</label>
+				<div class="col-md-7">
+					<input type="text" class="form-control" value="{$roleName}" readonly  />
+					<br>
+				</div>
+			</div>
+		</div>		
+	</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+</body>
+</html>

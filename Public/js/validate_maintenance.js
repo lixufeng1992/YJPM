@@ -1,0 +1,31 @@
+$().ready(function(){
+	$("#maintenanceForm").validate({
+		rules:{
+		/*	
+                    prname:{
+				required:true,
+				maxlength:30
+			},*/
+			total_quantites:{
+				number:true
+			},
+			construct_layers:{
+				number:true
+			},
+			receiveperson_phonenumber:{
+				phoneCN:true
+			},
+			pm_name:{
+				maxlength:20
+			},
+			vice_pm_name:{
+				maxlength:20
+			},
+			receivestuff_address:{
+				maxlength:30
+			}
+		},
+		errorElement:"div"
+	//	ignore:""
+	});
+});

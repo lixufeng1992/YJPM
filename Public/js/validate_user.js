@@ -1,0 +1,37 @@
+$().ready(function(){
+	$("#userForm").validate({
+		rules:{
+			employerid:{
+				required:true
+			},
+			roleid:{
+				required:true
+			},
+			username:{
+				required:true,
+				maxlength:20
+			},
+			password:{
+				required:true,
+				maxlength:20
+			},
+			password_confirm:{
+				equalTo:"#login_password"
+			},
+			verify_password:{
+				required:true,
+				maxlength:20
+			},
+			verify_password_confirm:{
+				equalTo:"#verify_password"
+			},
+			phone_number:{
+				phoneCN:true
+			},
+			remark:{
+				maxlength:100
+			}
+		},
+		errorElement:"div"
+	});
+});

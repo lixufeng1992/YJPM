@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+  .list-row a.list-row-a{
+	  color:#333;
+	  cursor:pointer;
+  }
+  .list-row a.list-row-a label{
+	  color:#333;
+	  cursor:pointer;
+	  white-space:nowrap;
+	  margin-top:7px;
+	  overflow:hidden;
+  }
+	
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+   <div class="navbar-header navbar-brand">项目开拓</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperProjectManage/addProject')}>新增项目</a></li>
+      <li><a href={:U('OperProjectManage/listProject')} class="active">已有项目</a></li>
+    </ul>
+  </div>
+</nav> 
+  
+  <div class="panel-group" id="accordion"> 
+		<div class="panel panel-default">			
+		<div class="panel-body">		
+		<div class="page-header">
+			<h4>已有项目</h4>
+		</div>
+        <div class="container-fluid">
+        	<div class="row list-row">
+               <label class="control-label col-md-2">当前状态</label>
+               <label class="control-label col-md-3">项目名称</label>
+               <label class="control-label col-md-2">业务员</label>
+               <label class="control-label col-md-2">项目类型</label>
+            </div>
+          <volist name="projectRowArray" id="vo" key="index">
+            <div class="row list-row">
+                <a href={:U('OperProjectManage/editProject',array('projectid'=>$vo['projectid']))} class="list-row-a">
+                    <label class="control-label col-md-2">{$currentstatusArray[$index-1]}</label>
+                    <label class="control-label col-md-3">{$vo.projectname}</label>
+                    <label class="control-label col-md-2">{$vo.clerkname}</label>
+                    <label class="control-label col-md-2">{$vo.project_type}</label>
+                </a>
+                <div class="col-md-1 col-md-offset-1">
+                    <a class="btn btn-primary btn-block" href={:U('OperProjectManage/editProject',array('projectid'=>$vo['projectid']))}>编辑</a>
+                </div>
+                <div class="col-md-1">
+                    <a class="btn btn-danger btn-block" href={:U('OperProjectManage/deleteProject',array('projectid'=>$vo['projectid']))}>删除</a>
+                </div>
+            </div>
+          </volist>
+        </div>  
+	</div>  
+  </div> 
+</div>
+</div>
+<include file="./Tpl/Part/script.html" />
+</body>
+</html>

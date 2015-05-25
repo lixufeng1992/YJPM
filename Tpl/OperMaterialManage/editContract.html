@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>亿建工程管理系统</title>
+<include file="./Tpl/Part/css.html" />
+<style>
+a .col-md-2,a .col-md-3,a .col-md-4{
+  overflow:hidden;
+  white-space:nowrap;
+}
+</style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right" style="min-width:1500px">
+  <nav class="navbar navbar-default" role="navigation" id="bodynav">
+    <div class="container-fluid">
+      <div class="navbar-header navbar-brand">编辑采购合同</div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{:U('OperMaterialManage/addContract')}">新增采购合同</a></li>
+        <li><a href="{:U('OperMaterialManage/listContract')}" class="active" >已有采购合同</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="panel-group"> 
+    <div class="panel panel-default">			
+      <div class="panel-body">
+
+        <form class="form-horizontal" action="{:U('OperMaterialManage/editContractSubmit')}" method="post"> 		
+           <div class="page-header">
+             <div class="col-md-8">
+                <h4>编辑采购合同：{$resourceRow['resource_name']}</h4>
+             </div>
+            <div class="col-md-2">
+              <input id="contract_info_submit" type="submit" class="btn btn-primary btn-block" value="保存"/>
+            </div>
+            <div class="col-md-1">
+              <a id="contract_delete" class="btn btn-danger btn-block" href="{:U('OperMaterialManage/deleteContract',array('contractid'=>$contractRow['contractid']))}">删除</a>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-default btn-block" href="{:U('OperMaterialManage/listContract')}">取消</a>
+            </div>
+            <div style="clear:both"></div>
+          </div>
+          <input type="hidden" name="contractid" value="{$contractRow['contractid']}">
+          <div class="form-group">
+            <div id="review" data-val="{$contractRow['check_userid']}" class="col-md-2">
+              <if condition="$contractRow['check_userid'] eq 0">
+              未审核
+              <else/>
+              已审核 
+              </if>
+            </div>
+
+            <div class="col-md-2">  
+              <if condition="$contractRow['check_userid'] eq 0">
+              未结算
+              <else/>
+              已结算
+              </if>
+            </div>
+          </div>
+
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="active">
+            <a href="#basic_info" role="tab" data-toggle="tab">项目基本信息</a>
+            </li>
+            <li>
+            <a href="#contract_mark" role="tab" data-toggle="tab">合同备注</a>
+            </li>
+            <li>
+            <a href="#contract_attachment" role="tab" data-toggle="tab">合同附件</a>
+            </li>
+            <li>
+            <a href="#contract_content" role="tab" data-toggle="tab">合同内容</a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+
+            <div class="tab-pane active" id="basic_info">
+              <br>
+              <div class="page-header">
+                <div class="col-md-4">						
+                  <h4>基本信息</h4>
+                </div>		
+                <div style="clear:both"></div>
+              </div> 
+              <div class="form-group">
+                <label class="col-md-2 control-label">合同编号</label>
+                <div class="col-md-2">
+                  <input class="form-control" type="text" name="contract_number" value="{$contractRow['contract_number']}"/>
+                </div>
+                <label class="col-md-2 control-label">合同名称</label>
+                <div class="col-md-2">
+                  <input class="form-control" type="text" name="name" value="{$contractRow['name']}"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">甲方</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" readonly type="text" name="" data-toggle="modal" data-target="#enterpriseModal" value="{$contractRow['a_part_enterprise_name']}"/>
+                  <input type="hidden" name="a_part_enterpriseid" value="{$contractRow['a_part_enterpriseid']}"/>  
+                </div>
+                <label class="col-md-2 control-label">甲方法人</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['a_part_enterprise_legal_person']}" readonly />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">甲方电话</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['a_part_enterprise_phone_number']}" readonly />
+                </div>
+                <label class="col-md-2 control-label">甲方地址</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['a_part_enterprise_address']}" readonly />
+                </div>
+                <label class="col-md-2 control-label">甲方邮编</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['a_part_enterprise_zip_number']}" readonly />
+                </div> 
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">供货商</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" readonly type="text" name="" value="{$contractRow['supplier_enterprise_name']}" data-toggle="modal" data-target="#enterpriseModal"/>
+                  <input type="hidden" name="b_part_enterpriseid" value="{$contractRow['supplier_enterpriseid']}"/>  
+                </div>
+                <label class="col-md-2 control-label">供货商法人</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['supplier_enterprise_legal_person']}" readonly />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">供货商电话</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['supplier_enterprise_phone_number']}" readonly />
+                </div>
+                <label class="col-md-2 control-label">供货商地址</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['supplier_enterprise_address']}" readonly />
+                </div>
+                <label class="col-md-2 control-label">供货商邮编</label>
+                <div class="col-md-2">
+                  <input class="form-control readonly" type="text" name="" value="{$contractRow['supplier_enterprise_zip_number']}" readonly />
+                </div> 
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-2 control-label">责任人</label>
+                <div class="col-md-2">
+                  <input class="form-control" type="text" name="duty_officer" value="{$contractRow['duty_officer']}"/>
+                </div>
+                <label class="col-md-2 control-label">所属公司</label>
+                <div class="col-md-2">
+                  <select class="form-control" name="companyid">
+                    <volist name="companyRowArray" id="vo">
+                    <option value="{$vo.companyid}" <if condition="$vo['companyid'] eq $contractRow['companyid']">selected</if>>{$vo.name}</option>
+                    </volist>
+                  </select>
+                </div>
+                <label class="col-md-2 control-label">部门</label>
+                <div class="col-md-2">
+                  <select class="form-control" name="departmentid" value="{$contractRow['departmentid']}">
+                    <volist name="departmentRowArray" id="vo">
+                    <option value="{$vo.departmentid}" <if condition="$vo['departmentid'] eq $contractRow['departmentid']">selected</if>>{$vo.name}</option>
+                    </volist>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-2 control-label">合同订立形式</label>
+                <div class="col-md-2">
+                  <select class="select-create-true" name="build_pattern">
+                    <option></option>
+                    <option value="{$contractRow['build_pattern']}" selected>{$contractRow['build_pattern']}</option>
+                    <option value="书面合同">书面合同</option>
+                    <option value="口头合同">口头合同</option>
+                  </select>
+                </div>
+                <label class="col-md-2 control-label">合同签订日期</label>
+                <div class="col-md-2">
+                  <input class="form-control datepicker" type="text" name="sign_date" value="{$contractRow['sign_date']}"/>
+                </div>
+                <label class="col-md-2 control-label">付款基数</label>
+                <div class="col-md-2">
+                  <select class="form-control" name="pay_baseprice_according">
+                    <option value="按合同金额" <if condition="$contractRow['pay_baseprice_according'] eq '按合同金额'">selected</if>>按合同金额</option>
+                    <option value="按执行金额" <if condition="$contractRow['pay_baseprice_according'] eq '按执行金额'">selected</if>>按执行金额</option>
+                  </select>
+                </div>
+              </div>   
+
+              <div class="form-group">
+                <label class="col-md-2 control-label">应收履约保证金</label>
+                <div class="col-md-2">
+                  <input class="form-control input_alert" type="text" name="margin_amount" value="{$contractRow['margin_amount']}"/>
+                  <label data-container="body" data-toggle="popover" data-placement="bottom" data-content="履约保证金在退还时需先将本项金额改为0，再执行付款"></label>
+                </div>
+                <label class="col-md-2 control-label">付款限额</label>
+                <div class="col-md-2">
+                  <input class="form-control input_alert" type="text" name="pay_limit" value="{$contractRow['pay_limit']}"/>
+                  <label data-container="body" data-toggle="popover" data-placement="bottom" data-content="占付款基数的百分比（如果为0则不限制）"></label>
+                </div>
+                <label class="col-md-4 control-label">
+                  <input type="checkbox" name="check_grossamount_control" value="1" <if condition="$contractRow['check_grossamount_control'] eq 1">checked</if>/>验收总额控制（当累计执行验收总额超过合同金额不允许保存验收单）
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-2 control-label">合同主要内容</label>
+                <div class="col-md-10">
+                  <textarea class="input-xlarge form-control" rows="4" name="main_content">{$contractRow['main_content']}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">其他约束条件</label>
+                <div class="col-md-10">
+                  <textarea class="input-xlarge form-control" rows="4" name="other_limit_condition">{$contractRow['other_limit_condition']}</textarea>
+                </div>
+              </div>
+              <input type="hidden" name="resource_id" value="{$contractRow['resource_id']}"/>
+            </div>
+
+            <div class="tab-pane" id="contract_mark">
+              <br>
+              <div class="page-header">
+                <div class="col-md-4">
+                  <h4>合同备注</h4>
+                </div>
+
+                <div style="clear:both"></div>
+              </div>
+              <textarea class="input-xlarge form-control" rows="3" name="remark">{$contractRow['remark']}</textarea> 
+            </div>
+          </form>
+          <div class="tab-pane" id="contract_attachment">
+            <br>
+            <div class="page-header">
+              <div class="col-md-4">
+                <h4>合同文本</h4>
+              </div>
+              <div class="col-md-2 col-md-offset-6">
+                <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#addContractModal">新增</a>
+              </div>
+              <div style="clear:both"></div>
+            </div>
+            <table class="table table-hover">
+              <thead>
+                <th>名称</th>
+                <th>说明</th>
+                <th>扩展名</th>
+                <th>创建人</th>
+                <th>最后修改人</th>
+                <th>审核状态</th>
+                <th>操作</th>
+              </thead>
+              <tbody id="document_items">
+              <volist name="contractDocumentRowArray" id="vo">
+              <tr data-id="{$vo['documentid']}">
+                <td>{$vo['name']}</td>
+                <td>{$vo['remark']}</td>
+                <td>{$vo['suffix']}</td>
+                <td>{$vo['create_userInfo']}</td>
+                <td>{$vo['lastupdate_userInfo']}</td>
+                <td>
+                  <if condition="$vo['checked_userid'] eq 0">
+                  未审核
+                  <else />
+                  已审核
+                  </if>
+                </td>
+                <td class="operations_document"><button type="button" class="btn btn-primary checkDocument">
+                    <if condition="$vo['checked_userid'] eq 0">
+                    审核
+                    <else />
+                    取消
+                    </if>
+                </button>&nbsp;&nbsp;<button type="button" class="btn btn-primary editContractDocument" data-toggle="modal" data-target="#editContractModal">修改</button>&nbsp;&nbsp;<button type="button" class="btn btn-success" onclick="window.open('{:U('OperMaterialManage/editContract_downloadDocument',array('documentid'=>$vo['documentid']))}')">下载</button>&nbsp;&nbsp;<button type="button" class="btn btn-danger">删除</button></td>
+              </tr>
+              </volist>
+              </tbody>
+            </table>
+            <div class="page-header">
+              <div class="col-md-4">
+                <h4>合同原件</h4>
+              </div>
+              <div class="col-md-2 col-md-offset-6">
+                <a class="btn btn-primary btn-block" data-toggle="modal" data-target="#addContractOriginalModal">新增</a>
+              </div>
+              <div style="clear:both"></div>
+            </div>
+            <table class="table table-hover">
+              <thead>
+                <th>名称</th>
+                <th>扩展名</th>
+                <th>说明</th>
+                <th>操作</th>
+              </thead>
+              <tbody id="documentorigin_items">
+              <volist name="contractDocumentOriginRowArray" id="vo">
+              <tr data-id="{$vo['documentid']}">
+                <td>{$vo['name']}</td>
+                <td>{$vo['suffix']}</td>
+                <td>{$vo['remark']}</td>
+                <td>
+                  <button type="button" class="btn btn-primary editContractDocumentOrigin" data-toggle="modal" data-target="#editContractOriginalModal">编辑</button>&nbsp;&nbsp;<button type="button" class="btn btn-success" onclick="window.open('{:U('OperMaterialManage/editContract_downloadDocumentOrigin',array('documentid'=>$vo['documentid']))}')">下载</button>&nbsp;&nbsp;<button type="button" class="btn btn-danger">删除</button>
+                </td>
+              </tr>
+              </volist>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane" id="contract_content">
+            <br>
+            <hr>
+            <div class="page-header"> 
+              <div class="col-md-2">            
+                <h4>材料列表</h4>
+              </div>
+              <div class="col-md-2">
+                <h5 id="amount_title">累计金额：</h5>
+                <input type="hidden" name="amount">
+              </div>
+              <div class="col-md-2 col-md-offset-4">
+                <button id="btn_import" type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#materialPlanModal">导入</button>
+              </div>
+              <div class="col-md-2">
+                <button id="btn_addEnquirys" type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#materialModal">新增</button>
+              </div>
+              <div style="clear:both"></div>
+            </div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>工种</th>
+                  <th>名称</th>
+                  <th>规格</th>
+                  <th>单位</th>
+                  <th>供应商</th>
+                  <th>报价（元）</th>
+                  <th>数量</th>
+                  <th>金额（元）</th>
+                  <th>备注</th>
+                  <th>计划单号</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="details_list">
+              <tr data-contentid="0" class="template" style="display:none">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <button data-toggle="modal" data-target="#editContentModal" type="button" class="btn btn-primary btn_contractContent_edit">修改</button>
+                  <button type="button" class="btn btn-danger contractContent_delete">删除</button>
+                </td>
+              </tr>
+              <volist name="contractContentDisplayRowArray" id="vo">
+              <tr data-contentid="{$vo['contentid']}">
+                <td>{$vo['worktype']}</td>
+                <td>{$vo['name']}</td>
+                <td>{$vo['specification']}</td>
+                <td>{$vo['unit']}</td>
+                <td>{$vo['enterprise_name']}</td>
+                <td>{$vo['enquiry_offer']}</td>
+                <td>{$vo['amount']}</td>
+                <td>{$vo['amount']*$vo['enquiry_offer']}</td>
+                <td>{$vo['remark']}</td>
+                <td>{$vo['plan_number']}</td>
+                <td>
+                  <button data-toggle="modal" data-target="#editContentModal" type="button" class="btn btn-primary btn_contractContent_edit">修改</button>
+                  <button type="button" class="btn btn-danger contractContent_delete" href="{$vo['contentid']}">删除</button>
+                </td>
+              </tr>
+              </volist>
+              </tbody>
+            </table>
+            <!-- 
+
+
+      <div class="col-md-2 col-md-offset-6">
+          <a class="btn btn-info btn-block" data-toggle="modal" data-target="#materialModal" id="add_contract_content">新增</a>
+            </div>
+         <div style="clear:both"></div>
+       </div>
+
+        <table class="table table-hover">
+        <thead>
+            <th>类别</th>
+            <th>名称</th>
+            <th>单位</th>
+            <th>数量</th>
+            <th>单价</th>
+            <th>金额</th>
+            <th>计划单号</th>
+            <th>内容性质</th>
+            <th>备注</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="contractcontent_items">
+          <volist name="contractContentRowArray" id="vo">
+          <tr data-id="{$vo['contentid']}">
+            <td>{$vo['category']}</td>
+            <td>{$vo['name']}</td>
+            <td>{$vo['unit']}</td>
+            <td>{$vo['amount']}</td>
+            <td>{$vo['price_perunit']}</td>
+            <td>{$vo['amount']*$vo['price_perunit']}</td>
+            <td>xzc</td>
+            <td>asd</td>
+            <td>{$vo['remark']}</td>
+            <td class="contractcontent_operations">
+              <a class="btn btn-primary contractContent_edit" data-toggle="modal" data-target="#contractContent_editModal" href="#">修改</a>&nbsp;&nbsp;<a class="btn btn-danger contractContent_del" href="#">删除</a>
+            </td>
+          </tr>
+        </volist>
+        </tbody>
+       </table> -->
+
+            <!-- <br>
+        <div class="page-header">
+          <div class="col-md-4">
+          <h4>合同执行明细</h4>
+          </div>
+      <div class="col-md-2 col-md-offset-6">
+          <a class="btn btn-info btn-block" data-toggle="modal" data-target="#receiveMaterialModal" id="receive_material">到货验收</a>
+            </div>
+         <div style="clear:both"></div>
+       </div>
+
+        <table class="table table-hover">
+        <thead>
+            <th>类别</th>
+            <th>名称</th>
+            <th>单位</th>
+            <th>数量</th>
+            <th>单价</th>
+            <th>金额</th>
+            <th>发生日期</th>
+            <th>经办人</th>
+            <th>备注</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="contractcontent_items">
+          <volist name="contractcontenRowArray" id="vo">
+          <tr data-id="{$vo['contentid']}">
+            <td>{$vo['category']}</td>
+            <td>{$vo['name']}</td>
+            <td>{$vo['unit']}</td>
+            <td>{$vo['amount']}</td>
+            <td>{$vo['price_perunit']}</td>
+            <td>{$vo['amount']*$vo['price_perunit']}</td>
+            <td>xzc</td>
+            <td>asd</td>
+            <td>{$vo['remark']}</td>
+            <td class="contractcontent_operations">
+              <a class="btn btn-primary contractContent_edit" data-toggle="modal" data-target="#contractContent_editModal" href="#">修改</a>&nbsp;&nbsp;<a class="btn btn-danger contractContent_del" href="#">删除</a>
+            </td>
+          </tr>
+        </volist>
+        </tbody>
+       </table> -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 到货验收模态框 -->
+  <div id="receiveMaterialModal" class="modal fade">
+    <div class="modal-dialog">
+      <form class="form-horizontal" action="#" method="post">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">到货验收</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="control-label col-md-2">合同条款</label>
+              <div class="col-md-8">
+                <select id="" class="form-control" name="contractcontent_item">
+                  <option value="">123</option>
+                  <option value="">123</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">单价</label>
+              <div class="col-md-4">
+                <input id="input_contractcontent_price_perunit" type="text" class="form-control" name="contractcontent_price_perunit" />
+              </div>
+              <label class="control-label col-md-2">数量</label>
+              <div class="col-md-4">
+                <input id="input_contractcontent_amount" type="text" class="form-control" name="contractcontent_amount" />
+              </div> 
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">库房</label>
+              <div class="col-md-4">
+                <input id="" type="text" class="form-control" name=""/>
+              </div>
+              <label class="control-label col-md-2">库管员</label>
+              <div class="col-md-4">
+                <input id="" type="text" class="form-control" name="" />
+              </div> 
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">发生日期</label>
+              <div class="col-md-4">
+                <input id="" type="text" class="form-control datepicker" name=""/>
+              </div>
+              <label class="control-label col-md-2">经办人</label>
+              <div class="col-md-4">
+                <input id="" type="text" class="form-control" name="" />
+              </div> 
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">金额</label>
+              <div class="col-md-4">
+                <input id="" type="text" class="form-control" name="" readonly="true"/>
+              </div>
+              <label class="control-label col-md-2">备注</label>
+              <div class="col-md-4">
+                <textarea id="" class="input-xlarge form-control" name="" row="2"></textarea>
+              </div> 
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="" class="btn btn-primary" data-dismiss="modal">提交</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <input type="hidden" id="" name=""/>
+          </div>
+        </div>
+      </form>  
+    </div>
+  </div>
+
+  <!-- 编辑合同内容 -->
+  <div class="modal fade" id="contractContent_editModal">
+    <div class="modal-dialog">
+      <form class="form-horizontal" action="#" method="post">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">编辑合同内容</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">类别</label>
+                <div class="col-md-6">
+                  <select class="form-control" id="contractcontent_edit_category" name="contractcontent_category" value="">
+                    <option value="材料">材料</option>
+                    <option value="人工">人工</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">名称</label>
+                <div class="col-md-6">
+                  <input class="form-control" id="contractcontent_edit_name" name="contractcontent_name" value=""/>  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">单位</label>
+                <div class="col-md-6">
+                  <input class="form-control" id="contractcontent_edit_unit" name="contractcontent_unit" value=""/>  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">单价</label>
+                <div class="col-md-6">
+                  <input class="form-control" id="contractcontent_edit_price_perunit" name="contractcontent_price_perunit" value=""/>  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">数量</label>
+                <div class="col-md-6">
+                  <input class="form-control" id="contractcontent_edit_amount" name="contractcontent_amount" value=""/>  
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label class="control-label col-md-2 col-md-offset-1">备注</label>
+                <div class="col-md-6">
+                  <textarea class="form-control" rows="3" id="contractcontent_edit_remark" name="contractcontent_remark"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="contractcontent_edit_submit" class="btn btn-primary" data-dismiss="modal">提交</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <input type="hidden" id="contractcontent_edit_contentid" name="contractcontent_contentid"/>
+
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+
+
+
+
+
+
+
+  <!-- 往来单位选择 -->
+  <div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+          <div class="container-fluid" style="margin-top:15px">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_all" checked>全部
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_1part">甲方
+                  </label>
+                </div>
+              </div> 
+              <div class="col-md-3">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_divideman">分包商
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_materialman">材料商
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_machineman">机械商
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_transman">内部单位
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_client">客户
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="classify" value="is_otherpart">其他单位
+                  </label>
+                </div>
+              </div>   	
+            </div>
+            <div class="row" style="margin-top:15px">
+              <div class="col-md-4">客户名称</div>
+              <div class="col-md-2">联系人</div>
+              <div class="col-md-3">联系电话</div>
+              <div class="col-md-3">地址</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body"  style="max-height:500px;overflow:auto" >
+          <div class="list-group" id="enterprises">
+            <volist name="enterpriseRowArray" id="vo">
+            <a data-address="{$vo.address}" data-zip="{$vo.zip_number}" data-phone="{$vo.phone_number}" data-legal="{$vo.legal_person}" href="{$vo.enterpriseid}" class="list-group-item 
+              <if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+              <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+              <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+              <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+              <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+              <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+              <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+              ">
+              <div class="row">
+                <div class="col-md-4">{$vo.name}</div>
+                <div class="col-md-2">{$vo.contact_person}</div>
+                <div class="col-md-3">{$vo.phone_number}</div>
+                <div class="col-md-3">{$vo.address}</div>
+              </div>
+            </a>
+            </volist>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--新增合同文本-->
+  <div class="modal fade" id="addContractModal" tabindex="-1" role="dialog" aria-labelledby="addContractModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="addContractModalLabel">新增合同</h4>
+
+        </div>
+        <form class="form-horizontal" role="form" action="#" method="POST" enctype="multipart/form-data">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+              <div class="col-md-6">
+                <input id="upload_name_add" class="form-control" type="text" name="name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">备注</label>
+              <div class="col-md-6">
+                <textarea id="upload_remark_add" class="input-xlarge form-control" name="remark" rows="4"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">上传文件</label>
+              <div class="col-md-6">
+                <input id="upload_documentFile" class="form-control" type="file" name="documentFile1">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="upload" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--编辑合同文本-->
+  <div class="modal fade" id="editContractModal" tabindex="-1" role="dialog" aria-labelledby="addContractModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="editContractModalLabel">编辑合同</h4>
+
+        </div>
+        <form class="form-horizontal" role="form" action="#" method="POST" enctype="multipart/form-data">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+              <div class="col-md-6">
+                <input id="upload_name_edit" class="form-control" type="text" name="name" value=""/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">备注</label>
+              <div class="col-md-6">
+                <textarea id="upload_remark_edit" class="input-xlarge form-control" name="remark" rows="4"></textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button id="upload_edit" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+          <div id="contractDocumentid_edit" class="hidden"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--新增合同原件-->
+  <div class="modal fade" id="addContractOriginalModal" tabindex="-1" role="dialog" aria-labelledby="addContractOriginalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="addContractOriginalModalLabel">新增合同原件</h4>
+
+        </div>
+        <form class="form-horizontal" role="form" action="#" method="POST" enctype="multipart/form-data">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+              <div class="col-md-6">
+                <input id="upload_origin_name" class="form-control" type="text" name="name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">说明</label>
+              <div class="col-md-6">
+                <textarea id="upload_origin_remark" class="input-xlarge form-control" name="remark" rows="4"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">上传文件</label>
+              <div class="col-md-6">
+                <input id="upload_origin_documentFile" class="form-control" type="file" name="documentFile">
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="upload_origin" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--编辑合同原件-->
+  <div class="modal fade" id="editContractOriginalModal" tabindex="-1" role="dialog" aria-labelledby="addContractOriginalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="addContractOriginalModalLabel">编辑合同原件</h4>
+
+        </div>
+        <form class="form-horizontal" role="form" action="#" method="POST" enctype="multipart/form-data">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">资料名称</label>
+              <div class="col-md-6">
+                <input id="upload_origin_name_edit" class="form-control" type="text" name="name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2 col-md-offset-1">说明</label>
+              <div class="col-md-6">
+                <textarea id="upload_origin_remark_edit" class="input-xlarge form-control" name="remark" rows="4"></textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button id="upload_origin_edit" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+          <div id="contractDocumentid_origin_edit" class="hidden"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 选择报价模态框 -->
+  <div class="modal fade" id="materialModal" tabindex="-1" role="dialog" aria-labelledby="materialModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="materialLabel">材料选择</h4>
+          <div class="container-fluid" style="margin-top:15px">
+            <div class="row" style="margin-top:15px">
+              <div class="col-md-3">材料分类</div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-2">工种</div>
+                  <div class="col-md-2">材料名称</div>
+                  <div class="col-md-2">规格</div>
+                  <div class="col-md-2">单位</div>
+                  <div class="col-md-2">供应商</div>
+                  <div class="col-md-2">报价</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row" style="height:100%">
+            <div class="col-md-3" style="height:100%;overflow:auto">
+              <ul class="list-group sidebar-tree" id="viewClassTree" >
+                <li class="list-group-item">
+                <span class="glyphicon glyphicon-minus-sign"></span>
+                <a href="0" class="tree-item all-class">全部分类</a>
+                </li>
+                <li class="list-group-item collapse in">
+                <ul class="list-group" id="materialClasses">
+                  <!-- 分类树状图中，链接 a 的属性 href 为分类的 id -->
+
+                  <!-- 父分类 循环体 begin -->
+                  <volist name="materialClassRowArray" id="vo">
+                  <li class="list-group-item">
+                  <span class="glyphicon glyphicon-plus-sign"></span>
+                  <a href="{$vo['classid']}" class="tree-item root-class">{$vo['name']}</a>
+                  </li> 
+                  <li class="list-group-item collapse">
+                  <ul class="list-group">
+                    <!-- 子分类 循环体 begin -->
+                    <volist name="vo['materialCategoryRowArray']" id="vo1">
+                    <li class="list-group-item">
+                    <a href="{$vo1['categoryid']}" class="tree-item leaf-class">{$vo1['name']}</a>
+                    </li>
+                    </volist>
+                  </ul>
+                  </li>
+                  </volist>
+                  <!-- 父分类 循环体 end -->
+
+                </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-9" style="height:100%;overflow:auto">
+              <div class="list-group" id="materials"  >
+                <volist name="materialEnquiryRowArray" id="vo">
+                <a href="#" data-id="{$vo['enquiry_id']}" class="list-group-item root{$vo['classid']} leaf{$vo['categoryid']}">
+                  <div class="row">
+                    <div class="col-md-2">{$vo['worktype']}</div>
+                    <div class="col-md-2">{$vo['name']}</div>
+                    <div class="col-md-2">{$vo['specification']}</div>
+                    <div class="col-md-2">{$vo['unit']}</div>
+                    <div class="col-md-2">{$vo['supplier_name']}</div>
+                    <div class="col-md-2">{$vo['enquiry_offer']}</div>
+                  </div>
+                </a>
+                </volist>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="form-group">
+            <label class="control-label col-md-offset-4 col-md-2">数量</label>
+            <div class="col-md-2">
+              <input type="text" class="form-control" id="addMaterial_count" name="addMaterial_count"/>
+            </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-primary" id="chooseMaterial">添加</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="enquiryModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">供应商选择</h4>        
+        </div>
+        <br>
+
+        <div class="row" style="margin-top:20px">
+          <div class="col-md-5 col-md-offset-1">供应商</div>
+          <div class="col-md-3">报价（元）</div>                    
+          <div class="col-md-3">报价日期</div>                    
+        </div>
+
+        <div class="modal-body"  style="max-height:500px;overflow:auto" >
+          <div class="list-group" id="enquirys">
+            <volist name="materialEnquiryRowArray" id="vo">
+            <a class="list-group-item {$vo.material_id}" data-id="{$vo.enquiry_id}" style="cursor:pointer">
+              <div class="row">
+                <div class="col-md-6">{$vo.enterprise_name}</div>
+                <div class="col-md-3">{$vo.enquiry_offer}</div>                
+                <div class="col-md-3">{$vo.enquiry_offerdate}</div>                
+              </div>
+            </a>
+            </volist>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="chooseEnquiry">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 计划中导入模态框-->
+  <div class="modal fade" id="materialPlanModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">从采购计划内导入</h4>        
+        </div>
+        <br>
+        <div class="modal-body"  style="max-height:500px;overflow:auto" >
+          <div class="row" style="margin-top:20px">
+            <div class="col-md-3 col-md-offset-1">采购计划</div>
+            <div class="col-md-8">材料内容</div>                             
+          </div>
+
+          <div class="row" style="margin-top:20px">
+            <div class="col-md-3 list-group" id="plans">
+              <volist name="materialPlanRowArray" id="vo">
+              <a class="list-group-item" data-planid="{$vo.plan_id}" style="cursor:pointer">
+                <div class="row">
+                  &nbsp;&nbsp;&nbsp;&nbsp;{$vo.plan_number}:{$vo.plan_name}
+                </div>
+              </a>
+              </volist>
+            </div>
+
+            <div class="col-md-9">
+              <div class="list-group" id="inPlan_materials"  >
+                <volist name="mppdDisplayRowArray" id="vo">
+                <a href="#" data-planid="{$vo['plan_id']}" data-detail_id="{$vo['detail_id']}" class="list-group-item">
+                  <div class="row">
+                    <div class="col-md-2">{$vo['name']}</div>
+                    <div class="col-md-2">{$vo['specification']}</div>
+                    <div class="col-md-2">{$vo['supplier_name']}</div>
+                    <div class="col-md-2">{$vo['unit']}</div>
+                    <div class="col-md-1">{$vo['enquiry_offer']}</div>
+                    <div class="col-md-1">{$vo['count']}</div>
+                    <div class="col-md-2">{$vo['remark']}</div>
+                  </div>
+                </a>
+                </volist>
+              </div>
+            </div> 
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="choosePlan">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editContentModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">编辑材料合同内容</h4>        
+        </div>
+        <br>
+        <div class="modal-body"  style="max-height:500px;overflow:auto" >
+          <form action="#" method="post" class="form-horizontal" role="form">
+            <input type="hidden" id="editContent_contentid" value="0"/>
+            <div class="form-group">
+              <label class="control-label col-md-2">工种</label>
+              <div class="col-md-4">
+                <input id="editContent_worktype" class="form-control" value="" disabled/>
+              </div>
+              <label class="control-label col-md-2">名称</label>
+              <div class="col-md-4">
+                <input id="editContent_name" class="form-control" value="" disabled/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2">规格</label>
+              <div class="col-md-4">
+                <input id="editContent_specification" class="form-control" value="" disabled/>
+              </div>
+              <label class="control-label col-md-2">报价</label>
+              <div class="col-md-4">
+                <input id="editContent_enquiryoffer" class="form-control" value="" disabled/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">数量</label>
+              <div class="col-md-4">
+                <input id="editContent_amount" class="form-control" value=""/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-2">备注</label>
+              <div class="col-md-10">
+                <textarea id="editContent_remark" rows="2" class="form-control" name="editContent_remark"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="editContent_submit">确定</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <include file="./Tpl/Part/loading.html" />
+  <include file="./Tpl/Part/script.html" />
+  <script>
+function showList(type,id){
+  if (type=="all"){
+    $("#materials a").show();
+  }else{
+    var show = $("#materials a."+type+id);
+    var hide = $("#materials a:not("+"#materials a."+type+id+")");
+    hide.hide();
+    show.show();
+  }
+}
+function allClassClick(e){
+  e.preventDefault();
+  $("#viewClassTree .list-group-item").removeClass("active");
+  $(this).parent().addClass("active");
+  showList.call(this,"all",0);
+}
+function rootClassClick(e){
+  e.preventDefault();
+  $("#viewClassTree .list-group-item").removeClass("active");
+  $(this).parent().addClass("active");
+  showList("root",$(this).attr("href"));
+  //showList.call(this,"root",$(this).attr("href"));
+}
+function leafClassClick(e){
+  e.preventDefault();
+  $("#viewClassTree .list-group-item").removeClass("active");
+  $(this).parent().addClass("active");
+  showList.call(this,"leaf",$(this).attr("href"));
+}
+
+$(function(){
+    $("#editContent_submit").click(function(){
+      var contentid = $("#editContent_contentid").val();
+      var amount = $("#editContent_amount").val();
+      var remark = $("#editContent_remark").val();
+      $.post(
+        "{:U('OperMaterialManage/editContract_editContent')}",
+        {'contentid':contentid,'amount':amount,'remark':remark},
+        function(data){
+        if(data['result'] != true){
+        alert("修改失败!");
+        return;
+        }
+        else {
+        var tr = $(".contractContent_delete[href="+contentid+"]").parent().parent();
+        tr.children().eq(6).text(amount);
+        var price = $("#editContent_enquiryoffer").val();
+        tr.children().eq(7).text(amount*price);
+        tr.children().eq(8).text(remark);
+        tr.children().eq(9).text("");
+        }
+        },"json"
+        );
+    });
+
+
+
+    $(document).on("click",".btn_contractContent_edit",function(){
+        var tr = $(this).parent().parent();
+        //if(tr.data("contentid") == 0){
+        $("#editContent_contentid").val($(this).next().attr("href"));
+        //}
+        //else $("#editContent_contentid").val(tr.data("contentid"));
+        $("#editContent_worktype").val(tr.children().eq(0).text());
+        $("#editContent_name").val(tr.children().eq(1).text());
+        $("#editContent_specification").val(tr.children().eq(2).text());
+        $("#editContent_enquiryoffer").val(tr.children().eq(5).text());
+        $("#editContent_amount").val(tr.children().eq(6).text());
+        $("#editContent_remark").val(tr.children().eq(8).text());
+        });
+
+    $(document).on("click",".contractContent_delete",function(){
+        var contentid = $(this).parent().parent().data("contentid");
+        var tr = $(this).parent().parent();
+        if(contentid == 0){
+        contentid = $(this).attr("href");
+        }
+        $.post(
+          "{:U('OperMaterialManage/editContract_deleteContent')}",
+          {contentid:contentid},
+          function(data){
+          if(data['result'] == false){alert("删除失败");return;}
+          tr.remove();
+          },
+          "json"
+          );
+        });
+
+
+    //材料选择模态框
+    $(window).resize(function(){
+        $("#materialModal .modal-body").css("height",""+($(window).height()-250)+"px");
+        });
+    $(".all-class").click(allClassClick);
+    $(".root-class").click(rootClassClick);
+    $(".leaf-class").click(leafClassClick);
+    $("#materials a").click(function(e){
+        e.preventDefault();
+        var data = $("#materialModal").data("lastActive");
+        if (data){
+        data.removeClass("active");
+        }
+        $(this).addClass("active");
+        $("#materialModal").data("lastActive",$(this));
+        $("#materialModal").data("material",$(this));
+        return false;
+        });
+
+    var chooseMaterial = function(){
+      if($("#addMaterial_count").val()>0){
+        var enquiry_id = $("#materials .active").data("id");
+        if(typeof(enquiry_id) == "undefined"){
+          alert("未选择材料");
+          return;
+        }
+        var contractid = {$contractRow['contractid']};
+        //alert(enquiry_id);
+        var count = $("#addMaterial_count").val();
+        $.post(
+            "{:U('OperMaterialManage/editContract_importEnquiryToContract')}",
+            {'enquiry_id':enquiry_id,'count':count,'contractid':contractid},
+            function(data){
+            //alert(data['count']);
+            var detailElement = $("#details_list .template").clone(true);
+            detailElement.removeClass("template");
+            detailElement.data("contentid",data['contentid']);
+            detailElement.children().eq(0).text(data['worktype']);
+            detailElement.children().eq(1).text(data['name']);
+            detailElement.children().eq(2).text(data['specification']);
+            detailElement.children().eq(3).text(data['unit']);
+            detailElement.children().eq(4).text(data['supplier_name']);
+            detailElement.children().eq(5).text(data['enquiry_offer']);
+            detailElement.children().eq(6).text(data['count']);
+            detailElement.children().eq(7).text(data['count']*data['enquiry_offer']);
+            detailElement.children().eq(8).text(data['remark']);
+            detailElement.children().eq(9).text(data['plan_number']);
+            detailElement.children().eq(10).html(
+              "<button data-toggle=\"modal\" data-target=\"#editContentModal\" type=\"button\" class=\"btn btn-primary btn_contractContent_edit\">修改</button>&nbsp;<button type=\"button\" class=\"btn btn-danger contractContent_delete\" href=\""+data['contentid']+"\">删除</button>"
+              );
+
+            $("#details_list").append(detailElement.show());
+            //$(document).on("click",".contractContent_delete",delete_contractContent);
+
+            },"json"
+        );
+      }
+      else alert("材料数需大于0！");
+      return false;
+    };
+    $("#chooseMaterial").click(chooseMaterial);
+    $("#materials a").dblclick(chooseMaterial);
+
+
+
+
+    $("table").on('change','.count',function(){
+        var unitPrice = $(this).parent().prev().children().val();
+        var amount = $(this).val();
+        if (unitPrice && amount){
+        $(this).parent().parent().find(".material_price").val(unitPrice*amount);
+        var sum = 0.0;
+        $(".material_price").each(function(){
+          sum+=Number($(this).val());
+          });
+        $("#amount_title").text("累计金额："+sum+" 元");
+        $("#amount_title").next().val(sum);
+        }
+        });
+
+    $('#enquiryModal').on('show.bs.modal', function (e) {
+        $("#enquiryModal").removeData("enquiry");
+        $("#enquiryModal").data("dataTarget",e.relatedTarget);
+        $("#enterprises a").removeClass("active");
+        });
+
+    // $("table").on('click',".btn-danger",function(){
+    //   if (confirm("确认删除？")){
+    //     $(this).parent().parent().remove();
+    //     var sum = 0.0;
+    //     $(".material_price").each(function(){
+    //       sum+=Number($(this).val());
+    //     });
+    //           $("#amount_title").text("累计金额："+sum+" 元");
+    //                       $("#amount_title").next().val(sum);
+    //   }
+    // });
+
+    $("#chooseEnquiry").click(function(){
+        var data = $("#enquiryModal").data("enquiry");
+        if (data){
+        $($("#enquiryModal").data("dataTarget")).val(data.name);
+        $($("#enquiryModal").data("dataTarget")).next().val(data.id);
+        $($("#enquiryModal").data("dataTarget")).parent().next().children().val(data.price);
+        var count=$($("#enquiryModal").data("dataTarget")).parent().parent().find(".count");
+        if(count.val()){
+        $($("#enquiryModal").data("dataTarget")).parent().parent().find(".material_price").val(data.price*count.val());
+        }
+        var sum = 0.0;
+        $(".material_price").each(function(){
+          sum+=Number($(this).val());
+          });
+        $("#amount_title").text("累计金额："+sum+" 元");
+        $("#amount_title").next().val(sum);
+        $('#enquiryModal').modal('hide');
+        }
+        });
+
+    $("#btn_addEnquirys").click(function(){
+        $("#materialModal a").each(function(index,value){
+          if($(value).hasClass("active"))$(value).removeClass("active");
+          });
+        $("#addMaterial_count").val(0);
+        });
+
+
+
+    $("#enquirys a").click(function(e){
+        e.preventDefault();
+        var data = $("#enquiryModal").data("lastActive");
+        if (data){
+        data.removeClass("active");
+        }
+        $(this).addClass("active");
+        $("#enquiryModal").data("lastActive",$(this));
+        $("#enquiryModal").data("enquiry",{id : $(this).data("id") , name : $(this).children().children().first().text(), price : $(this).children().children().eq(1).text()});
+        return false;
+        });
+    $("#outPlan_list .enquiry_btn").click(function(){
+        var material_id=$(this).parent().parent().children().eq(9).children().eq(1).val();
+        var show=$("#enquirys a."+material_id)
+        var hide=$("#enquirys a:not("+"#enquirys a."+material_id+")");
+        show.show();
+        hide.hide();
+        });
+
+    $("#btn_import").click(function(){
+        $("#inPlan_materials a").removeClass("active");
+        });
+
+
+
+    $("#choosePlan").click(function(){
+        //var plan_id = $("#materialPlanModal").data("planid");
+        //alert(plan_id);
+        var detail_ids = "";
+        $("#inPlan_materials a").each(function(index,value){
+          //alert($(value).data("planid"));
+          if($(value).hasClass("active")){
+          detail_ids += $(value).data("detail_id")+",";
+          }
+          });
+        if(detail_ids == ""){
+        alert("未选择材料");
+        return;
+        }
+        detail_ids = detail_ids.substr(0,detail_ids.length-1);
+        var contractid = {$contractRow['contractid']};
+        $.post(
+          "{:U('OperMaterialManage/editContract_importPlanToContract')}",
+          {'detail_ids':detail_ids,'contractid':contractid},
+          function(data,status){
+          //alert(data['contractid']);
+          var detailElement = $("#details_list .template").clone(true);
+          detailElement.data("contentid",data['contentid']);
+          detailElement.removeClass("template");
+
+          detailElement.children().eq(0).text(data['worktype']);
+          detailElement.children().eq(1).text(data['name']);
+          detailElement.children().eq(2).text(data['specification']);
+          detailElement.children().eq(3).text(data['unit']);
+          detailElement.children().eq(4).text(data['supplier_name']);
+          detailElement.children().eq(5).text(data['enquiry_offer']);
+          detailElement.children().eq(6).text(data['count']);
+          detailElement.children().eq(7).text(data['count']*data['enquiry_offer']);
+          detailElement.children().eq(8).text(data['remark']);
+          detailElement.children().eq(9).text(data['plan_number']);
+          detailElement.children().eq(10).html(
+            "<button data-toggle=\"modal\" data-target=\"#editContentModal\" type=\"button\" class=\"btn btn-primary btn_contractContent_edit\">修改</button>&nbsp;<button type=\"button\" class=\"btn btn-danger contractContent_delete\" href=\""+data['contentid']+"\">删除</button>"
+            );;
+
+          $("#details_list").append(detailElement.show());
+          },"json"
+        );
+
+    });
+
+    $("#plans a").click(function(e){
+        e.preventDefault();
+        var data = $("#materialPlanModal").data("lastActive");
+        var planid = $(this).data("planid")
+        if (data){
+        data.removeClass("active");
+        }
+        $(this).addClass("active");
+        $("#materialPlanModal").data("lastActive",$(this));
+        $("#materialPlanModal").data("planid",$(this).data("planid"));
+        $("#inPlan_materials a").each(function(index,value){
+          //alert($(value).data("planid"));
+          if($(value).data("planid") == planid)
+          $(value).show();
+          else $(value).hide();
+          });
+        return false;
+        });
+
+    $("#inPlan_materials a").click(function(e){
+        e.preventDefault();
+        if($(this).hasClass("active")){
+        $(this).removeClass("active");
+        }
+        else $(this).addClass("active");
+
+        });
+
+
+
+    //修改合同文本信息导入
+    $(document).on("click",".editContractDocument",function(){
+        var checkStatus = $(this).parent().prev();
+        checkStatus.text($.trim(checkStatus.text()));
+        //alert(checkStatus.text());
+        if(checkStatus.text() == "已审核"){
+        alert("合同已审核，不可修改");
+        $("#editContractModal form :input").attr("disabled",true);
+        }
+        else
+        $("#editContractModal form :input").attr("disabled",false);
+        var tr = $(this).parent().parent();
+        var documentname = tr.children().eq(0);
+        var documentremark = tr.children().eq(1);
+
+        $("#upload_name_edit").val(documentname.text());
+        $("#upload_remark_edit").val(documentremark.text());
+        $("#contractDocumentid_edit").text(tr.data("id"));
+        });
+
+    //新增合同文本
+    $("#upload").click(function(){
+        var doc_name = $("#upload_name_add").val();
+        var doc_remark = $("#upload_remark_add").val();
+        var contractid = {$contractRow['contractid']};
+
+        $.ajaxFileUpload({
+url:"{:U('OperMaterialManage/editContract_uploadfile')}",
+secureuri:false,
+fileElementId:'upload_documentFile',
+data:{
+contractid:contractid,
+name:doc_name,
+remark:doc_remark
+},
+dataType:"json",
+success:function(data){ 
+//alert(data['result']);return;
+if(data['documentid'] == 0){alert("数据库存储失败！");return;}
+else if(data['documentid'] == -3){alert("该文件已存在！");return;}
+else if(data['documentid'] == -4){alert("存储文件失败！");return;}
+else if(data['documentid'] == -5){alert("更新路径失败！");return;}
+else if(data['documentid'] < 0){alert("文件上传失败！");return;}   
+$("#upload_name_add").val("");
+$("#upload_remark_add").val("");
+
+// documentid
+// doc_name
+// doc_remark
+// suffix
+// create_userInfo
+// lastupdate_userInfo
+var uploaditem = $("<tr data-id=\""+data['documentid']+"\"><td>"+data['doc_name']+"</td><td>"+
+    data['doc_remark']+"</td><td>"+
+    data['suffix']+"</td><td>"+
+    data['create_userInfo']+"</td><td>"+
+    data['lastupdate_userInfo']+"</td><td>"+
+    "未审核"+"</td><td class=\"operations_document\">"+
+    "<button type=\"button\" class=\"btn btn-primary checkDocument\">审核</button>&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-primary editContractDocument\" data-toggle=\"modal\" data-target=\"#editContractModal\">修改</button>&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-success\" onclick=\"window.open(\'"+data['download_url']+"\')\">下载</button>&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger\">删除</button>"+
+    "</td></tr>");
+$("#document_items").append(uploaditem);
+
+//重新绑定事件
+//   $("#document_items tr td").on("click",".editContractDocument",function(){
+//   var tr = $(this).parent().parent();
+//   var documentname = tr.children().eq(0);
+//   var documentremark = tr.children().eq(1);
+
+//   $("#upload_name_edit").val(documentname.text());
+//   $("#upload_remark_edit").val(documentremark.text());
+//   $("#contractDocumentid_edit").text(tr.data("id"));
+// });
+
+$(uploaditem).children().eq(6).children().eq(0).bind("click",function(){
+    var tr = $(this).parent().parent();
+    var operation="";
+    if($(this).text() == "审核"){
+    $(this).html("取消");
+    operation = 'check';
+    }
+    else{
+    $(this).html("审核");
+    operation = 'uncheck';
+    }
+
+    var documentid = $(this).parent().parent().data("id");
+
+    $.post(
+      "{:U('OperMaterialManage/editContract_checkDocument')}",
+      {documentid:documentid,operation:operation},
+      function(data,status){
+      //alert(data['result']);
+      if(data['result'] == true){
+      if(operation == 'check'){
+      //状态改为已审核
+      tr.children().eq(5).text("已审核");
+      }
+      else{
+      //状态改为未审核
+      tr.children().eq(5).text("未审核");
+      }
+      }
+      else alert("操作失败");
+      },
+      "json"
+      );
+});
+
+//   $("#document_items").find(".btn-danger").click(function(){
+//   var documentid = $(this).parent().parent().data("id");
+//   //alert(documentid);
+//   $.post(
+//     "{:U('OperMaterialManage/editContract_deletefile')}",
+//     {
+//       documentid:documentid
+//     },
+//     function(data,status){
+//       //alert(data);
+//       if(data == true){
+//         $("#document_items tr[data-id=\'"+documentid+"\']").remove();
+//       }
+//       //else alert("删除失败");
+//     },"json"
+//     );
+
+// });
+}
+});
+});
+
+//新增合同原件
+$("#upload_origin").click(function(){
+    //alert("asd");
+    var name = $("#upload_origin_name").val();
+    var remark = $("#upload_origin_remark").val();
+    var contractid = {$contractRow['contractid']};     
+
+    $.ajaxFileUpload({
+url:"{:U('OperMaterialManage/editContract_uploadfileOrigin')}",
+secureuri:false,
+fileElementId:'upload_origin_documentFile',
+dataType:'json',
+data:{
+contractid:contractid,
+name:name,
+remark:remark                  
+},
+success:function(data){    
+if(data['documentid'] == 0){alert("数据库存储失败！");return;}
+else if(data['documentid'] == -3){alert("该文件已存在！");return;}
+else if(data['documentid'] < 0){alert("文件上传失败！");return;}
+
+$("#upload_origin_name").val("");
+$("#upload_origin_remark").val("");
+
+// alert(data['suffix']);
+// alert(data['doc_remark']);
+// return;
+var uploaditem = $("<tr data-id=\""+data['documentid']+"\"><td>"+data['doc_name']+"</td><td>"+
+    data['suffix']+"</td><td>"+
+    data['doc_remark']+"</td><td>"+
+    "<button type=\"button\" class=\"btn btn-primary editContractDocumentOrigin\" data-toggle=\"modal\" data-target=\"#editContractOriginalModal\">编辑</button>&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-success\" onclick=\"window.open(\'"+data['download_url']+"\')\">下载</button>&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger\">删除</button>"+
+    "</td></tr>");
+$("#documentorigin_items").append(uploaditem);
+//重新绑定事件监听
+$(".editContractDocumentOrigin").click(function(){
+    var tr = $(this).parent().parent();
+    var documentname = tr.children().eq(0);
+    var documentremark = tr.children().eq(2);
+
+    $("#upload_origin_name_edit").val(documentname.text());
+    $("#upload_origin_remark_edit").val(documentremark.text());
+    $("#contractDocumentid_origin_edit").text(tr.data("id"));
+    });
+
+$("#documentorigin_items").find(".btn-danger").click(function(){
+    var documentid = $(this).parent().parent().data("id");
+    //alert(documentid);
+    $.post(
+      "{:U('OperMaterialManage/editContract_deletefileOrigin')}",
+      {
+documentid:documentid
+},
+function(data,status){
+//alert(data);
+if(data == true){
+$("#documentorigin_items tr[data-id=\'"+documentid+"\']").remove();
+}
+//else alert("删除失败");
+},"json"
+);
+
+    });
+
+}
+});
+});
+
+//修改合同文本
+$("#editContractModal #upload_edit").click(function(){
+    //alert("asdsad");
+    var formElement = $(this).parent().parent();
+    var doc_name = formElement.children().eq(0).children().eq(0).children().eq(1).children().eq(0).val();
+    var doc_remark = formElement.children().eq(0).children().eq(1).children().eq(1).children().eq(0).val();
+    var documentid = $("#contractDocumentid_edit").text();
+    $.post(
+      "{:U('OperMaterialManage/editContract_editDocument')}",
+      {doc_name:doc_name,doc_remark:doc_remark,documentid:documentid},
+      function(data,status){
+      if(data['documentid'] == 0){alert("修改失败");return;}
+      $("#document_items>tr").each(function(index){
+        if($(this).data("id") == data['documentid']){
+        //名字
+        $(this).children().eq(0).text(data['doc_name']);
+        //备注
+        $(this).children().eq(1).text(data['doc_remark']);
+        //最后修改人
+        $(this).children().eq(4).text(data['lastupdate_user_info']);
+
+        }
+        });
+
+      },"json");
+});
+//修改合同文本原件
+$("#editContractOriginalModal #upload_origin_edit").click(function(){
+    var formElement = $(this).parent().parent();
+    var doc_name = formElement.children().eq(0).children().eq(0).children().eq(1).children().eq(0).val();
+    var doc_remark = formElement.children().eq(0).children().eq(1).children().eq(1).children().eq(0).val();
+    var documentid = $("#contractDocumentid_origin_edit").text();
+
+    $.post(
+      "{:U('OperMaterialManage/editContract_editDocumentOrigin')}",
+      {doc_name:doc_name,doc_remark:doc_remark,documentid:documentid},
+      function(data,status){
+      alert(data['documentid']);
+      if(data['documentid'] == 0){alert("修改失败");return;}
+      $("#documentorigin_items>tr").each(function(index){
+        if($(this).data("id") == data['documentid']){
+        //名字
+        $(this).children().eq(0).text(data['doc_name']);
+        //备注
+        $(this).children().eq(2).text(data['doc_remark']);
+
+        }
+        });
+
+      },"json");
+});
+//1
+$(".checkDocument").bind("click",function(){
+    var tr = $(this).parent().parent();
+    var operation="";
+    $(this).text($.trim($(this).text()));
+    //alert($(this).text());
+    //return;
+    if($(this).text() == "审核"){
+    $(this).html("取消");
+    operation = 'check';
+    }
+    else{
+    $(this).html("审核");
+    operation = 'uncheck';
+    }
+
+    var documentid = $(this).parent().parent().data("id");
+
+    $.post(
+      "{:U('OperMaterialManage/editContract_checkDocument')}",
+      {documentid:documentid,operation:operation},
+      function(data,status){
+      //alert(data['result']);
+      if(data['result'] == true){
+      if(operation == 'check'){
+      //状态改为已审核
+      tr.children().eq(5).text("已审核");
+      }
+      else{
+      //状态改为未审核
+      tr.children().eq(5).text("未审核");
+      }
+      }
+      else alert("操作失败");
+      },
+      "json"
+      );
+});
+
+//删除合同文本
+$(document).on("click","#document_items .btn-danger",function(){
+    //$("#document_items").find(".btn-danger").click(function(){
+  var documentid = $(this).parent().parent().data("id");
+  $.post(
+      "{:U('OperMaterialManage/editContract_deletefile')}",
+      {
+documentid:documentid
+},
+function(data,status){
+//alert(data);
+if(data == true){
+$("#document_items tr[data-id=\'"+documentid+"\']").remove();
+}
+//else alert("删除失败");
+},"json"
+);
+
+  });
+
+    //删除合同原件
+    $("#documentorigin_items").find(".btn-danger").click(function(){
+      var documentid = $(this).parent().parent().data("id");
+      //alert(documentid);
+      $.post(
+        "{:U('OperMaterialManage/editContract_deletefileOrigin')}",
+        {
+documentid:documentid
+},
+function(data,status){
+//alert(data);
+if(data == true){
+$("#documentorigin_items tr[data-id=\'"+documentid+"\']").remove();
+}
+//else alert("删除失败");
+},"json"
+);
+      });
+
+$(".editContractDocumentOrigin").click(function(){
+    var tr = $(this).parent().parent();
+    var documentname = tr.children().eq(0);
+    var documentremark = tr.children().eq(2);
+
+    $("#upload_origin_name_edit").val(documentname.text());
+    $("#upload_origin_remark_edit").val(documentremark.text());
+    $("#contractDocumentid_origin_edit").text(tr.data("id"));
+    });
+
+//修改合同文本原件
+$("#editContractOriginalModal #upload_origin_edit").click(function(){
+    var formElement = $(this).parent().parent();
+    var doc_name = formElement.children().eq(0).children().eq(0).children().eq(1).children().eq(0).val();
+    var doc_remark = formElement.children().eq(0).children().eq(1).children().eq(1).children().eq(0).val();
+    var documentid = $("#contractDocumentid_origin_edit").text();
+
+    $.post(
+      "{:U('OperMaterialManage/editContract_editDocumentOrigin')}",
+      {doc_name:doc_name,doc_remark:doc_remark,documentid:documentid},
+      function(data,status){
+      if(data['documentid'] == 0){alert("修改失败");return;}
+      $("#documentorigin_items>tr").each(function(index){
+        if($(this).data("id") == data['documentid']){
+        //名字
+        $(this).children().eq(0).text(data['doc_name']);
+        //备注
+        $(this).children().eq(2).text(data['doc_remark']);
+
+        }
+        });
+
+      },"json");
+
+});
+
+// //新增按钮开关
+//   $("#add_contract_content").click(function(){      
+//       //alert($(this).text());
+//       if($(this).text()=="新增"){
+//         $(this).text("取消");
+//       }else $(this).text("新增");
+//     });
+
+//编辑合同内容
+$(".contractContent_edit").click(function(){
+    var tr = $(this).parent().parent();
+    var contentid = tr.data("id");
+    var category = tr.children().eq(0).text();
+    var name = tr.children().eq(1).text();
+    var unit = tr.children().eq(2).text();
+    var amount = tr.children().eq(3).text();
+    var price_perunit = tr.children().eq(4).text();
+    var remark = tr.children().eq(6).text();
+
+    $("#contractcontent_edit_category").val(category);
+    $("#contractcontent_edit_name").val(name);
+    $("#contractcontent_edit_unit").val(unit);
+    $("#contractcontent_edit_amount").val(amount);
+    $("#contractcontent_edit_price_perunit").val(price_perunit);
+    $("#contractcontent_edit_remark").val(remark);
+    $("#contractcontent_edit_contentid").val(contentid);
+    });
+
+// //1
+//    $("#contractcontent_edit_submit").click(function(){
+//     //var tr = $(this).parent().parent();
+//     var contentid = $("#contractcontent_edit_contentid").val();
+//     var category = $("#contractcontent_edit_category").val();
+//     var name = $("#contractcontent_edit_name").val();
+//     var unit = $("#contractcontent_edit_unit").val();
+//     var amount = $("#contractcontent_edit_amount").val();
+//     var price_perunit = $("#contractcontent_edit_price_perunit").val();
+//     var remark = $("#contractcontent_edit_remark").val();
+
+//     // alert(contentid);
+//     // alert(category);
+//     // alert(name);
+//     // alert(contentid);
+//     // alert(remark);
+//     // return;
+
+//     $.post(
+//       "{:U('OperMaterialManage/editContract_editContent')}",
+//       {contentid:contentid,
+//         category:category,
+//         name:name,
+//         unit:unit,
+//         amount:amount,
+//         price_perunit:price_perunit,
+//         remark:remark
+//       },
+//       function(data,status){
+//         //alert(data);
+//         //return;
+//         if(data == false){alert("修改失败");return;}
+//         var tr = $("#contractcontent_items").find("[data-id="+contentid+"]");
+
+//         tr.children().eq(0).text(category);
+//         tr.children().eq(1).text(name);
+//         tr.children().eq(2).text(unit);
+//         tr.children().eq(3).text(amount);
+//         tr.children().eq(4).text(price_perunit);
+//         tr.children().eq(5).text(price_perunit*amount);
+//         tr.children().eq(6).text(remark);
+//       },
+//       "json"
+//       );
+
+//    });
+
+//新增合同内容
+$("#submit_contractcontent").click(function(){
+
+    var contractcontent_category = $("#select_contractcontent_category").val();
+    var contractcontent_name = $("#input_contractcontent_name").val();
+    var contractcontent_unit = $("#input_contractcontent_unit").val();
+    var contractcontent_price_perunit = $("#input_contractcontent_price_perunit").val();
+    var contractcontent_amount = $("#input_contractcontent_amount").val();
+    var contractcontent_remark = $("#textarea_contractcontent_remark").val();
+    //  var contractid = {$contractRow['contractid']};
+    // alert(contractcontent_category);
+    // alert(contractcontent_name);
+    // alert(contractcontent_unit);
+    // alert(contractcontent_price_perunit);
+    // alert(contractcontent_amount);
+    // alert(contractcontent_remark);
+
+    if(contractcontent_category.length == 0 ||
+      contractcontent_name.length == 0 ||
+      contractcontent_unit.length == 0 ||
+      contractcontent_price_perunit.length == 0 ||
+      contractcontent_amount.length == 0
+      )return;
+
+
+    $.post("{:U('OperMaterialManage/editContract_addContent')}",
+        {
+contractid:contractid,
+contractcontent_category:contractcontent_category,
+contractcontent_name:contractcontent_name,
+contractcontent_unit:contractcontent_unit,
+contractcontent_price_perunit:contractcontent_price_perunit,
+contractcontent_amount:contractcontent_amount,
+contractcontent_remark:contractcontent_remark
+},function(process,textStatus){
+//alert("aaa");
+//return;
+var sub=$("<tr data-id=\""+process['contentid']+"\">"+
+  "<td>"+process['category']+"</td><td>"+
+  process['name']+"</td><td>"+
+  process['unit']+"</td><td>"+
+  process['amount']+"</td><td>"+
+  process['price_perunit']+"</td><td>"+
+  process['price_perunit']*process['amount']+"</td><td>"+
+  process['remark']+"</td><td>"+
+  "<a class=\"btn btn-primary contractContent_edit\" data-toggle=\"modal\" data-target=\"#contractContent_editModal\" href=\"#\">修改</a>&nbsp;&nbsp;<a class=\"btn btn-danger contractContent_del\" href=\"#\">删除</a>"+"</td></tr>"
+  );
+$("#contractcontent_items").append(sub);
+
+$("#select_contractcontent_category").val("");
+$("#input_contractcontent_name").val("");
+$("#input_contractcontent_unit").val("");
+$("#input_contractcontent_price_perunit").val("");
+$("#input_contractcontent_amount").val("");
+$("#textarea_contractcontent_remark").val("");
+
+$("#addContractDetailModal").collapse("hide");
+$("#add_contract_content").text("新增");
+
+//重新绑定事件
+$(".contractContent_edit").click(function(){
+    var tr = $(this).parent().parent();
+    var contentid = tr.data("id");
+    var category = tr.children().eq(0).text();
+    var name = tr.children().eq(1).text();
+    var unit = tr.children().eq(2).text();
+    var amount = tr.children().eq(3).text();
+    var price_perunit = tr.children().eq(4).text();
+    var remark = tr.children().eq(6).text();
+
+    $("#contractcontent_edit_category").val(category);
+    $("#contractcontent_edit_name").val(name);
+    $("#contractcontent_edit_unit").val(unit);
+    $("#contractcontent_edit_amount").val(amount);
+    $("#contractcontent_edit_price_perunit").val(price_perunit);
+    $("#contractcontent_edit_remark").val(remark);
+    $("#contractcontent_edit_contentid").val(contentid);
+    });
+
+},"json"
+);
+});
+
+//1
+$('#enterpriseModal').on('show.bs.modal', function (e) {
+    $("#enterpriseModal").removeData("enterprise");
+    $("#enterpriseModal").data("dataTarget",e.relatedTarget);
+    $("#enterprises a").removeClass("active");
+    });
+//1
+$("#chooseEnterprise").click(function(){
+    var data = $("#enterpriseModal").data("enterprise");
+    if (data){
+    $($("#enterpriseModal").data("dataTarget")).val(data.name);
+    $($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+    $($("#enterpriseModal").data("dataTarget")).parent().next().next().children().val(data.legal);
+    $($("#enterpriseModal").data("dataTarget")).parent().parent().next().children().eq(1).children().val(data.phone);
+    $($("#enterpriseModal").data("dataTarget")).parent().parent().next().children().eq(3).children().val(data.address);
+    $($("#enterpriseModal").data("dataTarget")).parent().parent().next().children().eq(5).children().val(data.zip);
+    $('#enterpriseModal').modal('hide');
+    }
+    });
+//1
+$("#enterprises a").click(function(e){
+    e.preventDefault();
+    var data = $("#enterpriseModal").data("lastActive");
+    if (data){
+    data.removeClass("active");
+    }
+    $(this).addClass("active");
+    $("#enterpriseModal").data("lastActive",$(this));
+    $("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text(),address:$(this).data("address"),zip:$(this).data("zip"),phone:$(this).data("phone"),legal:$(this).data("legal")});
+    return false;
+    });
+//1
+$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+//1
+$(window).resize(function(){
+    $("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+    });
+
+//1
+$("input[name='classify']").change(function(){
+    var c = $("input[name='classify']:checked").val();
+    if (c=="is_all"){
+    $("#enterprises a").show();
+    }else{
+    $("#enterprises a").hide();
+    $("."+c).show();
+    }
+    });
+//1
+$(".input_alert").focus(function(){
+    $(this).next().popover("show");        
+    });
+//1
+$(".input_alert").blur(function(){
+    $(this).next().popover("hide");        
+    });
+
+
+
+});
+  </script>
+  </body>
+  </html>
+
+

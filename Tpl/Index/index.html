@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>亿建工程管理系统</title>
+<include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+  <nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="navbar-header navbar-brand">待做事项</div>
+    <div class="container-fluid">
+    </div>
+  </nav>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      消息提醒
+    </div>
+    <div class="panel-body">  
+      <volist name="resourceInfoArray" id="vo">
+      {$vo['name']}<br/>
+      <ul class="list-inline msgreminder_items">
+        <if condition="$vo['contract'] eq 1">
+        <li><a href="{:U('OperProjectManage/listContract',array('resource_id'=>$vo['resource_id']))}">承包合同
+          <if condition="$vo['contract_uncheckNum'] gt 0">
+          {$vo['contract_uncheckNum']}个待审核&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['contract_unFinalcostNum'] gt 0">
+          {$vo['contract_unFinalcostNum']}个未结算&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['contract_uncheckDocumentNum'] gt 0">
+          {$vo['contract_uncheckDocumentNum']}个合同存在未审核文本&nbsp;&nbsp;
+          </if>
+        </a>
+        </li>
+        </if>
+        <if condition="$vo['materialPlan'] eq 1">
+        <li><a href="{:U('OperMaterialManage/listPurchasePlanOrder')}">材料采购计划
+          <if condition="$vo['materialPlan_uncheckNum'] gt 0">
+          {$vo['materialPlan_uncheckNum']}个待审核&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['materialPlan_unfinishNum'] gt 0">
+          {$vo['materialPlan_unfinishNum']}个未完成&nbsp;&nbsp;
+          </if>
+        </a>
+        </li>
+        </if>
+        <if condition="$vo['materialcontract'] eq 1">
+        <li><a href="{:U('OperMaterialManage/listContract',array('resource_id'=>$vo['resource_id']))}">材料采购合同
+          <if condition="$vo['materialcontract_uncheckNum'] gt 0">
+          {$vo['materialcontract_uncheckNum']}个待审核&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['materialcontract_unfinalcostNum'] gt 0">
+          {$vo['materialcontract_unfinalcostNum']}个未结算&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['materialcontract_uncheckDocumentNum'] gt 0">
+          {$vo['materialcontract_uncheckDocumentNum']}个合同存在未审核文本&nbsp;&nbsp;
+          </if>
+        </a>
+        </li>
+        </if>
+
+        <if condition="$vo['subcontract'] eq 1">
+        <li><a href="{:U('OperSubcontractManage/listSubContract',array('resource_id'=>$vo['resource_id']))}">分包合同
+          <if condition="$vo['subcontract_uncheckNum'] gt 0">
+          {$vo['subcontract_uncheckNum']}个待审核&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['subcontract_unfinalcostNum'] gt 0">
+          {$vo['subcontract_unfinalcostNum']}个未结算&nbsp;&nbsp;
+          </if>
+          <if condition="$vo['subcontract_uncheckDocumentNum'] gt 0">
+          {$vo['subcontract_uncheckDocumentNum']}个合同存在未审核文本&nbsp;&nbsp;
+          </if>
+        </a>
+        </li>
+        </if>
+      </ul>
+      <hr/>
+      </volist>
+
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/script.html" />
+</body>
+</html>

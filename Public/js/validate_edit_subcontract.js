@@ -1,0 +1,37 @@
+$().ready(function(){
+    $("#editSubcontract").validate({
+        rules:{
+           name:{
+                required:true
+            },
+            contract_number:{
+                required:true,
+                minlength:6
+            },
+            contract_type:{
+                required:true
+            },
+            enterprisea_name:{
+                required:true
+            },
+            enterpriseb_name:{
+                required:true
+            },
+            a_part_enterpriseid:{
+                required:true
+            },
+            b_part_enterpriseid:{
+                required:true
+            }
+        },
+        // ignore:"",
+        errorElement:"div",
+        errorPlacement:function(error,element){
+            if (element.hasClass("select-create-true")||element.hasClass("select-create-false")){
+                element.parent().append(error);
+            }else{
+                error.insertAfter(element);
+            }
+        }
+    });
+});

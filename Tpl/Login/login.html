@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+<link rel="shortcut icon" href="__PUBLIC__/images/yjpm.ico" type="image/x-icon" />
+<link href="__PUBLIC__/bootstrap-3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.frontpage_img{
+  width: 100%;
+}
+.frontpage_loginarea{
+  position:fixed;
+  width: 100%;
+  z-index: 1;
+}
+.frontpage_carouselarea{
+  margin-top: -100px;
+}
+.msgreminder_items{
+  padding-left:30px;
+  padding-top:12px;
+}
+
+</style>
+
+</head>
+<body>
+<div class="frontpage_loginarea">
+<div class="col-md-3 col-md-offset-3">
+    <br><br><br><br><br><br>
+    <br><br><br><br><br><br>
+    <h1 style="color:white">欢迎使用</h1>
+    <h1 style="color:white">亿建工程管理系统</h1>
+</div>
+<div class="col-md-3">
+    <br><br><br><br><br><br>
+    <br><br><br><br><br><br>
+<form class="form-horizontal" action="{:U('loginsubmit')}" method="post">
+    <div class="panel panel-info">
+        <div class="panel-body">
+            <br>
+            <div class="form-group">
+		<label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-9">
+		    <input type="text" class="form-control" placeholder="用户名" name="username" id="username"  />
+                </div>
+		<label class="control-label" id="usernamealert"  data-container="body" data-toggle="popover" data-placement="right" data-content="*用户名不能为空"></label>
+            </div>
+            <div class="form-group">
+		<label class="col-md-2 control-label">密码</label>
+                <div class="col-md-9">
+		    <input type="password" class="form-control" placeholder="密码" name="password" id="password"/>
+                </div>
+                <label class="control-label" id="pwdalert"  data-container="body" data-container="body" data-toggle="popover" data-placement="right" data-content="*密码不能为空"></label>
+            </div>
+            <div align="center">
+		<h4><span class="label label-danger">{$message}</span></h4>			
+	    </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-1">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block" id="submit">登录</button>
+                 </div>
+            </div>  
+        </div>  
+    </div>  
+  </form>   
+  </div>
+  </div>
+ 
+<div id="carousel-frontpage" class="carousel slide frontpage_carouselarea" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel-frontpage" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel-frontpage" data-slide-to="1"></li>
+    <li data-target="#carousel-frontpage" data-slide-to="2"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active">
+      <img class="frontpage_img" src="__PUBLIC__/images/frontpage5.jpg" alt="frontpage1">
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img class="frontpage_img" src="__PUBLIC__/images/frontpage6.jpg" alt="frontpage2">
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img class="frontpage_img" src="__PUBLIC__/images/frontpage7.jpg" alt="frontpage3">
+      <div class="carousel-caption">
+      </div>
+    </div>
+  </div>
+
+</div>
+<include file="./Tpl/Part/script.html" />
+<script>
+	$(document).ready(function(){
+		$("form :input").blur(function(){
+			if($(this).is("#username")){
+        if($(this).val()==""){
+					$("#usernamealert").popover("show");	
+				};
+				if($(this).val()!=""){
+					$("#usernamealert").popover("hide");	
+				};
+			};
+			if($(this).is("#password")){	
+        if($(this).val()==""){
+					$("#pwdalert").popover("show");					
+				};
+			  if($(this).val()!=""){
+					$("#pwdalert").popover("hide");
+				};
+			};
+		});
+		$("#submit").click(function(){
+			if($("#username").val()==""){
+					$("#usernamealert").popover("show");
+					return false;					
+			};
+			if($("#password").val()==""){
+					$("#pwdalert").popover("show");
+					return false;
+				};
+		})
+	})
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
