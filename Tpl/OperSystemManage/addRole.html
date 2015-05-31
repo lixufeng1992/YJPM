@@ -18,9 +18,9 @@
         <li><a href={:U('OperSystemManage/listRole')}>已有角色</a>   </li>
       </ul>
     </div>
-  </nav> 
-  <div class="panel panel-default">			
-    <div class="panel-body">		
+  </nav>
+  <div class="panel panel-default">
+    <div class="panel-body">
       <form id="roleForm" action={:U('OperSystemManage/addRoleSubmit')} method="POST"  class="form-horizontal">
         <div class="page-header">
           <div class="col-md-4">
@@ -30,78 +30,92 @@
             <input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
           </div>
           <div style="clear:both"></div>
-        </div>	
+        </div>
         <div class="form-group">
           <label class="col-md-2 control-label">角色名</label>
           <div class="col-md-2">
             <input type="text" class="form-control" placeholder="角色名" name="rolename" id="username"  />
-          </div>   
-        </div>					
+          </div>
+        </div>
 
         <br>
-        <div>					
+        <div>
           <table class="table">
             <thead>
               <th>项目管理</th>
               <th>材料管理</th>
               <th>分包管理</th>
+              <th>租赁管理</th>
+              <th>机械管理</th>
+              <th>财务管理</th>
               <th>人力资源</th>
-              <th>基础信息</th>
               <th>系统管理</th>
             </thead>
             <tbody>
             <tr>
-              <td> 
+              <td>
                 <volist name="operationRowArray" id="vo">
                 <if condition="$vo['operationid'] lt 200">
                 <div class="checkbox">
-                  <label>	
+                  <label>
                     <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
                   </label>
                 </div>
                 </if>
                 </volist>
               </td>
-              <td> 
+              <td>
                 <volist name="operationRowArray" id="vo">
                 <if condition="$vo['operationid'] gt 200 AND $vo['operationid'] lt 300">
                 <div class="checkbox">
-                  <label>	
+                  <label>
                     <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
                   </label>
                 </div>
                 </if>
                 </volist>
               </td>
-              <td> 
-                <volist name="operationRowArray" id="vo">
-                <if condition="$vo['operationid'] gt 300 AND $vo['operaitonid'] lt 400">
-                <div class="checkbox">
-                  <label>	
-                    <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
-                  </label>
-                </div>
-                </if>
-                </volist>
-              </td>
-
               <td>
                 <volist name="operationRowArray" id="vo">
-                <if condition="($vo['operationid'] gt 700) and ($vo['operationid'] lt 800)">
+                <if condition="$vo['operationid'] gt 300 AND $vo['operationid'] lt 400">
                 <div class="checkbox">
-                  <label>	
+                  <label>
+                    <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
+                  </label>
+                </div>
+                </if>
+                </volist>
+              </td>
+              <td>
+                <volist name="operationRowArray" id="vo">
+                <if condition="($vo['operationid'] gt 400) and ($vo['operationid'] lt 500)">
+                <div class="checkbox">
+                  <label>
                     <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
                   </label>
                 </div>
                 </if>
                 </volist>
               </td>
-              <td> 
+              <td>
                 <volist name="operationRowArray" id="vo">
-                <if condition="$vo['operationid'] gt 900 AND $vo['operationid'] lt 1000">
+                <if condition="($vo['operationid'] gt 500) and ($vo['operationid'] lt 600)">
                 <div class="checkbox">
-                  <label>	
-                    <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
+                  <label>
+                    <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
+                  </label>
+                </div>
+                </if>
+                </volist>
+              </td>
+              <td>
+
+              <td>
+                <volist name="operationRowArray" id="vo">
+                <if condition="($vo['operationid'] gt 700) and ($vo['operationid'] lt 800)">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
                   </label>
                 </div>
                 </if>
@@ -112,18 +126,18 @@
                 <volist name="operationRowArray" id="vo">
                 <if condition="$vo['operationid'] gt 1000">
                 <div class="checkbox">
-                  <label>	
+                  <label>
                     <input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}
                   </label>
                 </div>
                 </if>
                 </volist>
-              </td>            
+              </td>
             </tr>
             </tbody>
-          </table>		
-        </div>			 
-      </form>	
+          </table>
+        </div>
+      </form>
 
     </div>
   </div>

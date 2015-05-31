@@ -10,26 +10,26 @@ a .col-md-2,a .col-md-3,a .col-md-4{
   overflow:hidden;
   white-space:nowrap;
 }
-</style>	
+</style>
 </head>
 <body>
 <include file="./Tpl/Part/header.html" />
 <include file="./Tpl/Part/left.html" />
-<div id="right">  
+<div id="right">
   <nav class="navbar navbar-default" role="navigation" id="bodynav">
     <div class="container-fluid">
       <div class="navbar-header navbar-brand">项目维护</div>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href={:U('OperBasicInfoManage/processList')} class="active">项目部位名称</a>
+        <li><a href={:U('OperSystemManage/processList')} class="active">项目部位名称</a>
       </ul>
     </div>
-  </nav>  
-  <div class="panel panel-default">			
+  </nav>
+  <div class="panel panel-default">
     <div class="panel-body">
       <div class="page-header">
         <div class="col-md-4">
           <h4>项目部位名称维护</h4>
-        </div>				
+        </div>
         <div style="clear:both"></div>
       </div>
       <div>
@@ -45,8 +45,8 @@ a .col-md-2,a .col-md-3,a .col-md-4{
             <div class="col-md-1">
               <a class="btn btn-primary" id="add_classify" href="#">添加</a>
             </div>
-            <div style="clear:both"></div>					
-          </div><hr>	
+            <div style="clear:both"></div>
+          </div><hr>
           <div class="form-group" id="update_classify_panel">
             <label class="col-md-2 control-label">修改项目分类</label>
             <div class="col-md-6">
@@ -54,13 +54,13 @@ a .col-md-2,a .col-md-3,a .col-md-4{
             </div>
             <div class="col-md-4">
               <a class="btn btn-primary" id="update_classify_submit">修改</a>
-              <a class="btn btn-danger" id="delete_classify_submit">删除</a> 
+              <a class="btn btn-danger" id="delete_classify_submit">删除</a>
             </div>
             <div style="clear:both"></div>
           </div>
         </div>
 
-        <div class="col-md-6" style="border-left:1px solid #eee">			
+        <div class="col-md-6" style="border-left:1px solid #eee">
           <div class="form-group">
             <label class="col-md-2 control-label">添加项目部位</label>
             <div class="col-md-6">
@@ -69,8 +69,8 @@ a .col-md-2,a .col-md-3,a .col-md-4{
             <div class="col-md-1">
               <a class="btn btn-primary" id="add_process" href="#">添加</a>
             </div>
-            <div style="clear:both"></div>					
-          </div><hr>	
+            <div style="clear:both"></div>
+          </div><hr>
           <div class="form-group" id="select_classify_panel">
             <label class="col-md-2 control-label">修改项目部位</label>
             <div class="col-md-6">
@@ -107,7 +107,7 @@ a .col-md-2,a .col-md-3,a .col-md-4{
               </div>
               <label class="control-label label-pop" id="classify_alert" data-container="body" data-toggle="popover" data-placement="right" data-content="请选择部位分类"></label>
               <div style="clear:both"></div>
-            </div>				
+            </div>
           </div>
 
           <div class="col-md-6" style="border-left:1px solid #eee"><hr>
@@ -120,12 +120,12 @@ a .col-md-2,a .col-md-3,a .col-md-4{
                 </volist>
               </div>
               <div style="clear:both"></div>
-            </div>		
+            </div>
           </div>
         </div>
 
       </div>
-    </div>     
+    </div>
   </div>
   <include file="./Tpl/Part/loading.html" />
   <include file="./Tpl/Part/script.html" />
@@ -146,8 +146,8 @@ $(function(){
       $("#update_process").val("");
       var classify_id=$(this).data("id");
       $("#process_list").children().addClass("hidden");
-      $("#process_list").find("."+classify_id).removeClass("hidden");		
-      $("#process_list").find(".active").removeClass("active");                
+      $("#process_list").find("."+classify_id).removeClass("hidden");
+      $("#process_list").find(".active").removeClass("active");
       return false;
       });
 
@@ -171,12 +171,12 @@ $(function(){
 
         if(name!=""){
         var classify_id;
-        $.post("{:U('OperBasicInfoManage/addProcessClassify')}",{
+        $.post("{:U('OperSystemManage/addProcessClassify')}",{
 classify_name:name,
 },function(classify, textStatus){
 //alert(classify);
 sub=$("<a class=\"list-group-item collapse\"  href=\"#\" data-id=\""+classify+"\">"+name+"</a>");
-select=$("<option value=\""+classify+"\">"+name+"</option>")                        
+select=$("<option value=\""+classify+"\">"+name+"</option>")
 $("#classify_list").append(sub);
 $("#classify_select").append(select);
 sub.click(function(){
@@ -187,17 +187,17 @@ sub.click(function(){
   }
   $(this).addClass("active");
   $(this).parent().data("lastActive",$(this));
-  $("#update_classify").val(name);	
+  $("#update_classify").val(name);
   classify_id=$(this).data("id");
   $("#process_list").children().addClass("hidden");
   $("#process_list").find("."+classify_id).removeClass("hidden");
-  $("#process_list").find(".active").removeClass("active");                
+  $("#process_list").find(".active").removeClass("active");
   return false;
   });
 });
 }
 $("#classify_name").val("");
-$("#add_classify_alert").popover("hide")			
+$("#add_classify_alert").popover("hide")
 $("#classify_list").data("size",(size+1));
 return false;
 });
@@ -208,7 +208,7 @@ $("#update_classify_submit").click(function(){
     var name=$("#update_classify").val();
     if(name!=""){
     active.text(name);
-    $.post("{:U('OperBasicInfoManage/updateProcessClassify')}",{
+    $.post("{:U('OperSystemManage/updateProcessClassify')}",{
 classify_id:id,
 classify_name:name
 });
@@ -226,7 +226,7 @@ $("#delete_classify_submit").click(function(){
     active.collapse("hide");
     active.remove();
 
-    $.post("{:U('OperBasicInfoManage/deleteProcessClassify')}",{
+    $.post("{:U('OperSystemManage/deleteProcessClassify')}",{
 classify_id:classify_id
 });
 
@@ -235,8 +235,8 @@ classify_id:classify_id
 
 //项目部位设置
 $("#add_process").click(function(){
-    var name=$("#process_name").val();			
-    var sub=$("#classify_list .active");		
+    var name=$("#process_name").val();
+    var sub=$("#classify_list .active");
     var id=sub.data("id");
     var size=$("#classify_list").data("size");
 
@@ -247,17 +247,17 @@ $("#add_process").click(function(){
 
     if((!sub.is("*"))&&(size!=0)){
     $("#classify_alert").popover("show");
-    }else $("#classify_alert").popover("hide"); 
+    }else $("#classify_alert").popover("hide");
 
     if(sub.is("*")&&name!=""){
-    $.post("{:U('OperBasicInfoManage/addProcess')}",{
+    $.post("{:U('OperSystemManage/addProcess')}",{
 process_name:name,
 classify_id:id
 },function(process, textStatus){
 process=$("<a class=\"list-group-item "+id+"\" href=\""+id+"\" data-id=\""+process+"\">"+name+"</a>");
 $("#process_list").append(process);
 
-process.click(function(){							
+process.click(function(){
   var data=$(this).parent().data("lastActive");
   if(data){
   data.removeClass("active");
@@ -267,11 +267,11 @@ process.click(function(){
   $("#classify_select").val($(this).attr("href"));
   $("#update_process").val($(this).text());
   return false;
-  });				
-});					
+  });
+});
 }
 
-$("#process_name").val("");			
+$("#process_name").val("");
 return false;
 });
 
@@ -292,7 +292,7 @@ $("#update_process_submit").click(function(){
     }
     active.removeClass("active");
 
-    $.post("{:U('OperBasicInfoManage/updateProcess')}",{
+    $.post("{:U('OperSystemManage/updateProcess')}",{
 process_name:name,
 process_id:id,
 process_classify_id:classify_id
@@ -304,12 +304,12 @@ return false;
 $("#delete_process_submit").click(function(){
     var active=$("#process_list").find(".active");
     var id=active.data("id");
-    $.post("{:U('OperBasicInfoManage/deleteProcess')}",{
+    $.post("{:U('OperSystemManage/deleteProcess')}",{
 process_id:id
 });
 
     active.remove();
-    return false;                        
+    return false;
     });
 
 });

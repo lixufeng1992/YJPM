@@ -18,6 +18,8 @@ class OperationAction extends LoginAfterAction{
   public function oneoperation(){
     $operationid = $_GET['operationid'];
     switch($operationid){
+
+    // 项目管理
     case PROJECT_EXPLORE://项目开拓
       $this->redirect('OperProjectManage/listProject');
       break;
@@ -37,6 +39,7 @@ class OperationAction extends LoginAfterAction{
       // 	$this->display('missionPlan');
       // 	break;
 
+    // 材料管理
     case MATERIAL_MAINTAIN://材料维护
       $this->redirect('OperMaterialManage/materialMaintain');
       break;
@@ -58,36 +61,43 @@ class OperationAction extends LoginAfterAction{
     case MATERIAL_INVENTORY: //库存情况
       $this->redirect('OperMaterialManage/listInventory');
       break;
+
+    // 分包管理
     case SUBCONTRACT_MAINTAIN://分包维护
       $this->redirect('OperSubcontractManage/listSubcontract');
       break;
 
-    case ROLE_MAINTAIN://角色维护
-      $this->redirect('OperSystemManage/listRole');
-      break;
-    case USER_MAINTAIN://用户维护
-      $this->redirect('OperSystemManage/listUser');
-      break;
+    // 人力资源
     case EMPLOYER_MAINTAIN://员工维护
       $this->redirect('OperHumanResource/listEmployer');
-      break;
-    case ENTERPRISE_MAINTAIN://往来单位维护
-      $this->redirect('OperSystemManage/listEnterprise');
       break;
     case DEPARTMENT_MAINTAIN://部门维护
       $this->redirect('OperHumanResource/listDepartment');
       break;
     case POSITION_MAINTAIN://职务维护
       $this->redirect('OperHumanResource/listPosition');
-      break;	
-    case COMPANY_MAINTAIN://分公司维护
+      break;
+
+    // 系统管理
+    case ROLE_MAINTAIN://角色维护
+      $this->redirect('OperSystemManage/listRole');
+      break;
+    case USER_MAINTAIN://用户维护
+      $this->redirect('OperSystemManage/listUser');
+      break;
+    case ENTERPRISE_MAINTAIN://往来单位维护
+      $this->redirect('OperSystemManage/listEnterprise');
+      break;
+    case COMPANY_MAINTAIN: //子公司维护
       $this->redirect('OperHumanResource/listCompany');
-    case SYSTEM_SETTING://系统设置
-      $this->display('systemSetting');
       break;
     case PROCESS_MAINTAIN: //项目部位维护
-      $this->redirect('OperBasicInfoManage/listProcess');
+      $this->redirect('OperSystemManage/listProcess');
       break;
+
+    // case SYSTEM_SETTING://系统设置
+    //   $this->display('systemSetting');
+    //   break;
     default:
       $this->display('Staticpage/wrongalert');
       break;
