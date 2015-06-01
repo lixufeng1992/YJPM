@@ -16,7 +16,7 @@
 
 
     <br/>
- 	
+
     <form action={:U('OperSystemManage/addUserSubmit')} method="POST">
  		用户名：<input type="text" name="username" /><br/>
         密码：<input type="password" name="password" /><br/>
@@ -24,19 +24,19 @@
     	真实姓名：<input type="text" name="real_name"/><br/>
     	部门：<input type="text" name="department"/><br/>
     	职位：<input type="text" name="position"/><br/>
-    	
+
     	身份证号：<input type="text" name="id_number"/><br/>
     	性别：
-    		<input type="radio" name="gender" value="男" checked="checked" />男 
+    		<input type="radio" name="gender" value="男" checked="checked" />男
             <input type="radio" name="gender" value="女" />女 <br/>
-              
+
         联系方式：<input type="text" name="phone_number"/><br/>
         email：<input type="text" name="email"/><br/>
     	学历：<input type="text" name="deploma"/><br/>
         生日：<input type="text" name="birthday"/><br/>
         工资：<input type="text" name="salary"/><br/>
         入职时间：<input type="text" name="entrytime"/><br/>
-        <volist name="roleRowArray" id="vo">	
+        <volist name="roleRowArray" id="vo">
             <input type="radio" name="roleid" value="{$vo.roleid}"/>{$vo.rolename}<br/>
         </volist>
 
@@ -50,7 +50,7 @@
  				<else /><input type="checkbox" name="operation_{$vo['operationid']}" value="9"/>{$vo.operationname}<br/>
  			</if>
  		</volist>
- 	
+
  		<input type="submit" value="提交"/>
  	</form>
  </body>
@@ -78,7 +78,7 @@
   </div>
 </nav>
 
-	<div class="panel panel-default">	
+	<div class="panel panel-default">
 	<div class="panel-body">
 		<form id="userForm" action="{:U('OperSystemManage/addUserSubmit')}" method="POST" class="form-horizontal">
             <div class="page-header">
@@ -89,11 +89,12 @@
                     <input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
                 </div>
                 <div style="clear:both"></div>
-            </div>	
+            </div>
 			<div class="form-group">
                 <label class="col-md-2 control-label">所属公司</label>
                 <div class="col-md-2">
                     <select class="form-control" name="companyid">
+                      <option value="">请选择</option>
                         <volist name="companyRowArray" id="vo">
                             <option value="{$vo.companyid}">{$vo.name}</option>
                         </volist>
@@ -102,21 +103,22 @@
                 <label class="col-md-2 control-label">所属部门</label>
                 <div class="col-md-2">
                     <select class="form-control" name="departmentid">
+                      <option value="">请选择</option>
                         <volist name="departmentRowArray" id="vo">
                             <option value="{$vo.departmentid}">{$vo.name}</option>
                         </volist>
                     </select>
                 </div>
-                <label class="col-md-2 control-label">员工姓名</label>              
+                <label class="col-md-2 control-label">员工姓名</label>
                 <div class="col-md-2">
                     <select class="form-control" name="employerid" id="employer">
                         <option value="">请选择[括号内为员工编号]</option>
                         <volist name="employerBriefArray" id="vo">
-                            <option value="{$vo.employerid}">{$vo.name}[{$vo.employer_number}]</option>
+                            <option class="c{$vo.companyid} d{$vo.departmentid}" value="{$vo.employerid}">{$vo.name}[{$vo.employer_number}]</option>
                         </volist>
                     </select>
                 </div>
-                
+
             </div>
             <hr>
     		<div class="form-group">
@@ -136,7 +138,7 @@
 				<label class="col-md-2 control-label">联系方式</label>
 				<div class="col-md-2">
 					<input type="text" class="form-control"  name="phone_number" />
-				</div>	
+				</div>
             </div>
     		<div class="form-group">
             	<div class="col-md-4">
@@ -222,6 +224,28 @@
 <script type="text/javascript">
 $().ready(function(){
 	$("input[data-toggle='popover']").popover();
+
+  $("select[name='companyid']").change(function(){
+    var company_id = $(this).val();
+    var department_id = $("select[name='departmentid']").val();
+    $('#employer option').each(function(){
+      $(this).hide();
+      if($(this).hasClass("c"+company_id) && $(this).hasClass("d"+department_id)) {
+        $(this).show();
+      }
+    })
+  });
+
+  $("select[name='departmentid']").change(function(){
+    var company_id = $("select[name='companyid']").val();
+    var department_id = $(this).val();
+    $('#employer option').each(function(){
+      $(this).hide();
+      if($(this).hasClass("d"+department_id) && $(this).hasClass("c"+company_id)) {
+        $(this).show();
+      }
+    })
+  });
 });
 </script>
 </body>

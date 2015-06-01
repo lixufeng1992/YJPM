@@ -214,15 +214,15 @@ class OperSystemManageAction extends LoginAfterAction{
 
     //列出所有非用户员工信息（id+name）
     $employerBriefArray = $this->employerDao->findAll_idEmployernumberName();
-    $userRowArray = $this->userDao->findAll();
-    $rootUserRow = $this->userDao->findById(ROOT_USERID);
-    $rootEmployerRow = $this->employerDao->findById($rootUserRow['employerid']);
-    foreach($employerBriefArray as $key => $value){
-      if($value['employerid'] == $rootEmployerRow['employerid'])unset($employerBriefArray[$key]);
-      else foreach($userRowArray as $key1 => $value1){
-        if($value['employerid'] == $value1['employerid'])unset($employerBriefArray[$key]);
-      }
-    }
+    // $userRowArray = $this->userDao->findAll();
+    // $rootUserRow = $this->userDao->findById(ROOT_USERID);
+    // $rootEmployerRow = $this->employerDao->findById($rootUserRow['employerid']);
+    // foreach($employerBriefArray as $key => $value){
+    //   if($value['employerid'] == $rootEmployerRow['employerid'])unset($employerBriefArray[$key]);
+    //   else foreach($userRowArray as $key1 => $value1){
+    //     if($value['employerid'] == $value1['employerid'])unset($employerBriefArray[$key]);
+    //   }
+    // }
     $this->assign('employerBriefArray',$employerBriefArray);
     //分公司、部门信息
     $companyRowArray = $this->companyDao->findAll();
@@ -327,15 +327,15 @@ class OperSystemManageAction extends LoginAfterAction{
 
     //列出所有非用户员工信息（id+name）,包含已选择的那个员工
     $employerBriefArray = $this->employerDao->findAll_idEmployernumberName();
-    $userRowArray = $this->userDao->findAll();
-    $rootUserRow = $this->userDao->findById(ROOT_USERID);
-    $rootEmployerRow = $this->employerDao->findById($rootUserRow['employerid']);
-    foreach($employerBriefArray as $key => $value){
-      if($value['employerid'] == $rootEmployerRow['employerid'])unset($employerBriefArray[$key]);
-      else foreach($userRowArray as $key1 => $value1){
-        if(($value['employerid'] != $userRow['employerid'])&&($value['employerid'] == $value1['employerid']))unset($employerBriefArray[$key]);
-      }
-    }
+    // $userRowArray = $this->userDao->findAll();
+    // $rootUserRow = $this->userDao->findById(ROOT_USERID);
+    // $rootEmployerRow = $this->employerDao->findById($rootUserRow['employerid']);
+    // foreach($employerBriefArray as $key => $value){
+    //   if($value['employerid'] == $rootEmployerRow['employerid'])unset($employerBriefArray[$key]);
+    //   else foreach($userRowArray as $key1 => $value1){
+    //     if(($value['employerid'] != $userRow['employerid'])&&($value['employerid'] == $value1['employerid']))unset($employerBriefArray[$key]);
+    //   }
+    // }
     $this->assign('employerBriefArray',$employerBriefArray);
     //分公司、部门信息
     $companyRowArray = $this->companyDao->findAll();

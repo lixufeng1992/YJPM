@@ -24,7 +24,7 @@
 		public function findById($employerid){
 			$dsn = C('DB_DSN1');
 			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			$myPDO->query('set names utf8;');
 			$sql="select * from tb_employer where employerid = ?";
 			$statement = $myPDO->prepare($sql);
 			$statement->execute(array($employerid));
@@ -35,7 +35,7 @@
 		public function findAll(){
 			$dsn = C('DB_DSN1');
 			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			$myPDO->query('set names utf8;');
 			// $sql="select * from tb_employer order by employerid asc";
 			$sql="select * from tb_employer where employerid <> 1 order by employerid asc";
 			$statement = $myPDO->query($sql);
@@ -45,7 +45,7 @@
 		public function findAll_idName(){
 			$dsn = C('DB_DSN1');
 			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			$myPDO->query('set names utf8;');
 			$sql="select employerid,name from tb_employer order by employerid asc";
 			$statement = $myPDO->query($sql);
 			return $statement->fetchAll();
@@ -55,7 +55,7 @@
 			$dsn = C('DB_DSN1');
 			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
 			$myPDO->query('set names utf8;'); 
-			$sql="select employerid,employer_number,name from tb_employer order by employerid asc";
+			$sql="select employerid,employer_number,name,companyid,departmentid from tb_employer order by employerid asc";
 			$statement = $myPDO->query($sql);
 			return $statement->fetchAll();
 		}
