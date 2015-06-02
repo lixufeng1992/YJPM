@@ -5,7 +5,8 @@ import("@.Model.DepartmentDao");
 import("@.Model.EnterpriseDao");
 import("@.Model.ProcessClassifyDao");
 import("@.Model.ProcessDao");
-//import("@.Model.UserDao");
+import("@.Model.ManagerDao");
+import("@.Model.UserDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
@@ -25,6 +26,7 @@ class OperSystemManageAction extends LoginAfterAction{
     $this->enterpriseDao=new EnterpriseDao();
     $this->processClassifyDao = new ProcessClassifyDao();
     $this->processDao = new ProcessDao();
+	$this->managerDao = new ManagerDao();
   }
 
   //角色管理--------------------------------------------------------------------
@@ -760,7 +762,156 @@ class OperSystemManageAction extends LoginAfterAction{
     $this->processDao->deleteById($process_id);
   }
     // 项目部位维护==============================================================================
+	
+	
+	
+  //项目经理管理--------------------------------------------------------------------
+ public function listManager(){
+    //权限检查
+    $params = array();
+    $params['result'] = false;
+    $params['operationid'] = MANAGER_MAINTAIN;
+    tag('behavior_authoritycheck',$params);
+    if($params['result'] == false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
 
+    $managerRowArray = $this->managerDao->findAll();
+    foreach($userRowArray as $key=>$value){
+      if($value['userid']==ROOT_USERID)unset($userRowArray[$key]);
+    }
+    $this->assign('managerRowArray',$managerRowArray);
+    $this->display('OperSystemManage/listManager');
+  }
+  public function addManager(){
+    //权限检查
+    $params = array();
+    $params['result'] = false;
+    $params['operationid'] = MANAGER_MAINTAIN;
+    tag('behavior_authoritycheck',$params);
+    if($params['result'] == false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
+   $this->display('OperSystemManage/addManager');
+  }
+  
+  public function addManagerFromEmployer(){
+		//权限检查
+		$params = array();
+		$params['result'] = false;
+		$params['operationid'] = EMPLOYER_MAINTAIN;
+		tag('behavior_authoritycheck',$params);
+		if($params['result'] == false){
+			$this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+			return;
+		}
+
+		$companyRowArray = $this->companyDao->findAll();
+		$departmentRowArray = $this->departmentDao->findAll();
+		
+		$employerRowArray = $this->employerDao->findAll();
+		$userRow_root = $this->userDao->findById(ROOT_USERID);
+		$employerRow_root = $this->employerDao->findById($userRow_root['employerid']);
+		foreach($employerRowArray as $key => $value){
+			if($value['employerid'] == $employerRow_root['employerid'])unset($employerRowArray[$key]);
+		}
+
+		$this->assign('companyRowArray',$companyRowArray);
+		$this->assign('departmentRowArray',$departmentRowArray);
+		
+		$this->assign('employerRowArray',$employerRowArray);		
+		$this->display('OperSystemManage/addManagerFromEmployer');
+	}
+	
+	public function addManagerFromEmployerSubmit(){
+		$id=$_GET['employerid'];
+		$employerRow = $this->employerDao->findById($id);
+		$e_num=$employerRow['employer_number'];
+		$e_name=$employerRow['name'];
+		
+		$this->assign('managername',$e_name);
+		$this->assign('employer_number',$e_num);
+		$this->display('OperSystemManage/addManager');
+	}
+  public function addManagerSubmit(){
+    $managername=$_POST['managername'];
+	$e_name=$_POST['employer_number'];
+	$comments=$_POST['comments'];
+    if($this->managerDao->is_managername_exist($managername)){
+      $message="该经理已存在，如需改变请进入编辑页";
+      $this->assign('message',$message);
+      $this->addManager();
+      return;
+    }
+
+    $managerid = $this->managerDao->add($managername,$e_name,$comments);
+
+    $operationRowArray = $this->operationDao->findAll();
+    foreach($operationRowArray as $value){
+      $operationid = $value['operationid'];
+      $operationKey = "operation_".$operationid;
+      if(isset($_POST[$operationKey])&&$_POST["operation_$operationid"]==9){
+        $this->managerOperationDao->add($managerid,$operationid);
+      }
+
+    }
+    $this->redirect('Operation/oneoperation',array(operationid=>MANAGER_MAINTAIN),3,'添加角色成功...');
+  }
+
+
+  public function editManager(){
+    //权限检查
+    $params = array();
+    $params['result'] = false;
+    $params['operationid'] = MANAGER_MAINTAIN;
+    tag('behavior_authoritycheck',$params);
+    if($params['result'] == false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
+    $managerid = $_GET['managerid'];
+    $managerRow = $this->managerDao->findById($managerid);
+    $this->assign('managerid',$managerid);
+    $this->assign('managername',$managerRow['managername']); 
+	$this->assign('comments',$managerRow['comments']);
+    $this->display('OperSystemManage/editManager');
+
+  }
+  public function editManagerSubmit(){
+    //更改名字
+	$managerid=$_POST['managerid'];
+    $managername_new = $_POST['managername'];
+    $comments_new = $_POST['comments'];
+    $this->managerDao->update($managerid,$managername_new,$comments_new);
+    
+    $this->redirect('OperSystemManage/listManager',array(managerid=>$managerid),3,"经理信息修改成功");
+
+  }
+
+  public function deleteManager(){
+    //权限检查
+    $params = array();
+    $params['result'] = false;
+    $params['operationid'] = MANAGER_MAINTAIN;
+    tag('behavior_authoritycheck',$params);
+    if($params['result'] == false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
+    $managerid = $_GET['managerid'];
+ 
+    //删除manager项
+    $this->managerDao->deleteById($managerid);
+
+    //返回
+    $this->redirect('OperSystemManage/listManager',array(operationid=>MANAGER_MAINTAIN),3,'经理删除成功...');
+  }
+  //项目经理管理====================================================================
 }
 
 ?>

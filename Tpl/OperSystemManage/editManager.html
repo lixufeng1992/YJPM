@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" manager="navigation" id="bodynav">
+  <div class="container-fluid">
+   <div class="navbar-header navbar-brand">项目经理维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href={:U('OperSystemManage/addManager')}>新增项目经理</a></li>
+      <li><a href={:U('OperSystemManage/listManager')} class="active">已有项目经理</a>   </li>
+    </ul>
+  </div>
+</nav> 
+<div class="panel-group"> 
+		<div class="panel panel-default">			
+		<div class="panel-body">		
+		<div class="page-header">
+                   <div class="col-md-4">
+                   <h4>已有经理列表</h4>
+                   </div>
+		<div style="clear:both"></div>
+		</div>
+		<div class="container-fluid">
+			<div class="row list-row">
+			<form id="roleForm" class="form-horizontal" action={:U('OperSystemManage/editManagerSubmit')} method="POST">
+			<div class="page-header">
+                    <div class="col-md-4">
+                        <h4>编辑经理信息</h4>
+                    </div>
+                    <div class="col-md-2 col-md-offset-4">
+                        <input class="btn btn-primary btn-block" type="submit" value="保存"/>
+                    </div>
+                    <div class="col-md-1">
+                        <a class="btn btn-danger btn-block" href={:U('OperSystemManage/deleteManager',array('managerid'=>$managerid))}>删除</a>
+                    </div>
+                    <div class="col-md-1">
+                        <a class="btn btn-default btn-block" href={:U('OperSystemManage/listmanager')}>取消</a>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+			<label class="control-label col-md-3">姓名:</label><label class="control-label col-md-9"><input  value='{$managername}'id='managername'name='managername'style="width:80%;"></input></label>
+			<label class="control-label col-md-3">备注:</label><label class="control-label col-md-9"><textarea id='comments' name='comments'style="width:80%;height:8em;">{$comments}</textarea></label>
+			<div style="display:none"><input name='managerid' id="managerid" value='{$managerid}'></input></div>
+			</div>
+			
+			</form>
+		</div>
+	</div>  
+  </div> 
+</div>
+</div>
+
+<include file="./Tpl/Part/script.html" />
+
+</body>
+</html>

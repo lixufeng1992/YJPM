@@ -91,6 +91,9 @@ class OperationAction extends LoginAfterAction{
     case COMPANY_MAINTAIN: //子公司维护
       $this->redirect('OperHumanResource/listCompany');
       break;
+	case MANAGER_MAINTAIN://项目经理维护
+	  $this->redirect('OperSystemManage/listManager');
+	  break;
     case PROCESS_MAINTAIN: //项目部位维护
       $this->redirect('OperSystemManage/listProcess');
       break;

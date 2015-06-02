@@ -5,6 +5,7 @@ define('APP_NAME','./Yjpm');
 //定义系统所需常量
 define('ROOT_ROLEID',1);
 define('ROOT_USERID',1);
+define('ROOT_MANAGERID',1);
 
 define('PROJECT_EXPLORE',101);
 define('PROJECT_MAINTAIN',102);
