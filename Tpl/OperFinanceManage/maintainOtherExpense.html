@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	.right-glyphicon-1{
+		position:absolute;
+		right:5px;
+		top:8px;
+	}
+	.right-glyphicon-2{
+		position:absolute;
+		right:25px;
+		top:8px;
+	}
+	.mid-tree-item-1{
+		margin-right:15px;
+		margin-left:20px;
+	}
+	.mid-tree-item-2{
+		margin-right:30px;
+		margin-left:20px;
+	}
+	.glyphicon.disabled{
+		color:#ccc;
+		cursor:not-allowed;
+	}
+	.template{
+		display:none;
+	}
+	td{
+		cursor:pointer;
+	}
+	.material-info{
+		word-break:break-all;
+	}
+	#viewMaterialModal .form-group div {
+		padding-top: 7px;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">其他费用科目维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{:U('OperFinanceManage/maintainOtherExpense')}" class="active">其他费用科目维护</a></li>
+    </ul>
+  </div>
+</nav>  
+	<div class="panel panel-default">
+		<div class="panel-body">  
+			<div class="page-header">
+				<div class="col-md-5">
+					<h4>其他费用科目</h4>
+				</div>
+				<div class="col-md-5">
+					<h4>科目信息</h4>
+				</div>
+				<div class="col-md-2">
+				
+				</div>
+				<div style="clear:both"></div>
+			</div>
+			<div class="container-fluid">
+				<div class="row list-row">
+					<div class="col-md-5" style="overflow-x:auto;overflow-y:hidden">
+						<ul class="list-group sidebar-tree">
+							<li class="list-group-item" style="display:none" id="editor"><!-- 编辑器 -->
+								<div class="input-group input-group-sm mid-tree-item-2">
+									<input type="text" class="form-control" readonly id="editorinput">
+								</div>
+								<span class="glyphicon glyphicon-ok right-glyphicon-2"></span>
+								<span class="glyphicon glyphicon-remove right-glyphicon-1"></span>
+							</li>
+							<li class="list-group-item template"><!-- 新分类模板 -->
+								<span class="glyphicon glyphicon-minus-sign hidden"></span>
+								<a href="0" class="tree-item mid-tree-item-2"></a>
+								<span class="glyphicon glyphicon-plus right-glyphicon-2"></span>
+								<span class="glyphicon glyphicon-minus right-glyphicon-1"></span>
+							</li>
+							<li class="list-group-item collapse in hidden template"><!-- 子分类模板 -->
+								<ul class="list-group">
+								</ul>
+							</li>
+							<li class="list-group-item">
+								<span class="glyphicon glyphicon-minus-sign"></span>
+								<a href="0" class="tree-item mid-tree-item-2">全部分类</a>
+								<span class="glyphicon glyphicon-plus right-glyphicon-2"></span>
+							</li>
+							<li class="list-group-item collapse in">
+								<ul class="list-group">
+								<php> 
+								function showList(&$levelArray,$item){
+								
+								</php>
+									
+									<li class="list-group-item">
+										<span class="glyphicon glyphicon-minus-sign <if condition="empty($levelArray[$item[exacctid]][children])">hidden</if>"></span>
+										<a href="{$item.exacctid}" class="tree-item mid-tree-item-2"
+											data-exacctname="{$item.exacctname}" data-classid="{$item.classid}" data-remark="{$item.remark}" data-parentid="{$item.parentid}">
+											{$item.name}-{$item.exacctname}
+										</a>
+										<span class="glyphicon glyphicon-plus right-glyphicon-2"></span>
+										<span class="glyphicon glyphicon-minus right-glyphicon-1"></span>
+									</li>
+									<li class="list-group-item collapse in <if condition="empty($levelArray[$item['exacctid']][children])">hidden</if>">
+										<ul class="list-group">
+											<php>
+											if (!empty($levelArray[$item['exacctid']]['children'])){
+												foreach($levelArray[$item['exacctid']]['children'] as $value) showList($levelArray,$value);
+											}
+											</php>
+										</ul>
+									</li>
+								
+								<php>
+								}
+								foreach($firstlevel as $value){
+									showList($levelArray,$levelArray[$value]);
+								}
+								</php>
+								</ul>
+							</li>
+						</ul>
+						
+						
+						
+					</div>
+					<div class="col-md-7">
+						<form class="form-horizontal" action="{:U('OperFinanceManage/addOtherExpenseAcct')}" method="POST" id="classform">
+							<div class="form-group">
+								<label class="col-md-2 control-label">名称</label>
+								<div class="col-md-7">
+									<input class="form-control" type="text" name="exacctname" id="exacctname"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">归属成本</label>
+								<div class="col-md-7">
+									<select class="form-control" name="classid" id="classid">
+										<option value="">请选择</option>
+										<volist name="exacctClassRowArray" id="class">
+										<option value="{$class.exacctclassid}">{$class.name}</option>
+										</volist>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">备注</label>
+								<div class="col-md-7">
+									<textarea class="input-xlarge form-control" rows="4" name="remark" id="remark"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-7 col-md-offset-2 text-right">
+									<input class="btn btn-primary" type="submit" value="确定" />
+									<button class="btn btn-danger" type="button" onclick="editorRemove()">取消</button>
+									<input type="hidden" name="parentid" id="parentid">
+									<input type="hidden" name="exacctid" id="exacctid">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script type="text/javascript">
+//取消编辑
+function editorRemove(){
+	var editor = $("#editor");
+	if (editor.data("ishiddenbefore")){
+		editor.parents("li").first().addClass("hidden");
+		editor.removeData("ishiddenbefore");
+	}
+	editor.hide();
+	if (editor.data("editing")){
+		editor.data("editing").show();
+		editor.removeData("editing");
+	}
+	editor.find("input").val("");
+	$("ul.sidebar-tree").prepend(editor.detach());
+	$("#exacctname").val("");
+	$("#classid").val("");
+	$("#remark").val("");
+	$("#exacctid").val("");
+	$("#parentid").val("");
+}
+//确认编辑
+function editorOk(){
+	var editor = $("#editor");
+	var text = editor.find("input").val();
+	editor.removeData("ishiddenbefore");
+	$.post("{:U('OperFinanceManage/addOtherExpenseAcct')}",$("#classform").serialize(),function(result){
+		var newClass;
+		if ($("#editor").data("editing")){
+			newClass=$("#editor").data("editing");
+		}else{
+			newClass = $(".template").clone(true).removeClass("template");
+			editor.parent().append(newClass);
+			newClass.first().parent().parent().prev().children().first().removeClass("hidden");
+		}	
+		newClass.find("a").data({exacctname:result[1],classid:result[3],remark:result[2],parentid:result[4]});
+		newClass.find("a").text($("option[value="+result[3]+"]").text()+"-"+result[1]);
+		newClass.find("a").attr("href",result[0]);
+		editorRemove();
+	},'json');
+	
+}
+
+$().ready(function(){
+	$(".sidebar-tree .glyphicon:not(.glyphicon-minus-sign,.glyphicon-plus-sign)").unbind("click");
+	//取消编辑
+	$("#editor .glyphicon-remove").click(editorRemove);
+	//确认编辑
+	$("#editor .glyphicon-ok").click(editorOk);
+	//删除子类
+	$("#exacctname").change(function(){
+		$("#editorinput").val($(this).val());
+	});
+	$(".sidebar-tree").on("click",".glyphicon-minus",function(e){
+		var todelete = $(this);
+		$.post("{:U('OperFinanceManage/deleteOtherExpenseAcct')}",{exacctid:$(this).prev().prev().attr("href")},function(result){
+			if(result[0]){
+				if (todelete.parent().next().find("#editor").length!=0){
+					editorRemove();
+				}
+				todelete.parent().next().remove();
+				todelete.parent().remove();
+			}else{
+				alert(result[1]);
+			}
+		},'json');
+	});
+	//修改分类
+	$(".sidebar-tree").on("click","a.tree-item",function(e){
+		e.preventDefault();
+		editorRemove();
+		var editor = $("#editor").detach();
+		$(this).parent().before(editor);
+		$(this).parent().hide();
+		editor.data("editing",$(this).parent());
+		editor.show();
+		$("#editorinput").val($(this).data("exacctname"));
+		$("#exacctname").val($(this).data("exacctname"));
+		$("#classid").val($(this).data("classid"));
+		$("#remark").val($(this).data("remark"));
+		$("#exacctid").val($(this).attr("href"));
+		$("#parentid").val($(this).data("parentid"));
+	})
+	//添加子类
+	$(".sidebar-tree").on("click",".glyphicon-plus",function(){
+		editorRemove();
+		$("#parentid").val($(this).prev().attr("href"));
+		$("#exacctname").focus();
+		var container = $(this).parent().next().children().first().filter("ul");
+		if (container.length==0) return;
+		var editor = $("#editor").detach();
+		editor.data("ishiddenbefore",$(this).parent().next().hasClass("hidden"));
+		$(this).parent().next().removeClass("hidden");
+		container.prepend(editor);
+		if ($(this).parent().next().data("bs.collapse")){
+			$(this).parent().next().collapse("show");
+		}else{
+			$(this).parent().next().addClass("in");
+		}
+		editor.show(200);
+	});
+	$("#classform").validate({
+		rules:{
+			exacctname:"required",
+			classid:"required",
+			parentid:"required"
+		},
+		errorElement:"div",
+		ignore:"",
+		submitHandler:function(){
+			editorOk();
+			return false;
+		},
+		messages:{
+			parentid:{
+				required:"请先选择一个分类"
+			}
+		}
+	});
+});
+
+
+
+function showList(type,id){
+	//console.info(type)
+	//console.info(id)
+	if (type=="all"){
+		$("tr").show();
+	}else{
+		var show = $("tbody tr."+type+id+":not(.hidden)");
+		var hide = $("tbody tr:not("+"tbody tr."+type+id+",.hidden)");
+		hide.hide();
+		show.show();
+	}
+	if (type=="leaf"){
+		$("#addMaterialModal input[name='classid']").val(id).change();
+		//$("#addMaterialForm input[name='classid']").change();
+	}else{
+		$("#addMaterialModal input[name='classid']").val("");
+		$("#addMaterialForm input[name='classid']").change();
+	}
+}
+function allClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"all",0);
+}
+function rootClassClick(e){
+	e.preventDefault();
+	if($("#editClass").hasClass("glyphicon-ok")){
+		//修改父分类
+		var editor,children,parent;
+		parent = $(this).parent();
+		if(parent.data("editor")){
+			editor = parent.data("editor");
+		}else{
+			editor = parent.parent().find(".addRootClass").clone().children();
+			editor.filter(".addClassCancel").click(function(){
+				var parent = $(this).parent();
+				var children = 	parent.data("children");
+				parent.data("editor").detach();
+				parent.append(children);
+			});
+			editor.filter(".addRootClassOK").click(function(){
+				var btn = $(this);
+				if (btn.hasClass("disabled")){
+					return;
+				}
+				var parent = btn.parent();
+				var input = parent.find("input");
+				if (!input.val().trim()){
+					return;
+				}
+				btn.addClass("disabled");
+				var children = 	parent.data("children");
+				var editor = parent.data("editor");
+				//TODO 修改父分类URL
+				$.post("{:U('OperMaterialManage/materialMaintain_editClass')}",
+					{classid:btn.data("classid"),name:input.val().trim()},
+					function(result){
+						if(result.result == true){
+							editor.detach();
+							parent.append(children);
+							btn.removeClass("disabled");
+							children.filter("a").text(result.name);
+						}
+						else{
+							alert("修改失败");
+						}
+
+					},'json');
+			}).data("classid",$(this).attr("href"));
+			parent.data("editor",editor);
+		}
+		if(parent.data("children")){
+			children = parent.data("children");
+		}else{
+			children = parent.children();
+			parent.data("children",children);
+		}
+		children.detach();
+		parent.append(editor);
+		editor.find("input").val(children.filter("a").text().trim());
+	}else{
+		$("#viewClassTree .list-group-item").removeClass("active");
+		$(this).parent().addClass("active");
+		showList.call(this,"root",$(this).attr("href"));
+	}
+}
+function leafClassClick(e){
+	e.preventDefault();
+	if($("#editClass").hasClass("glyphicon-ok")){
+		//修改子分类
+		var editor,children,parent;
+		parent = $(this).parent();
+		if(parent.data("editor")){
+			editor = parent.data("editor");
+		}else{
+			editor = parent.parent().find(".addLeafClass").clone().children();
+			editor.filter(".addClassCancel").click(function(){
+				var parent = $(this).parent();
+				var children = 	parent.data("children");
+				parent.data("editor").detach();
+				parent.append(children);
+			});
+			editor.filter(".addLeafClassOK").click(function(){
+				var btn = $(this);
+				if (btn.hasClass("disabled")){
+					return;
+				}
+				var parent = btn.parent();
+				var input = parent.find("input");
+				if (!input.val().trim()){
+					return;
+				}
+				btn.addClass("disabled");
+				var children = 	parent.data("children");
+				var editor = parent.data("editor");
+				//TODO 修改子分类URL
+				$.post("{:U('OperMaterialManage/materialMaintain_editCategory')}",
+					{categoryid:btn.data("classid"),name:input.val().trim()},
+					function(result){
+						if(result.result){
+							//alert(result['name']);
+							editor.detach();
+							parent.append(children);
+							btn.removeClass("disabled");
+							children.filter("a").text(result.name);
+						}
+						else{alert("修改失败");}
+					},'json');
+			}).data("classid",$(this).attr("href"));
+			parent.data("editor",editor);
+		}
+		if(parent.data("children")){
+			children = parent.data("children");
+		}else{
+			children = parent.children();
+			parent.data("children",children);
+		}
+		children.detach();
+		parent.append(editor);
+		editor.find("input").val(children.filter("a").text().trim());
+	}else{
+		$("#viewClassTree .list-group-item").removeClass("active");
+		$(this).parent().addClass("active");
+		showList.call(this,"leaf",$(this).attr("href"));
+	}
+}
+function addRootClassClick(){
+	if (!$(this).parent().next().hasClass("in")){
+		$(this).parent().next().collapse("show");
+	}
+	$(this).parent().next().find(".addRootClass").show(200);
+}
+function addLeafClassClick(){
+	if (!$(this).parent().next().hasClass("in")){
+		$(this).parent().next().collapse("show");
+	}
+	$(this).parent().next().find(".addLeafClass").show(200);
+	$(this).parent().next().find(".addLeafClass .addLeafClassOK").data("classid",$(this).data("classid"));
+}
+function addRootClassOKClick(){
+	var btn = $(this);
+	var input = btn.parent().find("input");
+	if (!input.val().trim()){
+		return;
+	}
+	if (btn.hasClass("disabled")){
+		return;
+	}
+	btn.addClass("disabled");
+	//TODO 添加父分类URL
+	$.post("{:U('OperMaterialManage/materialMaintain_addClass')}",
+		{name:input.val().trim()},
+		function(result){
+			//alert(result);
+			//if(result.status){
+			input.val("");
+			btn.removeClass("disabled");
+			btn.parent().hide(200);
+			var item = $(".template").clone(true).removeClass("template");
+			editRoot.call(item.find("a").attr("href",result.id).text(result.name));				
+			btn.parent().parent().append(item);
+
+			//}
+		},'json');
+}
+function addLeafClassOKClick(){
+	var btn = $(this);
+	var input = btn.parent().find("input");
+	if (!input.val().trim()){
+		return;
+	}
+	if (btn.hasClass("disabled")){
+		return;
+	}
+	btn.addClass("disabled");
+	//TODO 添加子分类URL
+	$.post("{:U('OperMaterialManage/materialMaintain_addCategory')}",
+
+		{classid:btn.data("classid"),name:input.val().trim()},
+		function(result){
+			if(result['id'] <= 0){alert("添加失败");return;}
+			//if(result.status){
+			//alert(result['name']);
+			input.val("");
+			btn.removeClass("disabled");
+			btn.parent().hide(200);
+			var item = $(
+				"<li class=\"list-group-item\"><a href=\""
+				+result.id
+				+"\" class=\"tree-item leaf-class\">"
+				+result.name
+				+"</a></li>"
+				);
+			item.find("a").click(leafClassClick);				
+			btn.parent().parent().append(item);
+			editLeaf.call(item.find("a")[0]);
+			//}
+		},'json');
+}
+function addClassCancel(){
+	$(this).parent().hide(200);
+	$(this).parent().find("input").val("");
+}
+function removeRootClassClick(){
+	if(confirm("确认删除该分类？")){
+		var btn = $(this);
+		var classid = btn.parent().children().eq(1).attr("href");
+		//alert(btn.parent().children().eq(1).attr("href"));
+		//TODO 删除父分类URL
+		$.post("{:U('OperMaterialManage/materialMaintain_deleteClass')}",
+			{classid:classid},
+			function(result){
+				if(result == -1){alert("分类下还有种类信息存在，无法删除");return;}
+				else if(result <= 0){alert("删除失败");return;}
+				//alert(result['classid']);
+				var c = btn.parent();
+				c.next().remove();
+				c.remove();
+			},'json'
+		);
+	}
+}
+function removeLeafClassClick(){
+	if(confirm("确认删除该分类？")){
+		var btn = $(this);
+		//alert(btn.data("classid"));
+		//TODO 删除子分类URL
+		$.post("{:U('OperMaterialManage/materialMaintain_deleteCategory')}",
+			{categoryid:btn.data("classid")},
+			function(result){
+				//alert(result['categoryid']);
+				if(result['result'] > 0){
+					btn.parent().remove();
+				}
+				else if(result['result'] == -1){alert("分类下还有材料存在，无法删除");return;}
+				else {alert("删除失败");return;}
+			},'json'
+		);
+	}
+}
+function editRoot(){
+	var editButton;
+	if($(this).data("editButton")){
+		editButton = $(this).data("editButton");
+	}else{
+		editButton = {
+				addButton : $("<span class=\"glyphicon glyphicon-plus right-glyphicon-2\"></span>"),
+				removeButton : $("<span class=\"glyphicon glyphicon-minus right-glyphicon-1\"></span>")
+			};
+		editButton.addButton.click(addLeafClassClick).data("classid",$(this).attr("href"));
+		editButton.removeButton.click(removeRootClassClick).data("classid",$(this).attr("href"));
+		$(this).data("editButton",editButton);
+	}
+	$(this).addClass("mid-tree-item-2");
+	$(this).after(editButton.addButton).after(editButton.removeButton);
+}
+function editLeaf(){
+	var removeButton;
+	if($(this).data("removeButton")){
+		removeButton = $(this).data("removeButton");
+	}else{
+		removeButton = $("<span class=\"glyphicon glyphicon-minus right-glyphicon-1\"></span>");
+		removeButton.click(removeLeafClassClick).data("classid",$(this).attr("href"));
+		$(this).data("removeButton",removeButton);
+	}
+	$(this).addClass("mid-tree-item-1");
+	$(this).after(removeButton);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$().ready(function(){
+	//新增材料前检测categoryid是否为空
+	$("#addMaterialForm input[name='classid']").change(function(){
+		if($("#addMaterialForm input[name='classid']").val() == ""){
+			$("#a_addMaterial").attr("disabled",true);
+		}
+		else $("#a_addMaterial").attr("disabled",false);
+		//alert("change");
+	});
+	$(".del_material").unbind("click");
+	//删除材料
+	$(document).on("click",".del_material",function(e){
+		if (!confirm("确认删除？")) return false;
+		e.preventDefault();
+		var tr = $(this).parent().parent();
+		var materialid = tr.data("id");
+		//alert(tr.data("id"));
+		$.post(
+			"{:U('OperMaterialManage/materialMaintain_deleteMaterial')}",
+			{materialid:materialid},
+			function(data){
+				if(data == true){
+					tr.remove();
+				}
+			},
+			"json"
+			);
+	});
+
+	$(".modal-body").css("max-height",""+($(window).height()-200)+"px");
+	$(window).resize(function(){
+		$(".modal-body").css("max-height",""+($(window).height()-200)+"px");
+	});
+	$("#addMaterialForm").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			classid:{
+				required:true
+			},
+			unit:{
+				required:true
+			},
+			price_in:{
+				number:true
+			}
+		},
+		messages:{
+			classid:{
+				required:"请在页面左侧分类中选择一个子分类"
+			}
+		},
+		submitHandler:function(){
+		var name = $("#name_addMaterialForm").val();
+		var categoryid = $("#categoryid_addMaterialForm").val();
+		var worktype = $("#worktype_addMaterialForm").val();
+		var unit = $("#unit_addMaterialForm").val();
+		var price_in = $("#priceIn_addMaterialForm").val();
+		var parameter = $("#parameter_addMaterialForm").val();
+		var specification = $("#specification_addMaterialForm").val();
+		var brand = $("#brand_addMaterialForm").val();
+		$("#addMaterialForm button[type='submit']").bootstrapBtn("loading");
+		//alert(parameter);
+		$.post(
+			"{:U('OperMaterialManage/materialMaintain_addMaterial')}",
+			{name:name,categoryid:categoryid,worktype:worktype,
+				unit:unit,price_in:price_in,parameter:parameter,
+				specification:specification,brand:brand},
+			function(data){
+				if(data['materialid'] <= 0){alert("新增材料失败");return;}
+				$("#addMaterialForm button[type='submit']").bootstrapBtn("reset");
+						$("#addMaterialModal").modal('hide');
+				var item = $("<tr class=\"root"+data['classid']+
+					" leaf"+categoryid+"\" data-id=\""+data['materialid']+"\"><td class=\"type\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+worktype+
+					"</td><td class=\"name\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+name+
+					"</td><td class=\"unit\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+unit+
+					"</td><td class=\"price\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+price_in+
+					"</td><td><a href=\"#\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#editMaterialModal\">修改</a>&nbsp;<div class=\"hidden classid\">"+categoryid+
+					"</div><!-- 分类id --><div class=\"hidden parameter\">"+parameter+
+					"</div><!-- 产品参数 --><div class=\"hidden standard\">"+specification+
+					"</div><!-- 规格 --><div class=\"hidden brand\">"+brand+
+					"</div><!-- 品牌 -->"+
+					"<div class=\"hidden id\">"+data['materialid']+
+					"</div><!-- materialid -->"+
+					"<a href=\"#\" class=\"btn btn-danger del_material\">删除</a></td></tr>");
+				$("#tbody_materialList").append(item);
+
+				$("#name_addMaterialForm").val("");
+				$("#categoryid_addMaterialForm").val("");
+				$("#worktype_addMaterialForm").val("");
+				$("#unit_addMaterialForm").val("");
+				$("#priceIn_addMaterialForm").val("");
+				$("#parameter_addMaterialForm").val("");
+				$("#specification_addMaterialForm").val("");
+				$("#brand_addMaterialForm").val("");
+			},
+			"json"
+			);
+
+	},
+		errorElement:"div",
+		ignore:""
+	});
+	$("#editMaterialForm").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			classid:{
+				required:true
+			},
+			unit:{
+				required:true
+			},
+			price:{
+				number:true
+			}
+		},
+		submitHandler:function(form){
+			$("#editMaterialForm button[type='submit']").bootstrapBtn("loading");
+			//TODO 修改材料URL
+			$.post("{:U('OperMaterialManage/materialMaintain_editMaterial')}",
+				$(form).serialize(),
+				function(result){
+					// alert(data['price_in']);
+					// alert(data['parameter']);
+					// alert(data['specification']);
+					// alert(data['brand']);
+					if(result.result){
+						//alert("aaa");
+						$("#editMaterialForm button[type='submit']").bootstrapBtn("reset");
+						$("#editMaterialModal").modal('hide');
+						var item = $("#editMaterialModal").data("dataTarget");
+						item.find(".id").text(result.materialid);
+						item.find(".name").text(result.name);
+						item.find(".unit").text(result.unit);
+						item.find(".price").text(result.price_in);
+						item.find(".classid").text(result.categoryid);
+						item.find(".type").text(result.worktype);
+						item.find(".parameter").text(result.parameter);
+						item.find(".standard").text(result.specification);
+						item.find(".brand").text(result.brand);
+						item.find(".btn-danger").attr("href",result.materialid);
+					}
+				}
+				,"json");
+		},
+		errorElement:"div",
+		ignore:""
+	});
+	$("#addMaterialModal").on("show.bs.modal",function(){
+		var modal = $(this);
+		var id = modal.find("input[name='classid']").val();
+		if (id){
+			modal.find("input[name='classname']").val($(".leaf-class[href='"+id+"']").text().trim());
+		}else{
+			modal.find("input[name='classname']").val("");
+		}
+		//$("#addMaterialForm").valid();
+	});
+	
+	$("#editMaterialModal").on("show.bs.modal",function(e){
+		var row = $(e.relatedTarget).parents("tr");
+		var modal = $(this);
+		modal.data("dataTarget",row);
+		modal.find("input:not(input[name='classname'])").each(function(){
+			$(this).val(row.find("."+$(this).attr("name")).text().trim())
+		});
+		modal.find("input[name='classname']").val($(".leaf-class[href='"+row.find(".classid").text().trim()+"']").text().trim())
+		modal.find("textarea").each(function(){
+			$(this).val(row.find("."+$(this).attr("name")).text().trim())
+		});
+		$("#editMaterialForm").valid();
+	});
+	$("#viewMaterialModal").on("show.bs.modal",function(e){
+		var row = $(e.relatedTarget).parent();
+		var modal = $(this);
+		ttt = modal;
+		modal.find(".material-info:not(#classname)").each(function(){
+			$(this).text(row.find("."+$(this).attr("id")).text().trim())
+		});
+		$("#classname").text($(".leaf-class[href='"+row.find(".classid").text().trim()+"']").text().trim());
+	});
+	$(".addClassCancel").click(addClassCancel);
+	$(".addRootClassOK").click(addRootClassOKClick);
+	$(".addLeafClassOK").click(addLeafClassOKClick);
+	$("[data-toggle='popover']").popover();
+	$(".all-class").click(allClassClick);
+	$(".root-class").click(rootClassClick);
+	$(".leaf-class").click(leafClassClick);
+	$("#editClass").unbind('click');
+	$(document).on('click',"#editClass",function(){
+		if ($(this).hasClass('glyphicon-ok')){
+			$(this).removeClass('glyphicon-ok').addClass("glyphicon-cog").attr("data-content","编辑分类");
+			$(".addClassCancel").trigger("click");
+			$(".all-class").removeClass("mid-tree-item-2").addClass("mid-tree-item-1").data("addButton").detach();
+			$(".root-class:not(.template .root-class)").each(function(){
+				var editButton = $(this).data("editButton");
+				editButton.addButton.detach();
+				editButton.removeButton.detach();
+				$(this).removeClass("mid-tree-item-2");
+			});
+			$(".leaf-class").each(function(){
+				$(this).data("removeButton").detach();
+				$(this).removeClass("mid-tree-item-1");
+			});
+		}else{
+			$(this).removeClass("glyphicon-cog").addClass('glyphicon-ok').attr("data-content","完成");
+			$(".all-class").each(function(){
+				var addButton;
+				if ($(this).data("addButton")){
+					addButton = $(this).data("addButton");
+				}else{
+					addButton = $("<span class=\"glyphicon glyphicon-plus right-glyphicon-2\"></span>");
+					addButton.click(addRootClassClick).data("classid",$(this).attr("href"));
+					$(this).data("addButton",addButton);
+				}
+				$(this).removeClass("mid-tree-item-1").addClass("mid-tree-item-2");
+				$(this).after(addButton);
+			});
+			$(".root-class:not(.template .root-class)").each(editRoot);
+			$(".leaf-class").each(editLeaf);
+		}
+	});
+});
+
+</script>
+</body>
+</html>

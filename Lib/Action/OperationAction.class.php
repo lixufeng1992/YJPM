@@ -78,6 +78,17 @@ class OperationAction extends LoginAfterAction{
       $this->redirect('OperHumanResource/listPosition');
       break;
 
+	//财务管理
+	case OTHER_BUDGET://财务预算单
+		$this->redirect('OperFinanceManage/listOtherBudget');
+		break;
+	case OTHER_EXACCT_CLASSIFY:
+		$this->redirect('OperFinanceManage/classifyOtherExpense');
+		break;
+	case OTHER_EXACCT_MAINTAIN:
+		$this->redirect('OperFinanceManage/maintainOtherExpense');
+		break;
+		
     // 系统管理
     case ROLE_MAINTAIN://角色维护
       $this->redirect('OperSystemManage/listRole');
