@@ -1,5 +1,5 @@
 <?php
-
+//test
 	//删除文件夹
 	function func_deleteDir($dir){
   	//先删除目录下的文件：
