@@ -77,6 +77,17 @@ class OperationAction extends LoginAfterAction{
     case POSITION_MAINTAIN://职务维护
       $this->redirect('OperHumanResource/listPosition');
       break;
+    case COMPANY_MAINTAIN://分公司维护
+      $this->redirect('OperHumanResource/listCompany');
+      break;
+
+    //基础信息
+    case PROCESS_MAINTAIN: //项目部位维护
+      $this->redirect('OperBasicInfoManage/listProcess');
+      break;
+    case ENTERPRISE_MAINTAIN://往来单位维护
+      $this->redirect('OperBasicInfoManage/listEnterprise');
+      break;
 
 	//财务管理
 	case OTHER_BUDGET://财务预算单
@@ -88,7 +99,7 @@ class OperationAction extends LoginAfterAction{
 	case OTHER_EXACCT_MAINTAIN:
 		$this->redirect('OperFinanceManage/maintainOtherExpense');
 		break;
-		
+
     // 系统管理
     case ROLE_MAINTAIN://角色维护
       $this->redirect('OperSystemManage/listRole');
@@ -96,18 +107,18 @@ class OperationAction extends LoginAfterAction{
     case USER_MAINTAIN://用户维护
       $this->redirect('OperSystemManage/listUser');
       break;
-    case ENTERPRISE_MAINTAIN://往来单位维护
-      $this->redirect('OperSystemManage/listEnterprise');
-      break;
-    case COMPANY_MAINTAIN: //子公司维护
-      $this->redirect('OperHumanResource/listCompany');
-      break;
-	case MANAGER_MAINTAIN://项目经理维护
-	  $this->redirect('OperSystemManage/listManager');
-	  break;
-    case PROCESS_MAINTAIN: //项目部位维护
-      $this->redirect('OperSystemManage/listProcess');
-      break;
+  //   case ENTERPRISE_MAINTAIN://往来单位维护
+  //     $this->redirect('OperSystemManage/listEnterprise');
+  //     break;
+  //   case COMPANY_MAINTAIN: //子公司维护
+  //     $this->redirect('OperHumanResource/listCompany');
+  //     break;
+	// case MANAGER_MAINTAIN://项目经理维护
+	//   $this->redirect('OperSystemManage/listManager');
+	//   break;
+  //   case PROCESS_MAINTAIN: //项目部位维护
+  //     $this->redirect('OperSystemManage/listProcess');
+  //     break;
 
     // case SYSTEM_SETTING://系统设置
     //   $this->display('systemSetting');

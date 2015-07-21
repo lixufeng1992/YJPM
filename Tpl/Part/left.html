@@ -155,7 +155,25 @@
 			</div>
 
 
-
+    <div class="panel panel-default">
+<div class="panel-heading">
+  <h4 class="panel-title">
+    <a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse9" class="collapsed">
+    <span class="glyphicon glyphicon-user"></span>
+      基础信息
+    </a>
+  </h4>
+</div>
+<div id="left-collapse9" class="panel-collapse collapse">
+  <div class="panel-body">
+    <volist name="myOperationRowArray" id="vo">
+      <if condition="($vo['operationid'] gt 900) and ($vo['operationid'] lt 1000)">
+      <a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+      </if>
+    </volist>
+  </div>
+</div>
+</div>
 
 
             <div class="panel panel-default">
