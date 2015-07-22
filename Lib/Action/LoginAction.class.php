@@ -10,8 +10,8 @@ class LoginAction extends Action{
 
 	public function loginsubmit(){
 		$username=$_POST['username'];
-    $password = $_POST['password'];
-    $password = substr(md5($password),0,30);
+        $password = $_POST['password'];
+        $password = substr(md5($password),0,30);
 		if($username==""||$password==""){
 			$this->assign(message,'用户名或密码不可为空！');
 			$this->display('Login/login');
