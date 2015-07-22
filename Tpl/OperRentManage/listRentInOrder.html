@@ -17,10 +17,10 @@
 <div id="right" style="min-width:1500px">
     <nav class="navbar navbar-default" role="navigation" id="bodynav">
       <div class="container-fluid">
-       <div class="navbar-header navbar-brand">材料采购单</div>
+       <div class="navbar-header navbar-brand">租赁入库单</div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{:U('OperMaterialManage/addPurchaseOrder')}">新增材料采购单</a></li>
-          <li><a href="{:U('OperMaterialManage/listPurchaseOrder')}" class="active">已有材料采购单</a></li>
+          <li><a href="{:U('OperRentManage/addRentInOrder')}">新增租赁入库单</a></li>
+          <li><a href="{:U('OperRentManage/listRentInOrder')}" class="active">已有租赁入库单</a></li>
         </ul>
       </div>
     </nav>
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 <div class="page-header">
                                                 <div class="col-md-4">
-                                                <h4>已有材料采购单</h4>
+                                                <h4>已有租赁入库单</h4>
                                                 </div>
 					<div class="col-md-4">
 						<h4 id="project_name"></h4>
@@ -51,9 +51,8 @@
 							<th>发生日期</th>
 							<th>经办人</th>
 							<th>金额</th>
-							<th>默认库房</th>
-							<th>默认库管</th>
-							<th>进场方式</th>
+							<th>领用班组</th>
+							<th>领用人</th>
 							<th>创建人</th>
 							<th>创建时间</th>
 							<th>审核人</th>
@@ -70,9 +69,8 @@
 							<td>{$order.happen_date}</td>
 							<td>{$order.transactor}</td>
 							<td>{$order.price}</td>
-							<td>{$order.default_warehouse}</td>
-							<td>{$order.default_administrator}</td>
-							<td>{$order.in_method}</td>
+							<td>{$order.department}</td>
+							<td>{$order.department_person}</td>
 							<td>{$order.creater_name}</td>
 							<td>{$order.create_date}</td>
 							<td class="checker"><if condition="$order[checked] eq 1">{$order.checker_name}<else/></if></td>
@@ -202,13 +200,13 @@ $().ready(function(){
 		}
 		$(this).addClass("active");
 		$("table").data("lastActive",$(this));
-        $("#to_edit_link").attr("href","{:U('OperMaterialManage/editPurchaseOrder')}?order_id="+$(this).data("id"));
+        $("#to_edit_link").attr("href","{:U('OperRentManage/editPurchaseOrder')}?order_id="+$(this).data("id"));
 		$("#to_edit_link").removeAttr("disabled");
     });
 	$("table").on("click",".checked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperMaterialManage/uncheckPurchaseOrder')}",
+		$.post("{:U('OperRentManage/uncheckPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text("");
@@ -222,7 +220,7 @@ $().ready(function(){
 	$("table").on("click",".unchecked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperMaterialManage/checkPurchaseOrder')}",
+		$.post("{:U('OperRentManage/checkPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text(result[0]);
