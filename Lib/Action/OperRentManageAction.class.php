@@ -83,6 +83,10 @@ class OperRentManageAction extends LoginAfterAction{
 
   public function addRentInOrderSubmit() {}
 
+  public function editRentInOrderSubmit() {}
+
+  public function deleteRentInOrder() {}
+
   public function listRentMaterialOutOrder() {
     $this->display('OperRentManage/listRentOutOrder');
   }

@@ -26,31 +26,29 @@
       <div class="container-fluid">
        <div class="navbar-header navbar-brand">租赁入库单</div>
         <ul class="nav navbar-nav navbar-right">
-		  <li><a href="{:U('OperRentManage/addRentInOrder')}" class="active" >新增租赁入库单</a></li>
-          <li><a href="{:U('OperRentManage/listRentInOrder')}" >已有租赁入库单</a></li>
+	  <li><a href="{:U('OperRentManage/addRentInOrder')}">新增租赁入库单</a></li>
+          <li><a href="{:U('OperRentManage/listRentInOrder')}" class="active"  >已有租赁入库单</a></li>
         </ul>
       </div>
     </nav>
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-body">
-                <form class="form-horizontal" action="{:U('OperRentManage/addRentInOrderSubmit')}" role="form" method="POST">
+                <form class="form-horizontal" action="{:U('OperRentManage/editRentInOrderSubmit')}" role="form" method="POST">
 					    <div class="page-header">
-                                                <div class="col-md-4">
-                                                <h4>新增材料采购单</h4>
+                                                <div class="col-md-8">
+                                                <h4>编辑材料采购单</h4>
                                                 </div>
-						<div class="col-md-4">
-							<h4 id="project_title"></h4>
-						</div>
-
-						<div class="col-md-1 col-md-offset-1">
-							<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目"></label>
-
-							<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
-						</div>
 						<div class="col-md-2">
 							<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+							<input type="hidden" name="order_id" value="{$RentInOrder.order_id}">
 						</div>
+                                                <div class="col-md-1">
+                                                    <a class="btn btn-danger btn-block" id="delete_plan" href="{:U('OperRentManage/deleteRentInOrder',array('order_id'=>$RentInOrder['order_id']))}">删除</a>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <a class="btn btn-default btn-block" href="{:U('OperRentManage/listRentInOrder')}">取消</a>
+                                                </div>
 						<div style="clear:both"></div>
 					</div>
 
@@ -58,7 +56,7 @@
 
 						<label class="col-md-2 control-label">执行合同</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" readonly data-toggle="modal" data-target="#contractModal"/>
+              <input class="form-control" type="text" value="{$RentInOrder.contract_name}" readonly data-toggle="modal" data-target="#contractModal"/>
 							<input type="hidden" name="contractid">
 						</div>
 					</div>
@@ -66,27 +64,27 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label">入库项目/库房</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" readonly id="project_input"/>
-							<input type="hidden" name="projectid">
+							<input class="form-control" type="text" value="{$RentInOrder.project_name}" readonly id="project_input"/>
+							<input type="hidden" name="projectid" value="{$RentInOrder.project_id}">
 						</div>
 						<label class="col-md-2 control-label">采购单位</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" readonly data-toggle="modal" data-target="#enterpriseModal"/>
-							<input type="hidden" name="enterpriseid">
+							<input class="form-control" type="text" value="{$RentInOrder.enterprise_name}" readonly data-toggle="modal" data-target="#enterpriseModal"/>
+							<input type="hidden" name="enterpriseid" value="{$RentInOrder.enterprise_id}">
 						</div>
 						<label class="col-md-2 control-label">对应单据</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" name="document" />
+							<input class="form-control" type="text" name="document" value="{$RentInOrder.document}"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-2 control-label">发生日期</label>
 						<div class="col-md-2">
-							<input class="form-control datepicker" type="text" name="happen_date"/>
+							<input class="form-control datepicker" type="text" name="happen_date" value="{$RentInOrder.happen_date}"/>
 						</div>
 						<label class="col-md-2 control-label">经办人</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" name="transactor"/>
+							<input class="form-control" type="text" name="transactor" value="{$RentInOrder.transactor}"/>
 						</div>
 
 					</div>
@@ -94,22 +92,28 @@
 						<label class="col-md-2 control-label">领用班组</label>
 						<div class="col-md-2">
 							<select class="form-control warehouse" name="department" >
+								<volist name="RentInOrder.related_department" id="depart">
+									<option value="{$depart.department_id}" <if condition="$RentInOrder['default_department_id'] eq $depart['department_id']">selected</if>>{$depart.department_name}</option>
+								</volist>
 							</select>
 						</div>
 						<label class="col-md-2 control-label">领用人</label>
 						<div class="col-md-2">
 							<select class="form-control administrator" name="administrator" >
+								<volist name="RentInOrder.related_administrator" id="admin">
+									<!-- <option value="{$admin.warehouse_worker_id}" <if condition="$RentInOrder['default_administrator_id'] eq $administrator['warehouse_worker_id']">selected</if> >{$administrator.warehouse_worker_name}</option> -->
+								</volist>
 							</select>
 						</div>
 						<label class="col-md-2 control-label">金额</label>
 						<div class="col-md-2">
-							<input class="form-control" type="text" readonly name="price" />
+							<input class="form-control" type="text" value="{$RentInOrder.price}" readonly name="price" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-md-2 control-label">备注</label>
 						<div class="col-md-10">
-							<textarea class="form-control" rows="5" name="remark" ></textarea>
+							<textarea class="form-control" rows="5" name="remark">{$RentInOrder.remark}</textarea>
 						</div>
 					</div>
 					<hr>
@@ -118,10 +122,10 @@
 							<h4>材料列表</h4>
 						</div>
                                                 <div class="col-md-2">
-                                                    <h5 id="amount_title">累计金额：</h5>
+                                                    <h5 id="amount_title">累计金额：{$RentInOrder.price}</h5>
                                                 </div>
                                                 <div class="col-md-2 col-md-offset-6">
-                                                    <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#materialModal">新增</button>
+                                                    <button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#materialModal">新增</button>
                                                 </div>
                                                 <div style="clear:both"></div>
 					</div>
@@ -152,17 +156,53 @@
 								<td><input class="form-control" type="text" name="material_remark[]"></td>
 								<td>
 									<select class="form-control warehouse" name="warehouse[]" style="width:100px">
+										<volist name="RentInOrder.related_warehouse" id="warehouse">
+											<option value="{$warehouse.warehouse_id}" >{$warehouse.warehouse_name}</option>
+										</volist>
 									</select>
 								</td>
 								<td>
 									<select class="form-control administrator" name="administrator[]" style="width:100px">
+										<volist name="RentInOrder.related_administrator" id="administrator">
+											<option value="{$administrator.warehouse_worker_id}" >{$administrator.warehouse_worker_name}</option>
+										</volist>
 									</select>
 								</td>
 								<td>
 									<button type="button" class="btn btn-danger">删除</button>
-									<input type="hidden" name="material_id[]" />
+									<input type="hidden" name="material_id[]"  />
 								</td>
 							</tr>
+							<volist name="RentInOrderDetailsArray" id="material">
+							<tr>
+								<td><input class="form-control" type="text" value="{$material.worktype}" readonly></td>
+								<td><input class="form-control" type="text" value="{$material.name}" readonly></td>
+								<td><input class="form-control" type="text" value="{$material.specification}" name="specification[]"></td>
+								<td><input class="form-control" type="text" value="{$material.unit}" readonly></td>
+								<td><input class="form-control unit_price" type="text" value="{$material.unit_price}" name="unit_price[]"></td>
+								<td><input class="form-control amount" type="text" value="{$material.count}" name="amount[]"></td>
+								<td><input class="form-control material_price" type="text" value="{$material.price}" readonly name="material_price[]"></td>
+								<td><input class="form-control" type="text" value="{$material.remark}" name="material_remark[]"></td>
+								<td>
+									<select class="form-control warehouse" name="warehouse[]" style="width:100px">
+										<volist name="RentInOrder.related_warehouse" id="warehouse">
+											<option value="{$warehouse.warehouse_id}" <if condition="$material['warehouse_id'] eq $warehouse['warehouse_id']">selected</if>>{$warehouse.warehouse_name}</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<select class="form-control administrator" name="administrator[]" style="width:100px">
+										<volist name="RentInOrder.related_administrator" id="administrator">
+											<option value="{$administrator.warehouse_worker_id}" <if condition="$material['administrator_id'] eq $administrator['warehouse_worker_id']">selected</if> >{$administrator.warehouse_worker_name}</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<button type="button" class="btn btn-danger">删除</button>
+									<input type="hidden" name="material_id[]" value="{$material.material_id}" />
+								</td>
+							</tr>
+							</volist>
 						</tbody>
 					</table>
                 </form>
@@ -172,102 +212,6 @@
     </div>
 </div>
 
-<div class="ui sidebar left overlay panel panel-default active">
-	<div class="page-header">
-		<h4 style="padding-left:15px">项目与机构列表</h4>
-	</div>
-	<div class="panel-body">
-		<ul class="list-group sidebar-tree" id="project_tree">
-			<volist name="resourceRowArray" id="vo_level_1">
-			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
-			<li class="list-group-item list-group-item-info">
-				<if condition="$vo_level_1.resource_haschildren eq 1">
-				<span class="glyphicon glyphicon-minus-sign"></span>
-				</if>
-				<a href="#" class="tree-item">公司机构或公司总库</a>
-			</li>
-			<if condition="$vo_level_1.resource_haschildren eq 1">
-			<li class="list-group-item collapse in">
-				<ul class="list-group">
-					<volist name="resourceRowArray" id="vo_level_2">
-					<if condition="$vo_level_2.resource_level eq 2">
-					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
-						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
-						<if condition="$vo_level_2.resource_haschildren eq 1">
-						<span class="glyphicon glyphicon-plus-sign"></span>
-						</if>
-						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
-						</li>
-						<if condition="$vo_level_2.resource_haschildren eq 1">
-						<li class="list-group-item collapse in">
-							<ul class="list-group">
-								<volist name="resourceRowArray" id="vo_level_3">
-								<if condition="$vo_level_3.resource_level eq 3">
-								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
-									<li class="list-group-item">
-										<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
-									</li>
-								</eq>
-								</if>
-							</volist>
-							</ul>
-						</li>
-						</if>
-					</eq>
-					</if>
-					</volist>
-				</ul>
-			</li>
-			</if>
-			</if>
-		</volist>
-
-<volist name="resourceRowArray" id="vo_level_1">
-<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
-			<li class="list-group-item list-group-item-info">
-				<if condition="$vo_level_1.resource_haschildren eq 1">
-				<span class="glyphicon glyphicon-minus-sign"></span>
-				</if>
-				<a href="#" class="tree-item">项目</a>
-			</li>
-			<if condition="$vo_level_1.resource_haschildren eq 1">
-			<li class="list-group-item collapse in">
-				<ul class="list-group">
-					<volist name="resourceRowArray" id="vo_level_2">
-					<if condition="$vo_level_2.resource_level eq 2">
-					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
-						<li class="list-group-item">
-						<if condition="$vo_level_2.resource_haschildren eq 1">
-						<span class="glyphicon glyphicon-plus-sign"></span>
-						</if>
-						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
-						</li>
-						<if condition="$vo_level_2.resource_haschildren eq 1">
-						<li class="list-group-item collapse in">
-							<ul class="list-group">
-								<volist name="resourceRowArray" id="vo_level_3">
-								<if condition="$vo_level_3.resource_level eq 3">
-								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
-									<li class="list-group-item">
-									<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
-									</li>
-								</eq>
-								</if>
-							</volist>
-							</ul>
-						</li>
-						</if>
-					</eq>
-					</if>
-					</volist>
-				</ul>
-			</li>
-			</if>
-			</if>
-</volist>
-		</ul>
-	</div>
-</div>
 <div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -380,7 +324,8 @@
       <div class="modal-body"  style="max-height:500px;overflow:auto" >
         <div class="list-group" id="plans">
 		 <volist name="purchasePlanOrderRowArray" id="plan">
-                 <a href="{$plan.plan_id}" class="list-group-item resource{$plan.resource_id}">
+                 <if condition="$plan['resource_id'] eq $RentInOrder['project_id']">
+		  <a href="{$plan.plan_id}" class="list-group-item">
           	<div class="row">
             	<div class="col-md-3">{$plan.plan_name}</div>
                 <div class="col-md-2">{$plan.plan_date}</div>
@@ -401,7 +346,8 @@
 				</div>
             </div>
           </a>
-		  </volist>
+          </if>
+	  </volist>
         </div>
       </div>
       <div class="modal-footer">
@@ -429,7 +375,8 @@
       <div class="modal-body"  style="max-height:500px;overflow:auto" >
         <div class="list-group" id="contracts">
 		  <volist name="contractRowArray" id="contract">
-                  <a href="{$contract.contractid}" class="list-group-item resource{$contract.resource_id}">
+                 <if condition="$contract['resource_id'] eq $RentInOrder['project_id']">
+		  <a href="{$contract.contractid}" class="list-group-item">
           	<div class="row">
             	<div class="col-md-3">{$contract.name}</div>
                 <div class="col-md-2">{$contract.sign_date}</div>
@@ -450,7 +397,8 @@
 				</div>
             </div>
           </a>
-		  </volist>
+          </if>
+	  </volist>
         </div>
       </div>
       <div class="modal-footer">
@@ -665,14 +613,13 @@ $().ready(function(){
 				var item = $(".template").clone().removeClass("template");
 				var inputs = item.find("input");
 				var materiallink = $(this).children();
-				for (var i = 0 ; i < 6 ; i ++){
+				for (var i = 0 ; i < 5 ; i ++){
 					inputs.eq(i).val(materiallink.eq(i).text().trim());
 				}
 				item.find("select[name='warehouse[]']").val($("select[name='default_warehouse']").val());
 				item.find("select[name='administrator[]']").val($("select[name='default_administrator']").val());
-				item.find("input[name='material_id[]']").val(materiallink.eq(6).text().trim());
+				item.find("input[name='material_id[]']").val(materiallink.eq(5).text().trim());
 				$("tbody").append(item.show());
-				item.find("input[name='amount[]']").change();
 			});
 			$('#contractModal').modal('hide');
 		}
@@ -688,9 +635,7 @@ $().ready(function(){
 		$("#contractModal").data("contract",{row:$(this),id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
 		return false;
 	});
-	$("#project_input").click(function(){
-		$(".ui.sidebar").sidebar('show');
-	});
+
 	$(".all-class").click(allClassClick);
 	$(".root-class").click(rootClassClick);
 	$(".leaf-class").click(leafClassClick);
@@ -729,7 +674,6 @@ $().ready(function(){
 				sum+=Number($(this).val());
 			});
 			$("input[name='price']").val(sum);
-			$("#amount_title").text("累计金额："+sum+" 元");
 		}
 	})
 	$("table").on('click',".btn-danger",function(){
@@ -742,39 +686,6 @@ $().ready(function(){
 			$("input[name='price']").val(sum);
 		}
 	});
-	$("#project_tree").on("click","a",function(e){
-		e.preventDefault();
-		if($(this).attr("href")!="#"){
-			$("#project_input").val($(this).text().trim());
-			$("#project_title").text($(this).text().trim());
-			$("input[name='projectid']").val($(this).attr("href").trim());
-			$.post("{:U('OperProjectManage/getWarehouse')}",{
-				resource_id:$(this).attr("href").trim()
-			},function(warehouse,textStatus){
-				var select_warehouse = $(".warehouse");
-				select_warehouse.empty();
-				for(var i=0;i<warehouse.length;i++){
-					select_warehouse.append($("<option value=\""+warehouse[i].warehouse_id+"\">"+warehouse[i].warehouse_name+"</option>"));
-				}
-			},'json');
-			$.post("{:U('OperProjectManage/getWarehouseWorker')}",{
-				resource_id:$(this).attr("href").trim()
-			},function(administrator,textStatus){
-				var select_administrator = $(".administrator");
-				select_administrator.empty();
-				for(var i=0;i<administrator.length;i++){
-					select_administrator.append($("<option value=\""+administrator[i].warehouse_worker_id+"\">"+administrator[i].warehouse_worker_name+"</option>"));
-				}
-			},'json');
-
-                        var resource_id=$(this).attr("href").trim();
-                        $("#plans a").hide();
-                        $("#plans .resource"+resource_id).show();
-                        $("#contracts a").hide();
-                        $("#contracts .resource"+resource_id).show();
-			$(".ui.sidebar").sidebar('hide');
-		}
-	})
 });
 </script>
 </body>
