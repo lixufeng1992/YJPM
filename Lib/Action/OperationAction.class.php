@@ -1,7 +1,8 @@
 <?php
-import("@.Model.CompanyDao");
-import("@.Model.PositionDao");
-import("@.Model.DepartmentDao");
+require_once ('/Lib/auto_load.php');
+//import("@.Model.CompanyDao");
+//import("@.Model.PositionDao");
+//import("@.Model.DepartmentDao");
 
 class OperationAction extends LoginAfterAction{
   private $companyDao;

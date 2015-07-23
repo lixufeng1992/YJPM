@@ -1,12 +1,13 @@
 <?php
-import("@.Model.CompanyDao");
-import("@.Model.EmployerDao");
-import("@.Model.DepartmentDao");
-import("@.Model.EnterpriseDao");
-import("@.Model.ProcessClassifyDao");
-import("@.Model.ProcessDao");
-import("@.Model.ManagerDao");
-import("@.Model.UserDao");
+require_once ('/Lib/auto_load.php');
+// import("@.Model.CompanyDao");
+// import("@.Model.EmployerDao");
+// import("@.Model.DepartmentDao");
+// import("@.Model.EnterpriseDao");
+// import("@.Model.ProcessClassifyDao");
+// import("@.Model.ProcessDao");
+// import("@.Model.ManagerDao");
+// import("@.Model.UserDao");
 
 header('Content-Type:text/html;charset=utf-8');
 

@@ -1,8 +1,9 @@
 <?php
-import("@.Model.UserDao");
-import("@.Model.RoleDao");
-import("@.Model.RoleOperationDao");
-import("@.Model.OperationDao");
+require_once ('/Lib/auto_load.php');
+//import("@.Model.UserDao");
+//import("@.Model.RoleDao");
+//import("@.Model.RoleOperationDao");
+//import("@.Model.OperationDao");
 class LoginAfterAction extends Action {
   protected $userDao;
   protected $roleDao;

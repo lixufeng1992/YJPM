@@ -1,8 +1,9 @@
 <?php
-import("@.Model.RoleDao");
-import("@.Model.RoleOperationDao");
-import("@.Model.OperationDao");
-import("@.Model.UserDao");
+require_once ('/Lib/auto_load.php');
+// import("@.Model.RoleDao");
+// import("@.Model.RoleOperationDao");
+// import("@.Model.OperationDao");
+// import("@.Model.UserDao");
 
 class AuthoritycheckBehavior extends Behavior {
     private $userDao;

@@ -1,30 +1,24 @@
 <?php
 	class ContractDao extends Model{
 		public function findAll(){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			
 			$sql="select * from tb_contract order by contractid asc";
-			$statement = $myPDO->query($sql);
+			$statement = $this->commonPDO->query($sql);
 			return $statement->fetchAll();
 		}
 
 		public function findById($contractid){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			
 			$sql="select * from tb_contract where contractid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			$statement->execute(array($contractid));
 			return $statement->fetch();
 		}
 
 		public function findByResourceid($resourceid){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;'); 
+			
 			$sql="select * from tb_contract where resourceid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			$statement->execute(array($resourceid));
 			return $statement->fetchAll();
 		}
@@ -40,9 +34,7 @@
 				$finalcost_remark,$audit_amount,$audit_confirm_amount,$audit_qualityassurance_amount,$audit_remark,
 				$remark,$check_userid,$finalcost_userid,$create_userid,$create_date
 			){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;');
+			
 			$sql="insert into tb_contract(
 				resourceid,contract_name,contract_number,duty_officer,companyid,
 				departmentid,build_pattern,contract_amount_money,project_manager,operation_mode,
@@ -60,7 +52,7 @@
 						?,?,?,?,?,?,?,?,?,?,
 						?,?,?,?,?,?,?,?,?,?
 				)";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			$result = $statement->execute(array(
 				$resourceid,$contract_name,$contract_number,$duty_officer,$companyid,
 				$departmentid,$build_pattern,$contract_amount_money,$project_manager,$operation_mode,
@@ -74,7 +66,7 @@
 				$remark,$check_userid,$finalcost_userid,$create_userid,$create_date
 				));
 			if($result == false)return -1;
-			else return $myPDO->lastInsertId();
+			else return $this->commonPDO->lastInsertId();
 		}
 
 		public function updateById($contractid,
@@ -92,9 +84,7 @@
 
 
 			){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;');
+			
 			$sql="update tb_contract set 
 				resourceid=?,contract_name=?,contract_number=?,duty_officer=?,companyid=?,
 				departmentid=?,build_pattern=?,contract_amount_money=?,project_manager=?,operation_mode=?,
@@ -108,7 +98,7 @@
 				remark=?,check_userid=?,finalcost_userid=?,create_userid=?,create_date
 				=?
 			 	where contractid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			return $statement->execute(array(
 				$resourceid,$contract_name,$contract_number,$duty_officer,$companyid,
 				$departmentid,$build_pattern,$contract_amount_money,$project_manager,$operation_mode,
@@ -125,29 +115,23 @@
 		}
 
 		public function updateCheckstatusById($contractid,$check_userid){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;');
+			
 			$sql="update tb_contract set check_userid=? where contractid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			return $statement->execute(array($check_userid,$contractid));	
 		}
 
 		public function updateFinalcoststatusById($contractid,$finalcost_userid){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;');
+			
 			$sql="update tb_contract set finalcost_userid=? where contractid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			return $statement->execute(array($finalcost_userid,$contractid));	
 		}
 
 		public function deleteById($contractid){
-			$dsn = C('DB_DSN1');
-			$myPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));
-			$myPDO->query('set names utf8;');
+			
 			$sql="delete from tb_contract where contractid=?";
-			$statement = $myPDO->prepare($sql);
+			$statement = $this->commonPDO->prepare($sql);
 			return $statement->execute(array($contractid));		
 		}
 

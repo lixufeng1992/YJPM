@@ -1,7 +1,8 @@
 <?PHP
-import("@.Model.ProcessClassifyDao");
-import("@.Model.ProcessDao");
-import("@.Model.EnterpriseDao");
+require_once ('/Lib/auto_load.php');
+//import("@.Model.ProcessClassifyDao");
+//import("@.Model.ProcessDao");
+//import("@.Model.EnterpriseDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
