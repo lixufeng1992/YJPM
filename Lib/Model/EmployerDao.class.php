@@ -1,6 +1,6 @@
 <?php
 
-class EmployerDao extends Model
+class EmployerDao extends CommonDao
 {
     // 插入用户数据
     // 返回-1表示插入失败 成功则返回表中的id号

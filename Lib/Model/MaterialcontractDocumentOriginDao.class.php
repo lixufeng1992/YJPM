@@ -1,5 +1,5 @@
 <?php
-	class MaterialcontractDocumentOriginDao extends Model{
+	class MaterialcontractDocumentOriginDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_materialcontract_document_origin order by documentid asc";

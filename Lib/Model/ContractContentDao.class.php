@@ -1,5 +1,5 @@
 <?php
-	class ContractContentDao extends Model{
+	class ContractContentDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_contract_content order by contentid asc";

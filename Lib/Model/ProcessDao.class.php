@@ -1,5 +1,5 @@
 <?php
-class ProcessDao extends Model{
+class ProcessDao extends CommonDao{
     public function findAll(){
        
         $sql="select * from tb_process order by process_id asc";

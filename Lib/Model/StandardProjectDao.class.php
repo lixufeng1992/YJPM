@@ -1,6 +1,6 @@
 <?php
 
-class StandardProjectDao extends Model
+class StandardProjectDao extends CommonDao
 {
 
     public function add($resource_id, $prname, $enterprise_1partid, $enterprise_supervisorid, $total_quantites, $construct_layers, $pm_name, $vice_pm_name, $startdate_actually, $finishdate_actually, $receivestuff_address, $receiveperson_phonenumber, $description, $materialbuyingprocess_setting, $materialbuyingplanaudit_setting, $infield_pattern, $infield_site)

@@ -1,5 +1,5 @@
 <?php
-class MaterialPurchaseOrderDao extends Model{
+class MaterialPurchaseOrderDao extends CommonDao{
 
   public function findAll(){
   

@@ -1,5 +1,5 @@
 <?php
-	class ManagerDao extends Model{
+	class ManagerDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_manager order by managerid asc";

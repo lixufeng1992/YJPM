@@ -1,6 +1,6 @@
 <?php
 
-class QuestionanswerdateDao extends Model
+class QuestionanswerdateDao extends CommonDao
 {
 
     public function findAll()

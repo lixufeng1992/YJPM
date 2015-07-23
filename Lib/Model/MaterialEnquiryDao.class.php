@@ -1,5 +1,5 @@
 <?php
-class MaterialEnquiryDao extends Model{
+class MaterialEnquiryDao extends CommonDao{
     public function findAll(){
        
         $sql="select * from tb_material_enquiry order by enquiry_id asc";

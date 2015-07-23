@@ -1,5 +1,5 @@
 <?php
-	class MargindateReminduserDao extends Model{
+	class MargindateReminduserDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_margindate_reminduser order by id asc";

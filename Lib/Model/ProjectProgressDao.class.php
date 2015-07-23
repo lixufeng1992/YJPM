@@ -1,6 +1,6 @@
 <?php
 
-class ProjectProgressDao extends Model
+class ProjectProgressDao extends CommonDao
 {
 
     public function findAll()

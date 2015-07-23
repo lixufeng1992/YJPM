@@ -1,6 +1,6 @@
 <?php
 
-class RoleOperationDao extends Model
+class RoleOperationDao extends CommonDao
 {
 
     public function findByRoleid($roleid)

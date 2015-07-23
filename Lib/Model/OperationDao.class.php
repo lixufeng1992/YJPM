@@ -1,5 +1,5 @@
 <?php
-	class OperationDao extends Model{
+	class OperationDao extends CommonDao{
 
 		public function findById($operationid){
 			

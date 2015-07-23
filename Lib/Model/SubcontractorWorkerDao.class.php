@@ -1,6 +1,6 @@
 <?php
 
-class SubcontractorWorkerDao extends Model
+class SubcontractorWorkerDao extends CommonDao
 {
 
     public function findAll()

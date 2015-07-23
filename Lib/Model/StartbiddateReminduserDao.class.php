@@ -1,6 +1,6 @@
 <?php
 
-class StartbiddateReminduserDao extends Model
+class StartbiddateReminduserDao extends CommonDao
 {
 
     public function findAll()

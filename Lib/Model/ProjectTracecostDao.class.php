@@ -1,5 +1,5 @@
 <?php
-	class ProjectTracecostDao extends Model{
+	class ProjectTracecostDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_project_tracecost order by costid asc";

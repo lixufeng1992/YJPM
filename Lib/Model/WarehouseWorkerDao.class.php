@@ -1,6 +1,6 @@
 <?php
 
-class WarehouseWorkerDao extends Model
+class WarehouseWorkerDao extends CommonDao
 {
 
     public function findAll()

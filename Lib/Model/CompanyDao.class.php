@@ -1,5 +1,5 @@
 <?php
-	class companyDao extends Model{
+	class companyDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_company order by companyid asc";

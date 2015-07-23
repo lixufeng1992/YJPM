@@ -1,6 +1,6 @@
 <?php
 
-class ProcessClassifyDao extends Model
+class ProcessClassifyDao extends CommonDao
 {
 
     public function findAll()

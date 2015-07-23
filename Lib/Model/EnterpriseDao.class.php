@@ -1,6 +1,6 @@
 <?php
 
-class EnterpriseDao extends Model
+class EnterpriseDao extends CommonDao
 {
 
     public function findAll()

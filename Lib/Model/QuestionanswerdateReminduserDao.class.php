@@ -1,5 +1,5 @@
 <?php
-	class QuestionanswerdateReminduserDao extends Model{
+	class QuestionanswerdateReminduserDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_questionanswerdate_reminduser order by id asc";

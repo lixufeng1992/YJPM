@@ -1,5 +1,5 @@
 <?php
-	class BiddingrivalDao extends Model{
+	class BiddingrivalDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_biddingrival order by biddingrivalid asc";

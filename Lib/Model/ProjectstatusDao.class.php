@@ -1,6 +1,6 @@
 <?php
 
-class ProjectstatusDao extends Model
+class ProjectstatusDao extends CommonDao
 {
 
     public function findAll()

@@ -1,6 +1,6 @@
 <?php
 
-class MaterialcontractDao extends Model
+class MaterialcontractDao extends CommonDao
 {
 
     public function findAll()

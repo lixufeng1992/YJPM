@@ -1,5 +1,5 @@
 <?php
-    class MaterialPurchasePlanOrderDao extends Model{
+    class MaterialPurchasePlanOrderDao extends CommonDao{
         public function findAll(){
             $dsn = C('DB_DSN1');
             $this->commonPDO = new PDO($dsn,C('MYSQL_USERNAME'),C('MYSQL_PASSWORD'));

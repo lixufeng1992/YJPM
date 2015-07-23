@@ -1,5 +1,5 @@
 <?php
-	class SubmitbiddocdateDao extends Model{
+	class SubmitbiddocdateDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_submitbiddocdate order by submitbiddocdate_id asc";

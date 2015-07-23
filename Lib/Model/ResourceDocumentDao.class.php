@@ -1,6 +1,6 @@
 <?php
 
-class ResourceDocumentDao extends Model
+class ResourceDocumentDao extends CommonDao
 {
 
     public function findAll()

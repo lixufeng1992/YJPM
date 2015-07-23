@@ -1,5 +1,5 @@
 <?php
-	class SubcontractDocumentDao extends Model{
+	class SubcontractDocumentDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_subcontract_document order by documentid asc";

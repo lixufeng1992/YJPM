@@ -1,5 +1,5 @@
 <?php
-	class ProcessPeriodworkDao extends Model{
+	class ProcessPeriodworkDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_process_periodwork order by id asc";

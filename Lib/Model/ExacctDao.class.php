@@ -1,5 +1,5 @@
 <?php
-	class ExacctDao extends Model{
+	class ExacctDao extends CommonDao{
 		public function findAll(){
 		
 			$sql="select * from tb_exacct left join tb_exacctclass on tb_exacct.classid = tb_exacctclass.exacctclassid order by exacctid asc";

@@ -1,5 +1,5 @@
 <?php
-	class MaterialCategoryDao extends Model{
+	class MaterialCategoryDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_material_category order by categoryid asc";

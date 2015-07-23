@@ -1,5 +1,5 @@
 <?php
-	class RoleDao extends Model{
+	class RoleDao extends CommonDao{
 		public function findAll(){
 			
 			$sql="select * from tb_role order by roleid asc";

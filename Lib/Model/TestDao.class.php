@@ -1,5 +1,5 @@
 <?php
-	class TestDao extends Model{
+	class TestDao extends CommonDao{
 		public function add($isit){
 			
 			$sql="insert into tb_test(isit) values(?)";

@@ -1,6 +1,6 @@
 <?php
 
-class ProjectProcessDao extends Model
+class ProjectProcessDao extends CommonDao
 {
 
     public function findByResourceId($resource_id)
