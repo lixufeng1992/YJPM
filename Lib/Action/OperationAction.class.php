@@ -68,6 +68,24 @@ class OperationAction extends LoginAfterAction{
       $this->redirect('OperSubcontractManage/listSubcontract');
       break;
 
+    // 租赁管理
+    case RENT_MAINTAIN: //租赁维护
+      $this->redirect('OperRentManage/rentMaterialMaintain');
+      break;
+    case RENT_ENQUIRY: //租赁询价
+      $this->redirect('OperRentManage/rentMaterialEnquiry');
+      break;
+    case RENT_CONTRACT: //租赁合同
+      $this->redirect('OperRentManage/listRentContract');
+      break;
+    case RENT_IN_ORDER: //租赁租入单
+      $this->redirect('OperRentManage/listRentInOrder');
+      break;
+    case RENT_OUT_ORDER: //租赁租出单
+      $this->redirect('OperRentManage/listRentMaterialOutOrder');
+      break;
+
+
     // 人力资源
     case EMPLOYER_MAINTAIN://员工维护
       $this->redirect('OperHumanResource/listEmployer');
