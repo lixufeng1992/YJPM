@@ -73,7 +73,7 @@ class OperRentManageAction extends LoginAfterAction{
 
   public function editContract_deletefile() {}
 
-  public function listRentMaterialInOrder() {
+  public function listRentInOrder() {
     $this->display('OperRentManage/listRentInOrder');
   }
 
@@ -83,12 +83,60 @@ class OperRentManageAction extends LoginAfterAction{
 
   public function addRentInOrderSubmit() {}
 
+  public function editRentInOrder() {
+    $this->display('OperRentManage/editRentInOrder');
+  }
+
   public function editRentInOrderSubmit() {}
 
   public function deleteRentInOrder() {}
 
-  public function listRentMaterialOutOrder() {
+  public function listRentOutOrder() {
     $this->display('OperRentManage/listRentOutOrder');
+  }
+
+  public function addRentOutOrder() {
+    $this->display('OperRentManage/addRentOutOrder');
+  }
+
+  public function addRentOutOrderSubmit() {}
+
+  public function editRentOutOrder() {
+    $this->display('OperRentManage/editRentOutOrder');
+  }
+
+  public function editRentOutOrderSubmit() {}
+
+  public function checkRentContractOrder() {
+    // 租赁合同审核
+  }
+
+  public function uncheckRentContractOrder() {
+    // 租赁合同取消审核
+  }
+
+  public function finalcostRentContract() {
+    // 租赁合同结算
+  }
+
+  public function cancelfinalcostRentContract() {
+    // 租赁合同取消结算
+  }
+
+  public function checkRentInOrder() {
+    // 租赁租入单审核
+  }
+
+  public function uncheckRentInOrder() {
+    // 租赁租入单取消审核
+  }
+
+  public function checkRentOutOrder() {
+    // 租赁还租单审核
+  }
+
+  public function uncheckRentOutOrder() {
+    // 租赁还租单取消审核
   }
 }
 ?>

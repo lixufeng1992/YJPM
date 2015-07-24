@@ -189,7 +189,7 @@ $(".checkbtn").click(function(){
         var checkbtn = this;
         var contractid = $(this).data("contractid");
          if($(this).data("func") == "check"){
-            $.post("{:U('OperRentManage/checkContract')}",
+            $.post("{:U('OperRentManage/checkRentContractOrder')}",
             {
                 contractid:contractid
             },function(process,textStatus){
@@ -208,7 +208,7 @@ $(".checkbtn").click(function(){
         }
         else if($(this).data("func") == "cancelcheck"){
 
-            $.post("{:U('OperRentManage/cancelcheckContract')}",
+            $.post("{:U('OperRentManage/uncheckRentContractOrder')}",
             {
                 contractid:contractid
             },function(process,textStatus){
@@ -238,7 +238,7 @@ $(".checkbtn").click(function(){
         var contractid = $(this).data("contractid");
          if($(this).data("func") == "finalcost"){
 
-            $.post("{:U('OperRentManage/finalcostContract')}",
+            $.post("{:U('OperRentManage/finalcostRentContract')}",
             {
                 contractid:contractid
             },function(process,textStatus){
@@ -257,7 +257,7 @@ $(".checkbtn").click(function(){
         }
         else if($(this).data("func") == "cancelfinalcost"){
 
-            $.post("{:U('OperRentManage/cancelfinalcostContract')}",
+            $.post("{:U('OperRentManage/cancelfinalcostRentContract')}",
             {
                 contractid:contractid
             },function(process,textStatus){

@@ -80,8 +80,8 @@ class OperationAction extends LoginAfterAction{
     case RENT_IN_ORDER: //租赁租入单
       $this->redirect('OperRentManage/listRentInOrder');
       break;
-    case RENT_OUT_ORDER: //租赁租出单
-      $this->redirect('OperRentManage/listRentMaterialOutOrder');
+    case RENT_OUT_ORDER: //租赁还租单
+      $this->redirect('OperRentManage/listRentOutOrder');
       break;
 
 

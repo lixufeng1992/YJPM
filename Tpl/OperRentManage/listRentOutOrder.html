@@ -17,10 +17,10 @@
 <div id="right" style="min-width:1500px">
     <nav class="navbar navbar-default" role="navigation" id="bodynav">
       <div class="container-fluid">
-       <div class="navbar-header navbar-brand">租赁租入单</div>
+       <div class="navbar-header navbar-brand">租赁还租单</div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{:U('OperRentManage/addRentInOrder')}">新增租赁租入单</a></li>
-          <li><a href="{:U('OperRentManage/listRentInOrder')}" class="active">已有租赁租入单</a></li>
+          <li><a href="{:U('OperRentManage/addRentOutOrder')}">新增租赁还租单</a></li>
+          <li><a href="{:U('OperRentManage/listRentOutOrder')}" class="active">已有租赁还租单</a></li>
         </ul>
       </div>
     </nav>
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 <div class="page-header">
                                                 <div class="col-md-4">
-                                                <h4>已有租赁租入单</h4>
+                                                <h4>已有租赁还租单</h4>
                                                 </div>
 					<div class="col-md-4">
 						<h4 id="project_name"></h4>
@@ -46,13 +46,12 @@
 					<thead>
 							<th>审核</th>
 							<th>对应单据</th>
-							<th>采购单位</th>
-							<th>项目名称</th>
+							<th>往来单位</th>
+							<th>退场项目</th>
 							<th>发生日期</th>
 							<th>经办人</th>
-							<th>金额</th>
-							<th>领用班组</th>
-							<th>领用人</th>
+							<th>退换班组</th>
+							<th>退还人</th>
 							<th>创建人</th>
 							<th>创建时间</th>
 							<th>审核人</th>
@@ -68,7 +67,6 @@
 							<td>{$order.project_name}</td>
 							<td>{$order.happen_date}</td>
 							<td>{$order.transactor}</td>
-							<td>{$order.price}</td>
 							<td>{$order.department}</td>
 							<td>{$order.administrator}</td>
 							<td>{$order.creater_name}</td>
@@ -200,13 +198,13 @@ $().ready(function(){
 		}
 		$(this).addClass("active");
 		$("table").data("lastActive",$(this));
-        $("#to_edit_link").attr("href","{:U('OperRentManage/editRentInOrder')}?order_id="+$(this).data("id"));
+        $("#to_edit_link").attr("href","{:U('OperRentManage/editRentOutOrder')}?order_id="+$(this).data("id"));
 		$("#to_edit_link").removeAttr("disabled");
     });
 	$("table").on("click",".checked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperRentManage/uncheckRentInOrder')}",
+		$.post("{:U('OperRentManage/uncheckRentOutOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text("");
@@ -220,7 +218,7 @@ $().ready(function(){
 	$("table").on("click",".unchecked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperRentManage/checkRentInOrder')}",
+		$.post("{:U('OperRentManage/checkRentOutOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text(result[0]);
