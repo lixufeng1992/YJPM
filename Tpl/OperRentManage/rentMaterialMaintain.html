@@ -141,21 +141,21 @@
 
 									<th>工种</th>
 									<th>材料名称</th>
-									<th>单位</th>
-									<th>进价</th>
+									<th>单位/天</th>
+									<th>租金</th>
 									<th><a id="a_addMaterial" class="btn btn-success" data-toggle="modal" data-target="#addMaterialModal" disabled="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新增&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></th>
 								</tr>
 							</thead>
 							<tbody id="tbody_materialList">
 								<!-- 以下为循环体 begin -->
 								<!-- tr的class 表示材料所属分类，root后跟所属父分类id，leaf后跟所属子分类id -->
-								<volist name="materialRowArray" id="vo">
+								<volist name="materialrentRowArray" id="vo">
 								<tr class="root{$vo['materialCategoryRow']['classid']} leaf{$vo['categoryid']}" data-id="{$vo['materialid']}">
 
 									<td class="type" data-toggle="modal" data-target="#viewMaterialModal">{$vo['worktype']}</td>
 									<td class="name" data-toggle="modal" data-target="#viewMaterialModal">{$vo['name']}</td>
 									<td class="unit" data-toggle="modal" data-target="#viewMaterialModal">{$vo['unit']}</td>
-									<td class="price" data-toggle="modal" data-target="#viewMaterialModal">{$vo['price_in']}</td>
+									<td class="price" data-toggle="modal" data-target="#viewMaterialModal">{$vo['price_rent']}</td>
 									<td>
 									<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editMaterialModal">修改</a>
 									<div class="hidden classid">{$vo['categoryid']}</div><!-- 分类id -->
@@ -211,9 +211,9 @@
                 <div class="col-md-3">
                 	<input id="unit_addMaterialForm" class="form-control" type="text" name="unit">
                 </div>
-                <label class="control-label col-md-2">进价</label>
+                <label class="control-label col-md-2">租金</label>
                 <div class="col-md-3">
-                	<input id="priceIn_addMaterialForm" class="form-control" type="text" name="price_in">
+                	<input id="priceRent_addMaterialForm" class="form-control" type="text" name="price_rent">
                 </div>
             </div>
             <div class="form-group">
@@ -274,7 +274,7 @@
                 <div class="col-md-3">
                 	<input class="form-control" type="text" name="unit">
                 </div>
-                <label class="control-label col-md-2">进价</label>
+                <label class="control-label col-md-2">租金</label>
                 <div class="col-md-3">
                 	<input class="form-control" type="text" name="price">
                 </div>
@@ -333,7 +333,7 @@
             	<label class="control-label col-md-3">单位</label>
                 <div class="col-md-3 material-info" id="unit">
                 </div>
-                <label class="control-label col-md-2">进价</label>
+                <label class="control-label col-md-2">租金</label>
                 <div class="col-md-3 material-info" id="price">
                 </div>
             </div>
@@ -721,7 +721,7 @@ $().ready(function(){
 			unit:{
 				required:true
 			},
-			price_in:{
+			price_rent:{
 				number:true
 			}
 		},
@@ -735,7 +735,7 @@ $().ready(function(){
 		var categoryid = $("#categoryid_addMaterialForm").val();
 		var worktype = $("#worktype_addMaterialForm").val();
 		var unit = $("#unit_addMaterialForm").val();
-		var price_in = $("#priceIn_addMaterialForm").val();
+		var price_rent = $("#priceRent_addMaterialForm").val();
 		var parameter = $("#parameter_addMaterialForm").val();
 		var specification = $("#specification_addMaterialForm").val();
 		var brand = $("#brand_addMaterialForm").val();
@@ -744,7 +744,7 @@ $().ready(function(){
 		$.post(
 			"{:U('OperRentManage/materialMaintain_addMaterial')}",
 			{name:name,categoryid:categoryid,worktype:worktype,
-				unit:unit,price_in:price_in,parameter:parameter,
+				unit:unit,price_rent:price_rent,parameter:parameter,
 				specification:specification,brand:brand},
 			function(data){
 				if(data['materialid'] <= 0){alert("新增材料失败");return;}
@@ -754,7 +754,7 @@ $().ready(function(){
 					" leaf"+categoryid+"\" data-id=\""+data['materialid']+"\"><td class=\"type\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+worktype+
 					"</td><td class=\"name\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+name+
 					"</td><td class=\"unit\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+unit+
-					"</td><td class=\"price\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+price_in+
+					"</td><td class=\"price\" data-toggle=\"modal\" data-target=\"#viewMaterialModal\">"+price_rent+
 					"</td><td><a href=\"#\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#editMaterialModal\">修改</a>&nbsp;<div class=\"hidden classid\">"+categoryid+
 					"</div><!-- 分类id --><div class=\"hidden parameter\">"+parameter+
 					"</div><!-- 产品参数 --><div class=\"hidden standard\">"+specification+
@@ -769,7 +769,7 @@ $().ready(function(){
 				$("#categoryid_addMaterialForm").val("");
 				$("#worktype_addMaterialForm").val("");
 				$("#unit_addMaterialForm").val("");
-				$("#priceIn_addMaterialForm").val("");
+				$("#priceRent_addMaterialForm").val("");
 				$("#parameter_addMaterialForm").val("");
 				$("#specification_addMaterialForm").val("");
 				$("#brand_addMaterialForm").val("");
@@ -814,7 +814,7 @@ $().ready(function(){
 						item.find(".id").text(result.materialid);
 						item.find(".name").text(result.name);
 						item.find(".unit").text(result.unit);
-						item.find(".price").text(result.price_in);
+						item.find(".price").text(result.price_rent);
 						item.find(".classid").text(result.categoryid);
 						item.find(".type").text(result.worktype);
 						item.find(".parameter").text(result.parameter);
