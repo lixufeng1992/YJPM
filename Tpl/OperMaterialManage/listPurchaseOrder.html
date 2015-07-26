@@ -23,10 +23,10 @@
           <li><a href="{:U('OperMaterialManage/listPurchaseOrder')}" class="active">已有材料采购单</a></li>
         </ul>
       </div>
-    </nav> 
-    <div class="panel-group"> 
-        <div class="panel panel-default">			
-            <div class="panel-body">		
+    </nav>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
                 <div class="page-header">
                                                 <div class="col-md-4">
                                                 <h4>已有材料采购单</h4>
@@ -85,11 +85,11 @@
 							</if>
 						</tr>
 						</volist>
-						
+
 					</tbody>
 				</table>
-            </div>  
-        </div> 
+            </div>
+        </div>
     </div>
 </div>
 
@@ -111,7 +111,7 @@
 			<if condition="$vo_level_1.resource_haschildren eq 1">
 			<li class="list-group-item collapse in">
 				<ul class="list-group">
-					<volist name="resourceRowArray" id="vo_level_2">				
+					<volist name="resourceRowArray" id="vo_level_2">
 					<if condition="$vo_level_2.resource_level eq 2">
 					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
 						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
@@ -128,7 +128,7 @@
 								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
 									<li class="list-group-item">
 										<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
-									</li>								
+									</li>
 								</eq>
 								</if>
 							</volist>
@@ -136,17 +136,17 @@
 						</li>
 						</if>
 					</eq>
-					</if>					
+					</if>
 					</volist>
 				</ul>
 			</li>
 			</if>
 			</if>
 		</volist>
-		
+
 <volist name="resourceRowArray" id="vo_level_1">
 <if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
-			<li class="list-group-item list-group-item-info">				
+			<li class="list-group-item list-group-item-info">
 				<if condition="$vo_level_1.resource_haschildren eq 1">
 				<span class="glyphicon glyphicon-minus-sign"></span>
 				</if>
@@ -155,7 +155,7 @@
 			<if condition="$vo_level_1.resource_haschildren eq 1">
 			<li class="list-group-item collapse in">
 				<ul class="list-group">
-					<volist name="resourceRowArray" id="vo_level_2">				
+					<volist name="resourceRowArray" id="vo_level_2">
 					<if condition="$vo_level_2.resource_level eq 2">
 					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
 						<li class="list-group-item">
@@ -172,7 +172,7 @@
 								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
 									<li class="list-group-item">
 									<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
-									</li>								
+									</li>
 								</eq>
 								</if>
 							</volist>
@@ -180,11 +180,11 @@
 						</li>
 						</if>
 					</eq>
-					</if>					
+					</if>
 					</volist>
 				</ul>
 			</li>
-			</if>			
+			</if>
 			</if>
 </volist>
 		</ul>
@@ -200,14 +200,14 @@ $().ready(function(){
 		if(data){
 			data.removeClass("active");
 		}
-		$(this).addClass("active");			
+		$(this).addClass("active");
 		$("table").data("lastActive",$(this));
         $("#to_edit_link").attr("href","{:U('OperMaterialManage/editPurchaseOrder')}?order_id="+$(this).data("id"));
 		$("#to_edit_link").removeAttr("disabled");
     });
 	$("table").on("click",".checked",function(e){
 		var btn = $(this);
-		var tr =btn.parent().parent(); 
+		var tr =btn.parent().parent();
 		$.post("{:U('OperMaterialManage/uncheckPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
@@ -221,7 +221,7 @@ $().ready(function(){
 	})
 	$("table").on("click",".unchecked",function(e){
 		var btn = $(this);
-		var tr =btn.parent().parent(); 
+		var tr =btn.parent().parent();
 		$.post("{:U('OperMaterialManage/checkPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){

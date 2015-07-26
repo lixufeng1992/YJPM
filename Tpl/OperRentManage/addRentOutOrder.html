@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	a .col-md-2,a .col-md-3,a .col-md-4{
+		overflow:hidden;
+		white-space:nowrap;
+	}
+	#viewClassTree{
+		min-width:180px;
+	}
+	td .form-control[readonly]{
+		background:#eee;
+	}
+
+  .inModel, #materials .row div{
+    text-align: center;
+  }
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+    <nav class="navbar navbar-default" role="navigation" id="bodynav">
+      <div class="container-fluid">
+       <div class="navbar-header navbar-brand">租赁还租单</div>
+        <ul class="nav navbar-nav navbar-right">
+		  <li><a href="{:U('OperRentManage/addRentOutOrder')}" class="active" >新增租赁还租单</a></li>
+          <li><a href="{:U('OperRentManage/listRentOutOrder')}" >已有租赁还租单</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal" action="{:U('OperRentManage/addRentOutOrderSubmit')}" role="form" method="POST">
+					    <div class="page-header">
+                                                <div class="col-md-4">
+                                                <h4>新增租赁还租单</h4>
+                                                </div>
+						<div class="col-md-4">
+							<h4 id="project_title"></h4>
+						</div>
+
+						<div class="col-md-1 col-md-offset-1">
+							<label class="control-label label-pop" id="resource_alert" data-container="body" data-toggle="popover" data-placement="left" data-content="请选择项目"></label>
+
+							<a class="btn btn-info" onclick="$('.ui.sidebar').sidebar('toggle');return false;" href="#">项目列表</a>
+						</div>
+						<div class="col-md-2">
+							<input class="btn btn-primary btn-block" type="submit" id="submit" value="保存"/>
+						</div>
+						<div style="clear:both"></div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">退场项目</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" readonly id="project_input"/>
+							<input type="hidden" name="projectid">
+						</div>
+						<label class="col-md-2 control-label">往来单位</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" readonly data-toggle="modal" data-target="#enterpriseModal"/>
+							<input type="hidden" name="enterpriseid">
+						</div>
+						<label class="col-md-2 control-label">对应单据</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="document" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">发生日期</label>
+						<div class="col-md-2">
+							<input class="form-control datepicker" type="text" name="happen_date"/>
+						</div>
+						<label class="col-md-2 control-label">经办人</label>
+						<div class="col-md-2">
+							<input class="form-control" type="text" name="transactor"/>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">领用班组</label>
+						<div class="col-md-2">
+							<select class="form-control warehouse" name="department" >
+							</select>
+						</div>
+						<label class="col-md-2 control-label">领用人</label>
+						<div class="col-md-2">
+							<select class="form-control administrator" name="administrator" >
+							</select>
+						</div>
+
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">备注</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="5" name="remark" ></textarea>
+						</div>
+					</div>
+					<hr>
+					<div class="page-header">
+						<div class="col-md-2">
+							<h4>材料列表</h4>
+						</div>
+                                                <div class="col-md-2">
+                                                    <!-- <  h5 id="amount_title">累计金额：</h5> -->
+                                                </div>
+                                                <div class="col-md-2 col-md-offset-6">
+                                                    <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#materialModal">新增</button>
+                                                </div>
+                                                <div style="clear:both"></div>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+                <th>租入批次</th>
+                <th>经办人</th>
+								<th>租赁日期</th>
+								<th>工种</th>
+								<th>材料名称</th>
+								<th>规格</th>
+								<th>单位</th>
+								<th>单价</th>
+								<th>数量</th>
+
+								<th>备注</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="template" style="display:none">
+								<td><input class="form-control" type="text" readonly name="in_order_number[]"></td>
+								<td><input class="form-control" type="text" readonly></td>
+                <td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" readonly></td>
+								<td><input class="form-control" type="text" name="amount[]"></td>
+								<td><input class="form-control" type="text" name="remark[]"></td>
+
+								<td>
+									<button type="button" class="btn btn-danger">删除</button>
+									<input type="hidden" name="material_id[]" />
+
+								</td>
+							</tr>
+						</tbody>
+					</table>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui sidebar left overlay panel panel-default active">
+	<div class="page-header">
+		<h4 style="padding-left:15px">项目与机构列表</h4>
+	</div>
+	<div class="panel-body">
+		<ul class="list-group sidebar-tree" id="project_tree">
+			<volist name="resourceRowArray" id="vo_level_1">
+			<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-minus-sign"></span>
+				</if>
+				<a href="#" class="tree-item">公司机构或公司总库</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item" data-level="{$vo_level_2.resource_level}" data-id="{$vo_level_2.resource_id}">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item">
+										<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+		</volist>
+
+<volist name="resourceRowArray" id="vo_level_1">
+<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+			<li class="list-group-item list-group-item-info">
+				<if condition="$vo_level_1.resource_haschildren eq 1">
+				<span class="glyphicon glyphicon-minus-sign"></span>
+				</if>
+				<a href="#" class="tree-item">项目</a>
+			</li>
+			<if condition="$vo_level_1.resource_haschildren eq 1">
+			<li class="list-group-item collapse in">
+				<ul class="list-group">
+					<volist name="resourceRowArray" id="vo_level_2">
+					<if condition="$vo_level_2.resource_level eq 2">
+					<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+						<li class="list-group-item">
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<span class="glyphicon glyphicon-plus-sign"></span>
+						</if>
+						<a href="{$vo_level_2.resource_id}" class="tree-item" >{$vo_level_2.resource_name}</a>
+						</li>
+						<if condition="$vo_level_2.resource_haschildren eq 1">
+						<li class="list-group-item collapse in">
+							<ul class="list-group">
+								<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+									<li class="list-group-item">
+									<a href="{$vo_level_3.resource_id}" class="tree-item" >{$vo_level_3.resource_name}</a>
+									</li>
+								</eq>
+								</if>
+							</volist>
+							</ul>
+						</li>
+						</if>
+					</eq>
+					</if>
+					</volist>
+				</ul>
+			</li>
+			</if>
+			</if>
+</volist>
+		</ul>
+	</div>
+</div>
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+            <volist name="enterpriseRowArray" id="vo">
+                <a href="{$vo.enterpriseid}" class="list-group-item
+                <if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+                <div class="row">
+                    <div class="col-md-4">{$vo.name}</div>
+                    <div class="col-md-2">{$vo.contact_person}</div>
+                    <div class="col-md-3">{$vo.phone_number}</div>
+                    <div class="col-md-3">{$vo.address}</div>
+                </div>
+                </a>
+            </volist>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="materialModal" tabindex="-1" role="dialog" aria-labelledby="materialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="materialLabel">材料选择</h4>
+			<div class="container-fluid" style="margin-top:15px">
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-12">
+						<div class="row">
+
+              <div class="col-md-2 inModel">租赁批次</div>
+              <div class="col-md-1 inModel">经办人</div>
+              <div class="col-md-2 inModel">租赁日期</div>
+              <div class="col-md-1 inModel">工种</div>
+							<div class="col-md-2 inModel">材料名称</div>
+              <div class="col-md-1 inModel">规格</div>
+							<div class="col-md-1 inModel">单位</div>
+              <div class="col-md-1 inModel">单价</div>
+							<div class="col-md-1 inModel">数量</div>
+						</div>
+					</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body">
+		<div class="row">
+
+			<div class="col-md-12" style="overflow:auto">
+				<div class="list-group" id="materials"  >
+				  <volist name="RentInOrderRowArray" id="vo">
+            <!-- 按照材料名称列表，一个租入单有多个材料，就列多条 -->
+          <a href="{$vo.rent_in_order_id}" class="list-group-item">
+					<div class="row">
+						<div class="col-md-2">{$vo['rent_in_order_id']}</div>
+						<div class="col-md-1">{$vo['transactor']}</div>
+						<div class="col-md-2">{$vo['happen_date']}</div>
+						<div class="col-md-1">{$vo['worktype']}</div>
+						<div class="col-md-2">{$vo['material_name']}</div>
+						<div class="col-md-1">{$vo['specification']}</div>
+						<div class="col-md-1">{$vo['unit']}</div>
+						<div class="col-md-1">{$vo['price']}</div>
+						<div class="col-md-1">{$vo['amount']}</div>
+					</div>
+
+				  </a>
+				  </volist>
+          <!-- 测试，记得注释掉 -->
+          <a href="#" class="list-group-item">
+          <div class="row">
+						<div class="col-md-2">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+						<div class="col-md-2">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+						<div class="col-md-2">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+						<div class="col-md-1">aaaaa</div>
+					</div>
+        </a>
+				</div>
+			</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseMaterial">添加</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/script.html" />
+<script type="text/javascript">
+
+$().ready(function(){
+	$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$("#materialModal .modal-body").css("height",""+($(window).height()-250)+"px");
+	$(window).resize(function(){
+		$("#enterpriseModal .modal-body").css("max-height",""+($(window).height()-300)+"px");
+		$("#materialModal .modal-body").css("height",""+($(window).height()-250)+"px");
+	});
+	$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+	});
+	$('#enterpriseModal').on('show.bs.modal', function (e) {
+		$("#enterpriseModal").removeData("enterprise");
+		$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+		$("#enterprises a").removeClass("active");
+	});
+	$("#chooseEnterprise").click(function(){
+		var data = $("#enterpriseModal").data("enterprise");
+		if (data){
+			$($("#enterpriseModal").data("dataTarget")).val(data.name);
+			$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+			$('#enterpriseModal').modal('hide');
+		}
+	});
+ 	$("#enterprises a").click(function(e){
+		e.preventDefault();
+		var data = $("#enterpriseModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#enterpriseModal").data("lastActive",$(this));
+		$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+		return false;
+	});
+
+	$("#project_input").click(function(){
+		$(".ui.sidebar").sidebar('show');
+	});
+
+	$("#materials a").click(function(e){
+		e.preventDefault();
+		var data = $("#materialModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#materialModal").data("lastActive",$(this));
+		$("#materialModal").data("material",$(this));
+		return false;
+	});
+
+	var chooseMaterial = function(){
+		var item = $(".template").clone().removeClass("template");
+		var inputs = item.find("input");
+		var materiallink = $("#materialModal").data("material").find(".row").children();
+		for (var i = 0 ; i < 9 ; i ++){
+			inputs.eq(i).val(materiallink.eq(i).text().trim());
+		}
+		item.find("input[name='material_id[]']").val($("#materialModal").data("material").attr("href"));
+
+		$("tbody").append(item.show());
+	};
+	$("#chooseMaterial").click(chooseMaterial);
+	$("#materials a").dblclick(chooseMaterial);
+
+	$("table").on('click',".btn-danger",function(){
+		if (confirm("确认删除？")){
+			$(this).parent().parent().remove();
+			var sum = 0.0;
+			$(".material_price").each(function(){
+				sum+=Number($(this).val());
+			});
+			$("input[name='price']").val(sum);
+		}
+	});
+	$("#project_tree").on("click","a",function(e){
+		e.preventDefault();
+		if($(this).attr("href")!="#"){
+			$("#project_input").val($(this).text().trim());
+			$("#project_title").text($(this).text().trim());
+			$("input[name='projectid']").val($(this).attr("href").trim());
+			$.post("{:U('OperProjectManage/getWarehouse')}",{
+				resource_id:$(this).attr("href").trim()
+			},function(warehouse,textStatus){
+				var select_warehouse = $(".warehouse");
+				select_warehouse.empty();
+				for(var i=0;i<warehouse.length;i++){
+					select_warehouse.append($("<option value=\""+warehouse[i].warehouse_id+"\">"+warehouse[i].warehouse_name+"</option>"));
+				}
+			},'json');
+			$.post("{:U('OperProjectManage/getWarehouseWorker')}",{
+				resource_id:$(this).attr("href").trim()
+			},function(administrator,textStatus){
+				var select_administrator = $(".administrator");
+				select_administrator.empty();
+				for(var i=0;i<administrator.length;i++){
+					select_administrator.append($("<option value=\""+administrator[i].warehouse_worker_id+"\">"+administrator[i].warehouse_worker_name+"</option>"));
+				}
+			},'json');
+
+                        var resource_id=$(this).attr("href").trim();
+                        $("#plans a").hide();
+                        $("#plans .resource"+resource_id).show();
+                        $("#contracts a").hide();
+                        $("#contracts .resource"+resource_id).show();
+			$(".ui.sidebar").sidebar('hide');
+		}
+	})
+});
+</script>
+</body>
+</html>

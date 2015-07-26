@@ -56,19 +56,19 @@
                 <label class="control-label" id="pwdalert"  data-container="body" data-container="body" data-toggle="popover" data-placement="right" data-content="*密码不能为空"></label>
             </div>
             <div align="center">
-		<h4><span class="label label-danger">{$message}</span></h4>			
+		<h4><span class="label label-danger">{$message}</span></h4>
 	    </div>
             <div class="form-group">
                 <div class="col-md-10 col-md-offset-1">
                     <button type="submit" class="btn btn-lg btn-primary btn-block" id="submit">登录</button>
                  </div>
-            </div>  
-        </div>  
-    </div>  
-  </form>   
+            </div>
+        </div>
+    </div>
+  </form>
   </div>
   </div>
- 
+
 <div id="carousel-frontpage" class="carousel slide frontpage_carouselarea" data-ride="carousel">
   <!-- Indicators -->
   <ol class="carousel-indicators">
@@ -103,15 +103,15 @@
 		$("form :input").blur(function(){
 			if($(this).is("#username")){
         if($(this).val()==""){
-					$("#usernamealert").popover("show");	
+					$("#usernamealert").popover("show");
 				};
 				if($(this).val()!=""){
-					$("#usernamealert").popover("hide");	
+					$("#usernamealert").popover("hide");
 				};
 			};
-			if($(this).is("#password")){	
+			if($(this).is("#password")){
         if($(this).val()==""){
-					$("#pwdalert").popover("show");					
+					$("#pwdalert").popover("show");
 				};
 			  if($(this).val()!=""){
 					$("#pwdalert").popover("hide");
@@ -121,7 +121,7 @@
 		$("#submit").click(function(){
 			if($("#username").val()==""){
 					$("#usernamealert").popover("show");
-					return false;					
+					return false;
 			};
 			if($("#password").val()==""){
 					$("#pwdalert").popover("show");
@@ -132,15 +132,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

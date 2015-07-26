@@ -1,13 +1,15 @@
 <?php
-import("@.Model.UserDao");
-import("@.Model.RoleDao");
-import("@.Model.RoleOperationDao");
-import("@.Model.OperationDao");
+require_once ('/Lib/auto_load.php');
+//import("@.Model.UserDao");
+//import("@.Model.RoleDao");
+//import("@.Model.RoleOperationDao");
+//import("@.Model.OperationDao");
 class LoginAfterAction extends Action {
   protected $userDao;
   protected $roleDao;
   protected $roleOperationDao;
   protected $operationDao;
+  protected $myOperationRowArray;
 
   public function _initialize(){
     $isLogin = false;
@@ -27,15 +29,15 @@ class LoginAfterAction extends Action {
     $roleid = $userRow['roleid'];
     $roleRow = $this->roleDao->findById($roleid);
     $my_role = $roleRow['rolename'];
-    $this->assign('myRole',$myRole);
+    $this->assign('myRole',$my_role);
     //查找role对应的功能
-    $myOperationRowArray = array();
+    $this->myOperationRowArray = array();
     $roleOperationArray = $this->roleOperationDao->findByRoleid($roleid);
     foreach ($roleOperationArray as $key => $value){
       $operationRow = $this->operationDao->findById($value['operationid']);
-      array_push($myOperationRowArray,$operationRow);
+      array_push($this->myOperationRowArray,$operationRow);
     }
-    $this->assign('myOperationRowArray',$myOperationRowArray);
+    $this->assign('myOperationRowArray',$this->myOperationRowArray);
     //读取时间，生成欢迎语
     $nowArray = getdate();
     //$this->assign('now_hour',$nowArray['hours']);
