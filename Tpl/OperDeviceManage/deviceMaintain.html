@@ -1,0 +1,818 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>亿建工程管理系统</title>
+  <include file="./Tpl/Part/css.html" />
+  <style>
+	.right-glyphicon-1{
+		position:absolute;
+		right:5px;
+		top:8px;
+	}
+	.right-glyphicon-2{
+		position:absolute;
+		right:25px;
+		top:8px;
+	}
+	.mid-tree-item-1{
+		margin-right:15px;
+		margin-left:20px;
+	}
+	.mid-tree-item-2{
+		margin-right:30px;
+		margin-left:20px;
+	}
+	.glyphicon.disabled{
+		color:#ccc;
+		cursor:not-allowed;
+	}
+	.template{
+		display:none !important;
+	}
+	td{
+		cursor:pointer;
+	}
+	.material-info{
+		word-break:break-all;
+	}
+	#viewMaterialModal .form-group div {
+		padding-top: 7px;
+	}
+  </style>
+</head>
+<body>
+<include file="./Tpl/Part/header.html" />
+<include file="./Tpl/Part/left.html" />
+<div id="right">
+<nav class="navbar navbar-default" role="navigation" id="bodynav">
+  <div class="container-fluid">
+  <div class="navbar-header navbar-brand">设备维护</div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{:U('')}" class="active">设备维护</a></li>
+    </ul>
+  </div>
+</nav>  
+	<div class="panel panel-default">
+		<div class="panel-body">  
+			<div class="page-header">
+				<div class="col-md-3">
+					<h4>项目或机构</h4>
+				</div>
+				<div class="col-md-7">
+					<h4>设备</h4>
+				</div>
+				<div class="col-md-2">
+				
+				</div>
+				<div style="clear:both"></div>
+			</div>
+			<div class="container-fluid">
+				<div class="row list-row">
+					<div class="col-md-3" style="overflow-x:auto;overflow-y:hidden">
+						<ul class="list-group sidebar-tree" id="viewClassTree">
+							<volist name="resourceRowArray" id="vo_level_1">
+							<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 1)">
+							<li class="list-group-item">
+								<if condition="$vo_level_1.resource_haschildren eq 1">
+								<span class="glyphicon glyphicon-minus-sign"></span>
+								</if>
+								<a href="{$vo_level_1.resource_id}" class="tree-item all-class mid-tree-item-1">机构</a>
+							</li>
+							<if condition="$vo_level_1.resource_haschildren eq 1">
+							<li class="list-group-item collapse in">
+								<ul class="list-group" >
+
+									<volist name="resourceRowArray" id="vo_level_2">				
+									<if condition="$vo_level_2.resource_level eq 2">
+									<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+									<li class="list-group-item">
+										<if condition="$vo_level_2.resource_haschildren eq 1">
+										<span class="glyphicon glyphicon-plus-sign"></span>
+										</if>
+										<a href="{$vo_level_2.resource_id}" class="tree-item root-class">{$vo_level_2.resource_name}</a>
+									</li>	
+									<if condition="$vo_level_2.resource_haschildren eq 1">
+									<li class="list-group-item collapse">
+										<ul class="list-group">
+											
+											<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+											
+											<li class="list-group-item">
+												<a href="{$vo_level_3.resource_id}" class="tree-item leaf-class">{$vo_level_3.resource_name}</a>
+											</li>
+									</eq>
+									</if>	
+								</volist>									
+										</ul>
+									</li>
+									</if>
+									</eq>
+									</if>
+									</volist>
+								
+									
+								</ul>
+							</li>
+							</if>
+							</if>
+							</volist>
+							<volist name="resourceRowArray" id="vo_level_1">
+							<if condition="($vo_level_1.resource_level eq 1) AND ($vo_level_1.resource_type eq 2)">
+							<li class="list-group-item">
+								<if condition="$vo_level_1.resource_haschildren eq 1">
+								<span class="glyphicon glyphicon-minus-sign"></span>
+								</if>
+								<a href="{$vo_level_1.resource_id}" class="tree-item all-class mid-tree-item-1">项目</a>
+							</li>
+							<if condition="$vo_level_1.resource_haschildren eq 1">
+							<li class="list-group-item collapse in">
+								<ul class="list-group" >
+
+									<volist name="resourceRowArray" id="vo_level_2">				
+									<if condition="$vo_level_2.resource_level eq 2">
+									<eq name="vo_level_2.resource_father_id" value="$vo_level_1.resource_id">
+									<li class="list-group-item">
+										<if condition="$vo_level_2.resource_haschildren eq 1">
+										<span class="glyphicon glyphicon-plus-sign"></span>
+										</if>
+										<a href="{$vo_level_2.resource_id}" class="tree-item root-class">{$vo_level_2.resource_name}</a>
+									</li>	
+									<if condition="$vo_level_2.resource_haschildren eq 1">
+									<li class="list-group-item collapse">
+										<ul class="list-group">
+											
+											<volist name="resourceRowArray" id="vo_level_3">
+								<if condition="$vo_level_3.resource_level eq 3">
+								<eq name="vo_level_3.resource_father_id" value="$vo_level_2.resource_id">
+											
+											<li class="list-group-item">
+												<a href="{$vo_level_3.resource_id}" class="tree-item leaf-class">{$vo_level_3.resource_name}</a>
+											</li>
+									</eq>
+									</if>	
+								</volist>									
+										</ul>
+									</li>
+									</if>
+									</eq>
+									</if>
+									</volist>
+								
+									
+								</ul>
+							</li>
+							</if>
+							</if>
+							</volist>
+						</ul>
+					</div>
+					<div class="col-md-9">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>设备编码</th>
+									<th>设备名称</th>
+									<th>所属项目或机构</th>
+									<th>购置日期</th>
+									<th>设备状态</th>
+									<th>设备数量</th>
+									<th>设备单位</th>
+									<th>计价方式</th>
+									<th>管理人</th>
+									<th>设备净值</th>
+									<th>&nbsp;&nbsp;<a id="a_addMaterial" class="btn btn-success" data-toggle="modal" data-target="#addMaterialModal" disabled="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新增&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;&nbsp;&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody id="tbody_materialList">
+								<!-- 以下为循环体 begin -->
+								<!-- tr的class 表示材料所属分类，root leaf后跟所属项目id ，两个相同-->
+								<volist name="materialRowArray" id="vo"><!-- ！！！各变量名需要调整-->
+								<tr class="root{$vo['categoryid']} leaf{$vo['categoryid']}" data-id="{$vo['materialid']}">
+									
+									<td class="code" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="name" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="classname" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="buydate" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="state" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="amount" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="unit" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="priceway" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="admin" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="price" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td>
+									<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editMaterialModal">修改</a>
+									<div class="hidden recorddate"></div><!-- 登记日期 -->
+									<div class="hidden crashdate"></div><!-- 报废日期 -->
+									<div class="hidden producer"></div><!-- 制造厂家 -->
+									<div class="hidden productid"></div><!-- 出厂编号 -->
+									<div class="hidden admingroup"></div><!-- 管理班组 -->
+									<div class="hidden admintype"></div><!-- 管理类型 -->
+									<div class="hidden originalprice"></div><!-- 设备原值 -->
+									<div class="hidden depriciation"></div><!-- 累计折旧 -->
+									<div class="hidden includeway"></div><!-- 计入成本方式 -->
+									<a href="#" class="btn btn-danger del_material">删除</a>
+									</td>
+								</tr>
+								</volist>
+								<!-- 循环体 end -->
+								
+								<!-- 以下tr为js模板，勿删 -->
+								<tr class="root0 leaf0 template" data-id="0">
+									
+									<td class="code" data-toggle="modal" data-target="#viewMaterialModal">1</td>
+									<td class="name" data-toggle="modal" data-target="#viewMaterialModal">2</td>
+									<td class="classname" data-toggle="modal" data-target="#viewMaterialModal">3</td>
+									<td class="buydate" data-toggle="modal" data-target="#viewMaterialModal">4</td>
+									<td class="state" data-toggle="modal" data-target="#viewMaterialModal">5</td>
+									<td class="amount" data-toggle="modal" data-target="#viewMaterialModal">6</td>
+									<td class="unit" data-toggle="modal" data-target="#viewMaterialModal">7</td>
+									<td class="priceway" data-toggle="modal" data-target="#viewMaterialModal">8</td>
+									<td class="admin" data-toggle="modal" data-target="#viewMaterialModal">9</td>
+									<td class="price" data-toggle="modal" data-target="#viewMaterialModal">10</td>
+									<td>
+									<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editMaterialModal">修改</a>
+									<div class="hidden recorddate">11</div><!-- 登记日期 -->
+									<div class="hidden crashdate">12</div><!-- 报废日期 -->
+									<div class="hidden producer">13</div><!-- 制造厂家 -->
+									<div class="hidden productid">14</div><!-- 出厂编号 -->
+									<div class="hidden admingroup">15</div><!-- 管理班组 -->
+									<div class="hidden admintype">16</div><!-- 管理类型 -->
+									<div class="hidden originalprice">17</div><!-- 设备原值 -->
+									<div class="hidden depriciation">18</div><!-- 累计折旧 -->
+									<div class="hidden includeway">19</div><!-- 计入成本方式 -->
+									<div class="hidden classid">1</div><!-- 登记日期 -->
+									<div class="hidden id">20</div><!-- 设备id -->
+									<a href="#" class="btn btn-danger del_material">删除</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addMaterialModal" tabindex="-1" role="dialog" aria-labelledby="addMaterialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="addMaterialModalLabel">新增设备信息</h4>
+            
+      </div>
+      <form id="addMaterialForm" class="form-horizontal" role="form" action="#" method="GET">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+            <div class="form-group">
+            	<label class="control-label col-md-3">设备名称</label>
+                <div class="col-md-8">
+                	<input class="form-control" type="text" name="name">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">所属项目或机构</label>
+                <div class="col-md-3">
+                	<input class="form-control" disabled type="text" name="classname">
+					<input type="hidden" name="classid">
+                </div>
+                <label class="control-label col-md-2">设备编码</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="code">
+                	
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-3">购置日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="buydate">
+                </div>
+                <label class="control-label col-md-2">登记日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="recorddate">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">报废日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="crashdate">
+                </div>
+                <label class="control-label col-md-2">制造厂家</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="producer">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">出厂编号</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="productid">
+                </div>
+                <label class="control-label col-md-2">设备状态</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="state">
+					<option value="正常">正常</option>
+					<option value="报废">报废</option>
+					</select>
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备单位</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="unit">
+                </div>
+                <label class="control-label col-md-2">设备数量</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="amount">
+                </div>
+            </div>
+			<div class="form-group">
+            	
+                <label class="control-label col-md-3">计价方式</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="priceway">
+					<option value="台班">台班</option>
+					<option value="天">天</option>
+					<option value="小时">小时</option>
+					<option value="月">月</option>
+					</select>
+                </div>
+				<label class="control-label col-md-2">管理班组</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admingroup">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">管理类型</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admintype">
+                </div>
+                <label class="control-label col-md-2">管理人</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admin">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备原值</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="originalprice">
+                </div>
+                <label class="control-label col-md-2">累计折旧</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="depriciation">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备净值</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="price">
+                </div>
+                <label class="control-label col-md-2">计入成本方式</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="includeway">
+					<option value="购置价">购置价</option>
+					<option value="折旧额">折旧额</option>
+					<option value="不计入">不计入</option>
+					</select>
+                </div>
+            </div>
+           				
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="submit_addMaterialForm" class="btn btn-primary" data-loading-text="提交中">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editMaterialModal" tabindex="-1" role="dialog" aria-labelledby="editMaterialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="editMaterialModalLabel">修改设备信息</h4>
+            
+      </div>
+      <form id="editMaterialForm" class="form-horizontal" role="form" action="" method="GET">
+		<div class="modal-body"  style="max-height:500px;overflow:auto" >         
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备名称</label>
+                <div class="col-md-8">
+                	<input class="form-control" type="text" name="name">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">所属项目或机构</label>
+                <div class="col-md-3">
+                	<input class="form-control" disabled type="text" name="classname">
+					<input type="hidden" name="classid">
+                </div>
+                <label class="control-label col-md-2">设备编码</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="code">
+                	
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-3">购置日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="buydate">
+                </div>
+                <label class="control-label col-md-2">登记日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="recorddate">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">报废日期</label>
+                <div class="col-md-3">
+                	<input class="form-control datepicker" type="text" name="crashdate">
+                </div>
+                <label class="control-label col-md-2">制造厂家</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="producer">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">出厂编号</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="productid">
+                </div>
+                <label class="control-label col-md-2">设备状态</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="state">
+					<option value="正常">正常</option>
+					<option value="报废">报废</option>
+					</select>
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备单位</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="unit">
+                </div>
+                <label class="control-label col-md-2">设备数量</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="amount">
+                </div>
+            </div>
+			<div class="form-group">
+            	
+                <label class="control-label col-md-3">计价方式</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="priceway">
+					<option value="台班">台班</option>
+					<option value="天">天</option>
+					<option value="小时">小时</option>
+					<option value="月">月</option>
+					</select>
+                </div>
+				<label class="control-label col-md-2">管理班组</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admingroup">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">管理类型</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admintype">
+                </div>
+                <label class="control-label col-md-2">管理人</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="admin">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备原值</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="originalprice">
+                </div>
+                <label class="control-label col-md-2">累计折旧</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="depriciation">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备净值</label>
+                <div class="col-md-3">
+                	<input class="form-control" type="text" name="price">
+                </div>
+                <label class="control-label col-md-2">计入成本方式</label>
+                <div class="col-md-3">
+                	<select class="form-control" name="includeway">
+					<option value="购置价">购置价</option>
+					<option value="折旧额">折旧额</option>
+					<option value="不计入">不计入</option>
+					</select>
+                </div>
+				<input type="hidden" name="id">
+            </div>				
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-loading-text="提交中">确定</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="viewMaterialModal" tabindex="-1" role="dialog" aria-labelledby="viewMaterialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="viewMaterialModalLabel">查看设备信息</h4>
+            
+      </div>
+      <form class="form-horizontal" role="form">
+          <div class="modal-body"  style="max-height:500px;overflow:auto" >
+             <div class="form-group">
+            	<label class="control-label col-md-3">设备名称</label>
+                <div class="col-md-8 material-info" id="view-name">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">所属项目或机构</label>
+                <div class="col-md-3 material-info" id="view-classname">
+                </div>
+                <label class="control-label col-md-2">设备编码</label>
+                <div class="col-md-3 material-info" id="view-code">
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="control-label col-md-3">购置日期</label>
+                <div class="col-md-3 material-info" id="view-buydate">
+                </div>
+                <label class="control-label col-md-2">登记日期</label>
+                <div class="col-md-3 material-info" id="view-recorddate">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">报废日期</label>
+                <div class="col-md-3 material-info" id="view-crashdate">
+                </div>
+                <label class="control-label col-md-2">制造厂家</label>
+                <div class="col-md-3 material-info" id="view-producer">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">出厂编号</label>
+                <div class="col-md-3 material-info" id="view-productid">
+                </div>
+                <label class="control-label col-md-2">设备状态</label>
+                <div class="col-md-3 material-info" id="view-state">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备单位</label>
+                <div class="col-md-3 material-info" id="view-unit">
+                </div>
+                <label class="control-label col-md-2">设备数量</label>
+                <div class="col-md-3 material-info" id="view-amount">
+                </div>
+            </div>
+			<div class="form-group">
+            	
+                <label class="control-label col-md-3">计价方式</label>
+                <div class="col-md-3 material-info" id="view-priceway">
+                </div>
+				<label class="control-label col-md-2">管理班组</label>
+                <div class="col-md-3 material-info" id="view-admingroup">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">管理类型</label>
+                <div class="col-md-3 material-info" id="view-admintype">
+                </div>
+                <label class="control-label col-md-2">管理人</label>
+                <div class="col-md-3 material-info" id="view-admin">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备原值</label>
+                <div class="col-md-3 material-info" id="view-originalprice">
+                </div>
+                <label class="control-label col-md-2">累计折旧</label>
+                <div class="col-md-3 material-info" id="view-depriciation">
+                </div>
+            </div>
+			<div class="form-group">
+            	<label class="control-label col-md-3">设备净值</label>
+                <div class="col-md-3 material-info" id="view-price">
+                </div>
+                <label class="control-label col-md-2">计入成本方式</label>
+                <div class="col-md-3 material-info" id="view-includeway">
+                </div>
+            </div>					
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+<include file="./Tpl/Part/loading.html" />
+<include file="./Tpl/Part/script.html" />
+<script src="__PUBLIC__/js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/additional-methods.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/messages_zh_CN.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+function showList(type,id){
+	//console.info(type)
+	//console.info(id)
+	if (type=="all"){
+		$("tr").show();
+	}else{
+		var show = $("tbody tr."+type+id+":not(.hidden)");
+		var hide = $("tbody tr:not("+"tbody tr."+type+id+",.hidden)");
+		hide.hide();
+		show.show();
+	}
+	if (type!="all"){
+		$("#addMaterialModal input[name='classid']").val(id).change();
+		$("#addMaterialModal input[name='classname']").val($(this).text().trim());
+		//$("#addMaterialForm input[name='classid']").change();
+	}else{
+		$("#addMaterialModal input[name='classid']").val("");
+		$("#addMaterialModal input[name='classname']").val("");
+		$("#addMaterialForm input[name='classid']").change();
+	}
+}
+function allClassClick(e){
+	e.preventDefault();
+	$("#viewClassTree .list-group-item").removeClass("active");
+	$(this).parent().addClass("active");
+	showList.call(this,"all",0);
+}
+function rootClassClick(e){
+	e.preventDefault();
+	
+		$("#viewClassTree .list-group-item").removeClass("active");
+		$(this).parent().addClass("active");
+		showList.call(this,"root",$(this).attr("href"));
+
+}
+function leafClassClick(e){
+	e.preventDefault();
+	
+		$("#viewClassTree .list-group-item").removeClass("active");
+		$(this).parent().addClass("active");
+		showList.call(this,"leaf",$(this).attr("href"));
+	
+}
+
+
+$().ready(function(){
+	//新增材料前检测categoryid是否为空
+	$("#addMaterialForm input[name='classid']").change(function(){
+		if($("#addMaterialForm input[name='classid']").val() == ""){
+			$("#a_addMaterial").attr("disabled",true);
+		}
+		else $("#a_addMaterial").attr("disabled",false);
+		//alert("change");
+	});
+	$(".del_material").unbind("click");
+	//删除材料
+	$(document).on("click",".del_material",function(e){
+		if (!confirm("确认删除？")) return false;
+		e.preventDefault();
+		var tr = $(this).parent().parent();
+		var materialid = tr.data("id");
+		//alert(tr.data("id"));
+		//！！！ 地址需要修改 删除设备地址
+		$.post(
+			"{:U('')}",
+			{deviceid:materialid},
+			function(data){
+				if(data == true){
+					tr.remove();
+				}
+			},
+			"json"
+			);
+	});
+
+	$(".modal-body").css("max-height",""+($(window).height()-200)+"px");
+	$(window).resize(function(){
+		$(".modal-body").css("max-height",""+($(window).height()-200)+"px");
+	});
+	$("#addMaterialForm").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			classid:{
+				required:true
+			}
+		},
+		messages:{
+			classid:{
+				required:"请在页面左侧栏目中选择一个项目或机构"
+			}
+		},
+		submitHandler:function(){
+		
+		$("#addMaterialForm button[type='submit']").bootstrapBtn("loading");
+		//alert(parameter);
+		//！！！ 地址需要修改 添加设备地址
+		$.post(
+			"{:U('')}",
+			$("#addMaterialForm").serialize(),
+			function(data){
+				if(!data.result){alert("新增设备失败");return;}
+				$("#addMaterialForm button[type='submit']").bootstrapBtn("reset");
+				$("#addMaterialModal").modal('hide');
+				var item = $("tr.template").clone(true).removeClass().addClass("root"+data.classid+" leaf"+data.classid).show();
+				$.each(data,function(key,value){
+					item.find("."+key).text(value);
+				});
+				item.data("id",data.id);
+				$("#tbody_materialList").append(item);
+				var v = $("#addMaterialForm").find("input[name='classid']").val()
+				var v2 = $("#addMaterialForm").find("input[name='classname']").val()
+				$("#addMaterialForm")[0].reset();
+				$("#addMaterialForm").find("input[name='classid']").val(v);
+				$("#addMaterialForm").find("input[name='classname']").val(v2);
+			},
+			"json"
+			);
+
+	},
+		errorElement:"div",
+		ignore:""
+	});
+	$("#editMaterialForm").validate({
+		rules:{
+			name:{
+				required:true
+			},
+			classid:{
+				required:true
+			}
+		},
+		submitHandler:function(form){
+			$("#editMaterialForm button[type='submit']").bootstrapBtn("loading");
+			//TODO 修改材料URL //！！！ 地址需要修改
+			$.post("{:U('')}",
+				$(form).serialize(),
+				function(result){
+					if(result.result){
+						//alert("aaa");
+						$("#editMaterialForm button[type='submit']").bootstrapBtn("reset");
+						$("#editMaterialModal").modal('hide');
+						var item = $("#editMaterialModal").data("dataTarget");
+						$.each(result,function(key,value){
+							item.find("."+key).text(value);
+						});
+					}
+				}
+				,"json");
+		},
+		errorElement:"div",
+		ignore:""
+	});
+	$("#addMaterialModal").on("show.bs.modal",function(){
+		var modal = $(this);
+		var id = modal.find("input[name='classid']").val();
+		if (id){
+		//	modal.find("input[name='classname']").val($(".root-class[href='"+id+"']").text().trim());
+		}else{
+			modal.find("input[name='classname']").val("");
+		}
+		$("#addMaterialForm").valid();
+	});
+	
+	$("#editMaterialModal").on("show.bs.modal",function(e){
+		var row = $(e.relatedTarget).parents("tr");
+		var modal = $(this);
+		modal.data("dataTarget",row);
+		modal.find("input,select").each(function(){
+			$(this).val(row.find("."+$(this).attr("name")).text().trim())
+		});
+		$("#editMaterialForm").valid();
+	});
+	$("#viewMaterialModal").on("show.bs.modal",function(e){
+		var row = $(e.relatedTarget).parent();
+		var modal = $(this);
+		modal.find(".material-info").each(function(){
+			$(this).text(row.find("."+$(this).attr("id").substr(5)).text().trim())
+		});
+		
+	});
+
+	$(".all-class").click(allClassClick);
+	$(".root-class").click(rootClassClick);
+	$(".leaf-class").click(leafClassClick);
+});
+
+</script>
+</body>
+</html>
