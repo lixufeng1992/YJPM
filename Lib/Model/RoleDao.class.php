@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class RoleDao extends CommonDao{
 		public function findAll(){
 			

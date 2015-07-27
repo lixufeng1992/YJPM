@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class TestDao extends CommonDao{
 		public function add($isit){
 			

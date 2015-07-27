@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class (tbname)Dao extends CommonDao{
 		public function findAll(){
 			

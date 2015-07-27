@@ -1,5 +1,5 @@
 <?php
-
+import("@.Model.CommonDao");
 class ProjectResourceDao extends CommonDao
 {
 

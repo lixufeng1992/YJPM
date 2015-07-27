@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class MargindateDao extends CommonDao{
 		public function findAll(){
 			

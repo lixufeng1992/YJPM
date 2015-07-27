@@ -1,13 +1,13 @@
 <?php
-require_once ('/Lib/auto_load.php');
-// import("@.Model.CompanyDao");
-// import("@.Model.EmployerDao");
-// import("@.Model.DepartmentDao");
-// import("@.Model.EnterpriseDao");
-// import("@.Model.ProcessClassifyDao");
-// import("@.Model.ProcessDao");
-// import("@.Model.ManagerDao");
-// import("@.Model.UserDao");
+//require_once ('/Lib/auto_load.php');
+import("@.Model.CompanyDao");
+import("@.Model.EmployerDao");
+import("@.Model.DepartmentDao");
+import("@.Model.EnterpriseDao");
+import("@.Model.ProcessClassifyDao");
+import("@.Model.ProcessDao");
+import("@.Model.ManagerDao");
+import("@.Model.UserDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
@@ -779,9 +779,9 @@ class OperSystemManageAction extends LoginAfterAction{
     }
 
     $managerRowArray = $this->managerDao->findAll();
-    foreach($userRowArray as $key=>$value){
-      if($value['userid']==ROOT_USERID)unset($userRowArray[$key]);
-    }
+//     foreach($userRowArray as $key=>$value){
+//       if($value['userid']==ROOT_USERID)unset($userRowArray[$key]);
+//     }
     $this->assign('managerRowArray',$managerRowArray);
     $this->display('OperSystemManage/listManager');
   }

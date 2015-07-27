@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class SubcontractDocumentOriginDao extends CommonDao{
 		public function findAll(){
 			

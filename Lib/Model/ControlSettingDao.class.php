@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class ControlSettingDao extends CommonDao{
 		public function add($resource_id,$refuse_buyingplan_nobudget,$refuse_buyingplan_excessbudget,
 											$refuse_materialbuying_nobudget,$refuse_materialbuying_excessbudget,$refuse_materialout_nobudget,$refuse_materialout_excessbudget,

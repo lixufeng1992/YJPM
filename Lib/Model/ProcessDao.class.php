@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 class ProcessDao extends CommonDao{
     public function findAll(){
        

@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class OperationDao extends CommonDao{
 
 		public function findById($operationid){

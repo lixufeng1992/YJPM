@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class SubmitbiddocdateReminduserDao extends CommonDao{
 		public function findAll(){
 			

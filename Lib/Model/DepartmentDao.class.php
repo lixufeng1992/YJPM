@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class DepartmentDao extends CommonDao{
 		public function findAll(){
 			

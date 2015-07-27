@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
     class MaterialPurchasePlanOrderDetailsDao extends CommonDao{
         public function findAll(){
            

@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class ExacctDao extends CommonDao{
 		public function findAll(){
 		

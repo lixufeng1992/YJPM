@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class StartbiddateDao extends CommonDao{
 		public function findAll(){
 			

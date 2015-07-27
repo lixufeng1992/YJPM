@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class ManagerDao extends CommonDao{
 		public function findAll(){
 			

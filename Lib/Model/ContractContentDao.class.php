@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class ContractContentDao extends CommonDao{
 		public function findAll(){
 			

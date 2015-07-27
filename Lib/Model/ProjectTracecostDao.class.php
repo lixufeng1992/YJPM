@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class ProjectTracecostDao extends CommonDao{
 		public function findAll(){
 			

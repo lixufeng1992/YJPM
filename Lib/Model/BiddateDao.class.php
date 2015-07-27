@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class BiddateDao extends CommonDao{
 	    
 		public function findAll(){

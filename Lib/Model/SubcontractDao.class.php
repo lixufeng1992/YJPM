@@ -1,5 +1,5 @@
 <?php
-
+import("@.Model.CommonDao");
 class SubcontractDao extends CommonDao
 {
 

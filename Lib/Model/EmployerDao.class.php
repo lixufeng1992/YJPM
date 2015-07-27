@@ -1,5 +1,5 @@
 <?php
-
+import("@.Model.CommonDao");
 class EmployerDao extends CommonDao
 {
     // 插入用户数据

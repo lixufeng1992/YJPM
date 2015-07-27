@@ -1,5 +1,5 @@
 <?php
-// require('CommonDao.class.php');
+import("@.Model.CommonDao");
 class UserDao extends CommonDao
 {
 

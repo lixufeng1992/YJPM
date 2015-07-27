@@ -1,4 +1,5 @@
 <?php
+import("@.Model.CommonDao");
 	class MaterialClassDao extends CommonDao{
 		public function findAll(){
 			
