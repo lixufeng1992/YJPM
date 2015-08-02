@@ -1,14 +1,14 @@
 <?php
-//require_once ('/Lib/auto_load.php');
-import("@.Model.ProjectResourceDao");
-import("@.Model.EnterpriseDao");
-import("@.Model.SubcontractDao");
-import("@.Model.EmployerDao");
-import("@.Model.DepartmentDao");
-import("@.Model.CompanyDao");
-import("@.Model.SubcontractContentDao");
-import("@.Model.SubcontractDocumentDao");
-import("@.Model.SubcontractDocumentOriginDao");
+require_once dirname(__FILE__).'/../auto_load.php';
+// import("@.Model.ProjectResourceDao");
+// import("@.Model.EnterpriseDao");
+// import("@.Model.SubcontractDao");
+// import("@.Model.EmployerDao");
+// import("@.Model.DepartmentDao");
+// import("@.Model.CompanyDao");
+// import("@.Model.SubcontractContentDao");
+// import("@.Model.SubcontractDocumentDao");
+// import("@.Model.SubcontractDocumentOriginDao");
 
 header('Content-Type:text/html;charset=utf-8');
 class OperSubcontractManageAction extends LoginAfterAction{

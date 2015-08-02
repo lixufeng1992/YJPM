@@ -1,9 +1,9 @@
 <?php
-//require_once ('/Lib/auto_load.php');
-import("@.Model.CompanyDao");
-import("@.Model.PositionDao");
-import("@.Model.EmployerDao");
-import("@.Model.DepartmentDao");
+require_once dirname(__FILE__).'/../auto_load.php';
+// import("@.Model.CompanyDao");
+// import("@.Model.PositionDao");
+// import("@.Model.EmployerDao");
+// import("@.Model.DepartmentDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
