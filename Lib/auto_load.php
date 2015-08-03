@@ -7,7 +7,8 @@
             $dir='Action';
         }
         else if($flag==='ior'&&substr($classname,-8,8)==='Behavior')$dir='Behavior';
-        require_once ('/Lib/'.$dir.'/'.$classname.'.class.php');
+        $parentDir = dirname(__FILE__);
+        require_once ($parentDir."/$dir/$classname.class.php");
     }
     spl_autoload_register('import_classes');
     
