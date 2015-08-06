@@ -142,6 +142,14 @@ class OperationAction extends LoginAfterAction{
     // case SYSTEM_SETTING://系统设置
     //   $this->display('systemSetting');
     //   break;
+    //   
+
+    //设备管理
+    case DEVICE_CLASS_MAINTAIN://设备工种维护
+      $this->redirect('OperDeviceManager/deviceClassMaintain');
+      break;
+    case DEVICE_MAINTAIN://设备维护
+      $this->redirect('OperDeviceManager/deviceMaintain');
     default:
       $this->display('Staticpage/wrongalert');
       break;

@@ -23,7 +23,7 @@
         <div class="page-header">
         	<h4>设备工种维护</h4>
         </div>
-         <form id="companyForm" action="" method="POST" class="form-horizontal"><!-- 添加工种提交地址 -->
+         <form id="companyForm" action="{:U('OperDeviceManager/addDeviceCategory')}" method="POST" class="form-horizontal"><!-- 添加工种提交地址 -->
             <h5>添加工种</h5>
             <div class="form-group">
                 <label class="col-md-2 control-label">工种名称</label>
@@ -42,18 +42,18 @@
 		<div class="row" style="margin-bottom:15px;">
         	<label class="col-md-2 control-label" style="text-align:right">工种名称</label>
         </div>
-    <volist name="RowArray" id="vo"><!-- 工种列表 -->
-       	<form action="" method="POST" class="form-horizontal"><!-- 编辑工种提交地址及表单项 -->
-        	<input type="hidden" name="id" value="" >
+    <volist name="deviceCategory" id="vo"><!-- 工种列表 -->
+       	<form action="{:U('OperDeviceManager/modifyDeviceCategory')}" method="POST" class="form-horizontal"><!-- 编辑工种提交地址及表单项 -->
+        	<input type="hidden" name="id" value="{$vo['id']}" >
             <div class="form-group">
 				<div class="col-md-2 col-md-offset-1">
-	                <input class="form-control" type="text" name="name" value=""/>
+	                <input class="form-control" type="text" name="name" value="{$vo['category_name']}"/>
                 </div>
     			<div class="col-md-1 col-md-offset-1">
     	            <input class="btn btn-primary btn-block" type="submit" value="修改"/>
 	            </div>
                 <div class="col-md-1">
-                	<a class="btn btn-danger btn-block" href="">删除</a>"><!-- 删除工种提交地址及参数 -->
+                <a class="btn btn-danger btn-block" href={:U('OperDeviceManager/deleteDeviceCategory',array('id'=>$vo['id']))}>删除</a><!-- 删除工种提交地址及参数 -->
                 </div>
             </div>
         </form>

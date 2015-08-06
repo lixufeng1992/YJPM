@@ -174,7 +174,7 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th>设备编码</th>
+									<th>设备工种</th>
 									<th>设备名称</th>
 									<th>所属项目或机构</th>
 									<th>购置日期</th>
@@ -190,30 +190,32 @@
 							<tbody id="tbody_materialList">
 								<!-- 以下为循环体 begin -->
 								<!-- tr的class 表示材料所属分类，root leaf后跟所属项目id ，两个相同-->
-								<volist name="materialRowArray" id="vo"><!-- ！！！各变量名需要调整-->
-								<tr class="root{$vo['categoryid']} leaf{$vo['categoryid']}" data-id="{$vo['materialid']}">
+								<volist name="devicesInfo" id="vo"><!-- ！！！各变量名需要调整-->
+								<tr class="root{$vo['category_id']} leaf{$vo['category_id']}" data-id="{$vo['id']}">
 									
-									<td class="code" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="name" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="classname" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="buydate" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="state" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="amount" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="unit" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="priceway" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="admin" data-toggle="modal" data-target="#viewMaterialModal"></td>
-									<td class="price" data-toggle="modal" data-target="#viewMaterialModal"></td>
+									<td class="code" data-toggle="modal" data-target="#viewMaterialModal">{$vo['categoryName']}</td>
+									<td class="name" data-toggle="modal" data-target="#viewMaterialModal">{$vo['deviceName']}</td>
+									<td class="classname" data-toggle="modal" data-target="#viewMaterialModal">{$vo['ownProject']}</td>
+									<td class="buydate" data-toggle="modal" data-target="#viewMaterialModal">{$vo['purchase_date']}</td>
+									<td class="state" data-toggle="modal" data-target="#viewMaterialModal">{$vo['device_status']}</td>
+									<td class="amount" data-toggle="modal" data-target="#viewMaterialModal">{$vo['deviceNumber']}</td>
+									<td class="unit" data-toggle="modal" data-target="#viewMaterialModal">{$vo['deviceUnit']}</td>
+									<td class="priceway" data-toggle="modal" data-target="#viewMaterialModal">{$vo['calculate_method']}</td>
+									<td class="admin" data-toggle="modal" data-target="#viewMaterialModal">{$vo['manager']}</td>
+									<td class="price" data-toggle="modal" data-target="#viewMaterialModal">{$vo['device_net_value']}</td>
 									<td>
 									<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editMaterialModal">修改</a>
-									<div class="hidden recorddate"></div><!-- 登记日期 -->
-									<div class="hidden crashdate"></div><!-- 报废日期 -->
-									<div class="hidden producer"></div><!-- 制造厂家 -->
-									<div class="hidden productid"></div><!-- 出厂编号 -->
-									<div class="hidden admingroup"></div><!-- 管理班组 -->
-									<div class="hidden admintype"></div><!-- 管理类型 -->
-									<div class="hidden originalprice"></div><!-- 设备原值 -->
-									<div class="hidden depriciation"></div><!-- 累计折旧 -->
-									<div class="hidden includeway"></div><!-- 计入成本方式 -->
+									<div class="hidden recorddate">{$vo['login_date']}</div><!-- 登记日期 -->
+									<div class="hidden crashdate">{$vo['break_date']}</div><!-- 报废日期 -->
+									<div class="hidden producer">{$vo['factory']}</div><!-- 制造厂家 -->
+									<div class="hidden productid">{$vo['device_id']}</div><!-- 出厂编号 -->
+									<div class="hidden admingroup">{$vo['manager_section']}</div><!-- 管理班组 -->
+									<div class="hidden admintype">{$vo['manager_type']}</div><!-- 管理类型 -->
+									<div class="hidden originalprice">{$vo['device_initial_price']}</div><!-- 设备原值 -->
+									<div class="hidden depriciation">{$vo['sum_depreciation']}</div><!-- 累计折旧 -->
+									<div class="hidden includeway">{$vo['project_cost_method']}</div><!-- 计入成本方式 -->
+									<!-- 新加的 -->
+									<div class="hidden id">{$vo['id']}</div><!-- 设备id -->
 									<a href="#" class="btn btn-danger del_material">删除</a>
 									</td>
 								</tr>
@@ -235,17 +237,17 @@
 									<td class="price" data-toggle="modal" data-target="#viewMaterialModal">10</td>
 									<td>
 									<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editMaterialModal">修改</a>
-									<div class="hidden recorddate">11</div><!-- 登记日期 -->
-									<div class="hidden crashdate">12</div><!-- 报废日期 -->
-									<div class="hidden producer">13</div><!-- 制造厂家 -->
-									<div class="hidden productid">14</div><!-- 出厂编号 -->
-									<div class="hidden admingroup">15</div><!-- 管理班组 -->
-									<div class="hidden admintype">16</div><!-- 管理类型 -->
-									<div class="hidden originalprice">17</div><!-- 设备原值 -->
-									<div class="hidden depriciation">18</div><!-- 累计折旧 -->
-									<div class="hidden includeway">19</div><!-- 计入成本方式 -->
-									<div class="hidden classid">1</div><!-- 登记日期 -->
-									<div class="hidden id">20</div><!-- 设备id -->
+									<div class="hidden recorddate">{$vo['login_date']}</div><!-- 登记日期 -->
+									<div class="hidden crashdate">{$vo['break_date']}</div><!-- 报废日期 -->
+									<div class="hidden producer">{$vo['factory']}</div><!-- 制造厂家 -->
+									<div class="hidden productid">{$vo['device_id']}</div><!-- 出厂编号 -->
+									<div class="hidden admingroup">{$vo['manager_section']}</div><!-- 管理班组 -->
+									<div class="hidden admintype">{$vo['manager_type']}</div><!-- 管理类型 -->
+									<div class="hidden originalprice">{$vo['device_initial_price']}</div><!-- 设备原值 -->
+									<div class="hidden depriciation">{$vo['sum_depreciation']}</div><!-- 累计折旧 -->
+									<div class="hidden includeway">{$vo['project_cost_method']}</div><!-- 计入成本方式 -->
+									<div class="hidden classid">{$vo['category_id']}</div><!-- 类别id-->
+									<div class="hidden id">{$vo['id']}</div><!-- 设备id -->
 									<a href="#" class="btn btn-danger del_material">删除</a>
 									</td>
 								</tr>
@@ -398,7 +400,7 @@
         <h4 class="modal-title" id="editMaterialModalLabel">修改设备信息</h4>
             
       </div>
-      <form id="editMaterialForm" class="form-horizontal" role="form" action="" method="GET">
+      <form id="editMaterialForm" class="form-horizontal" role="form" action="#" method="POST">
 		<div class="modal-body"  style="max-height:500px;overflow:auto" >         
 			<div class="form-group">
             	<label class="control-label col-md-3">设备名称</label>
@@ -412,7 +414,7 @@
                 	<input class="form-control" disabled type="text" name="classname">
 					<input type="hidden" name="classid">
                 </div>
-                <label class="control-label col-md-2">设备编码</label>
+                <label class="control-label col-md-2">设备类别</label>
                 <div class="col-md-3">
                 	<input class="form-control" type="text" name="code">
                 	
@@ -685,19 +687,18 @@ $().ready(function(){
 		if (!confirm("确认删除？")) return false;
 		e.preventDefault();
 		var tr = $(this).parent().parent();
-		var materialid = tr.data("id");
+		var deviceid = tr.data("id");
 		//alert(tr.data("id"));
 		//！！！ 地址需要修改 删除设备地址
 		$.post(
-			"{:U('')}",
-			{deviceid:materialid},
-			function(data){
+			"{:U('OperDeviceManager/deleteDeviceInfo')}",
+			{device_id:deviceid},
+			function(data, textStatus){
+				//alert(data);
 				if(data == true){
 					tr.remove();
 				}
-			},
-			"json"
-			);
+			});
 	});
 
 	$(".modal-body").css("max-height",""+($(window).height()-200)+"px");
@@ -750,22 +751,16 @@ $().ready(function(){
 		ignore:""
 	});
 	$("#editMaterialForm").validate({
-		rules:{
-			name:{
-				required:true
-			},
-			classid:{
-				required:true
-			}
-		},
 		submitHandler:function(form){
 			$("#editMaterialForm button[type='submit']").bootstrapBtn("loading");
+			//alert("dd");
 			//TODO 修改材料URL //！！！ 地址需要修改
-			$.post("{:U('')}",
+			$.post("{:U('OperDeviceManager/modifyDeviceInfo')}",
+
 				$(form).serialize(),
 				function(result){
+					console.log(result);
 					if(result.result){
-						//alert("aaa");
 						$("#editMaterialForm button[type='submit']").bootstrapBtn("reset");
 						$("#editMaterialModal").modal('hide');
 						var item = $("#editMaterialModal").data("dataTarget");
@@ -811,6 +806,9 @@ $().ready(function(){
 	$(".all-class").click(allClassClick);
 	$(".root-class").click(rootClassClick);
 	$(".leaf-class").click(leafClassClick);
+
+
+
 });
 
 </script>
