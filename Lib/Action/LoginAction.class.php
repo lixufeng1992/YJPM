@@ -1,6 +1,6 @@
 <?php
-import("@.Model.UserDao");
-//require_once ('/Lib/auto_load.php');
+//import("@.Model.UserDao");
+require_once dirname(__FILE__).'/../auto_load.php';
 
 class LoginAction extends Action{
 	private $userDao;

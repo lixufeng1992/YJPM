@@ -1,13 +1,13 @@
 <?php
-//require_once ('/Lib/auto_load.php');
-import("@.Model.ContractDao");
-import("@.Model.ProjectResourceDao");
-import("@.Model.ContractDocumentDao");
-import("@.Model.MaterialPurchasePlanOrderDao");
-import("@.Model.MaterialcontractDao");
-import("@.Model.MaterialcontractDocumentDao");
-import("@.Model.SubcontractDao");
-import("@.Model.SubcontractDocumentDao");
+require_once dirname(__FILE__).'/../auto_load.php';
+// import("@.Model.ContractDao");
+// import("@.Model.ProjectResourceDao");
+// import("@.Model.ContractDocumentDao");
+// import("@.Model.MaterialPurchasePlanOrderDao");
+// import("@.Model.MaterialcontractDao");
+// import("@.Model.MaterialcontractDocumentDao");
+// import("@.Model.SubcontractDao");
+// import("@.Model.SubcontractDocumentDao");
 class IndexAction extends LoginAfterAction {
   private $contractDao;
   private $projectResourceDao;

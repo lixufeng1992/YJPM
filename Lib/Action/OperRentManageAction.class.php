@@ -1,10 +1,10 @@
 <?php
 header('Content-Type:text/html;charset=utf-8');
-//require_once ('/Lib/auto_load.php');
-import("@.Model.MaterialClassDao");
-import("@.Model.MaterialCategoryDao");
-import("@.Model.MaterialrentDao");
-import("@.Model.MaterialDao");
+require_once dirname(__FILE__).'/../auto_load.php';
+// import("@.Model.MaterialClassDao");
+// import("@.Model.MaterialCategoryDao");
+// import("@.Model.MaterialrentDao");
+// import("@.Model.MaterialDao");
 
 class OperRentManageAction extends LoginAfterAction
 {
