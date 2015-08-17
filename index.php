@@ -30,6 +30,11 @@ define('RENT_CONTRACT', 403);
 define('RENT_IN_ORDER', 404);
 define('RENT_OUT_ORDER', 405);
 
+
+//设备管理
+define('DEVICE_CLASS_MAINTAIN',501);
+define('DEVICE_MAINTAIN',502);
+
 define('OTHER_BUDGET',601);
 
 define('OTHER_EXACCT_CLASSIFY',611);
@@ -56,6 +61,7 @@ define('PAY_METHOD_MAINTAIN',1010);
 define('PAYER_BUYER_MAINTAIN',1011);
 define('BANK_ACCOUNT_MAINTAIN',1012);
 //define('SYSTEM_SETTING',1020);
+
 
 
 require_once "ThinkPHP/ThinkPHP.php";
