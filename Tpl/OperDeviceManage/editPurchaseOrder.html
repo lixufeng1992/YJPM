@@ -550,6 +550,15 @@ $().ready(function(){
 		$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
 		return false;
 	});
+	$("input[name='classify']").change(function(){
+		var c = $("input[name='classify']:checked").val();
+		if (c=="is_all"){
+			$("#enterprises a").show();
+		}else{
+			$("#enterprises a").hide();
+			$("."+c).show();
+		}
+	});
 	$('#contractModal').on('show.bs.modal', function (e) {
 		$("#contractModal").removeData("contract");
 		$("#contractModal").data("dataTarget",e.relatedTarget);
