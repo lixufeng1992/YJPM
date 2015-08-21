@@ -10,6 +10,7 @@ class CommonDao {
         return $this->commonPDO;
     }
 
+
  /**
      * @param PDO $commonPDO
      */

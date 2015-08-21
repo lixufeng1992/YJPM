@@ -1,6 +1,6 @@
-Conf/
-Runtime/
+Conf/*
+Runtime/*
 db_yjpm1.sql
 .buildpath
-.settings/
+.settings/*
 .project
