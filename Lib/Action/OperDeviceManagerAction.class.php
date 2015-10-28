@@ -2,6 +2,7 @@
 import("@.Model.DeviceCategoryDao");
 import("@.Model.DeviceDao");
 import("@.Model.DeviceStorageDao");
+import("@.Model.ContractDao");
 header('Content-Type:text/html;charset=utf-8');
 
 class OperDeviceManagerAction extends LoginAfterAction{
@@ -11,11 +12,32 @@ class OperDeviceManagerAction extends LoginAfterAction{
 
 	private $deviceStorageDao; //设备库存表
 
+	private $devicePurchaseDao;//设备采购表
+
+	private $companyDao; //入库项目或公司总库表
+
+	private $projectResourceDao;//项目或机构列表
+
+	protected $roleDao; //角色表
+
+	private $departmentDao;//领用班组或部门表
+
+	private $enterpriseDao;//往来单位表
+
+	private $contractDao;//执行合同表
+
 	public function _initialize(){
 		parent::_initialize();
 		$this->deviceCategoryDao = new DeviceCategoryDao();
 		$this->deviceDao = new DeviceDao();
 		$this->deviceStorageDao = new DeviceStorageDao();
+		$this->devicePurchaseDao = new DevicePurchaseDao();
+		$this->companyDao = new CompanyDao();
+		$this->projectResourceDao = new ProjectResourceDao();
+		$this->roleDao = new RoleDao();
+		$this->departmentDao = new DepartmentDao();
+		$this->enterpriseDao = new EnterpriseDao();
+		$this->contractDao = new ContractDao();
 	}
 
 
@@ -151,6 +173,101 @@ class OperDeviceManagerAction extends LoginAfterAction{
 			$returnData['result'] = $result;
 			echo json_encode($returnData);
 			
+		}
+
+		//设备采购
+		public function devicePurchase(){
+			$isPermit = $this->permissionCheck(DEVICE_PURCHASING);
+			if($isPermit == false){
+			   $this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
+			   return;
+			}
+
+			$devicePurchases = $this->devicePurchaseDao->findAll();
+			foreach ($devicePurchases as $key => $devicePurchase) {
+				$companyId = $devicePurchase['company_id'];
+				$companyArray = $this->companyDao->findById($companyId);//获得采购单位（公司） 
+				$devicePurchases[$key]['companyName'] = $companyArray['name'];
+
+				$projectResourceId = $devicePurchase['projectResource_id'];
+				$projectResourceArray = $this->projectResourceDao->findById($projectResourceId);//获得项目或机构名称
+				$devicePurchases[$key]['projectName'] = $projectResourceArray['resource_name'];
+				$roleId = $devicePurchase['role_id'];
+				$roleArray = $this->roleDao->findById($roleId); //获得创建人
+				$devicePurchases[$key]['roleName'] = $roleArray['rolename'];
+
+
+				$departmentId = $devicePurchase['department_id'];
+				$departmentArray = $this->departmentDao->findById($departmentId);//获得公司部门
+				$devicePurchases[$key]['departmentName'] = $departmentArray['name'];
+
+				$enterpriseId = $devicePurchase['enterprise_id'];
+				$enterpriseArray = $this->enterpriseDao->findById($enterpriseId);//获得往来单位
+				$devicePurchases[$key]['enterpriseName'] = $enterpriseArray['name'];
+
+			}
+
+			//项目或机构列表
+			$resourceArray = $this->projectResourceDao->findAll();
+			
+			//在前端显示的信息
+			$this->assign('devicePurchases',$devicePurchases);
+			$this->assign('resourceRowArray',$resourceArray);
+			$this->display('OperDeviceManage/listPurchaseOrder');
+
+		}
+
+		//新增设备采购单
+		public function addDevicePurchaseOrder(){
+			//权限检查
+			$params = array();
+        	$params['result'] = false;
+	        $params['operationid'] = DEVICE_PURCHASING;
+	        tag('behavior_authoritycheck', $params);
+	        if ($params['result'] == false) {
+            	$this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
+            	return;
+        	}
+
+        	//获得所有设备信息
+        	$deviceInfoArray = $this->deviceDao->findAll();
+        	foreach ($deviceInfoArray as $key => $deviceRow) {
+        		$deviceCategory = $this->deviceCategoryDao->findById($deviceRow['category_id']);
+        		$deviceInfoArray[$key]['deviceCategoryName'] = $deviceCategory[0]['category_name'];
+        		$deviceStorageArray = $this->deviceStorageDao->findById($deviceRow['device_storage_id']);
+        		$deviceInfoArray[$key]['deviceName'] = $deviceStorageArray[0]['device_name'];
+        		$deviceInfoArray[$key]['deviceUnit'] = $deviceStorageArray[0]['device_unit'];
+        		//设备合同表
+        	}
+        	/**
+			* lixufeng
+			*/
+			//查询所有合同信息
+			$contractRowArray = $this->contractDao->findAll();
+			/**
+			* lixufeng
+			*/
+
+
+        	//采购单位选择
+        	$enterpriseRowArray = $this->enterpriseDao->findAll();
+        	$this->assign('enterpriseRowArray',$enterpriseRowArray);
+        	//项目或机构列表
+			$resourceArray = $this->projectResourceDao->findAll();
+			//设备信息
+			$this->assign('deviceInfoArray',$deviceInfoArray);
+			$this->assign('resourceRowArray',$resourceArray);
+			$this->assign('contractRowArray',$contractRowArray);
+        	$this->display('OperDeviceManage/addPurchaseOrder');
+        	
+
+
+
+		}
+
+		//新增设备采购单提交处理方法
+		public function addDevicePurchaseOrderSubmit(){
+
 		}
 
 

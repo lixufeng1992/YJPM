@@ -370,7 +370,7 @@
       <div class="modal-body"  style="max-height:500px;overflow:auto" >
         <div class="list-group" id="contracts">
 		  <volist name="contractRowArray" id="contract">
-          <a href="{$contract.contractid}" class="list-group-item resource{$contract.resourceid}">
+          <a href="{$contract.contractid}" class="list-group-item resource{$contract.contractid}">
           	<div class="row">
             	<div class="col-md-3">{$contract.contract_name}</div>
                 <div class="col-md-2">{$contract.sign_date}</div>

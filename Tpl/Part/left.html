@@ -1,11 +1,11 @@
 <div id="left-menu">
-    <div data-spy="affix" style="padding:0" id="left-affix">
+	<div data-spy="affix" style="padding:0" id="left-affix">
 		<div class="panel-group" id="left-accordion">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse1" class="collapsed"><span class="glyphicon glyphicon-tasks"></span>
-              项目管理
+							项目管理
 						</a>
 					</h4>
 				</div>
@@ -13,7 +13,7 @@
 					<div class="panel-body">
 						<volist name="myOperationRowArray" id="vo">
 							<if condition="$vo['operationid'] lt 200">
-							<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
 							</if>
 						</volist>
 					</div>
@@ -26,8 +26,8 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse2" class="collapsed">
-						<span class="glyphicon glyphicon-tree-conifer"></span>
-              材料管理
+							<span class="glyphicon glyphicon-tree-conifer"></span>
+							材料管理
 						</a>
 					</h4>
 				</div>
@@ -35,7 +35,7 @@
 					<div class="panel-body">
 						<volist name="myOperationRowArray" id="vo">
 							<if condition="($vo['operationid'] gt 200) and ($vo['operationid'] lt 300)">
-							<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
 							</if>
 						</volist>
 					</div>
@@ -48,7 +48,7 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse3" class="collapsed"><span class="glyphicon glyphicon-th-large"></span>
-              分包管理
+							分包管理
 						</a>
 					</h4>
 				</div>
@@ -56,7 +56,7 @@
 					<div class="panel-body">
 						<volist name="myOperationRowArray" id="vo">
 							<if condition="($vo['operationid'] gt 300) and ($vo['operationid'] lt 400)">
-							<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
 							</if>
 						</volist>
 					</div>
@@ -66,78 +66,78 @@
 
 
 
-      <div class="panel panel-default">
-  <div class="panel-heading">
-    <h4 class="panel-title">
-      <a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse4" class="collapsed"><span class="glyphicon glyphicon-briefcase"></span>
-        租赁管理
-      </a>
-    </h4>
-  </div>
-  <div id="left-collapse4" class="panel-collapse collapse">
-    <div class="panel-body">
-      <volist name="myOperationRowArray" id="vo">
-        <if condition="($vo['operationid'] gt 400) and ($vo['operationid'] lt 500)">
-        <a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
-        </if>
-      </volist>
-    </div>
-  </div>
-</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse4" class="collapsed"><span class="glyphicon glyphicon-briefcase"></span>
+							租赁管理
+						</a>
+					</h4>
+				</div>
+				<div id="left-collapse4" class="panel-collapse collapse">
+					<div class="panel-body">
+						<volist name="myOperationRowArray" id="vo">
+							<if condition="($vo['operationid'] gt 400) and ($vo['operationid'] lt 500)">
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+							</if>
+						</volist>
+					</div>
+				</div>
+			</div>
 
 
 
 
-  <div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title">
-  <a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse5" class="collapsed">
-  <span class="glyphicon glyphicon-wrench"></span>
-    设备管理
-  </a>
-</h4>
-</div>
-<div id="left-collapse5" class="panel-collapse collapse">
-<div class="panel-body">
-  <volist name="myOperationRowArray" id="vo">
-    <if condition="($vo['operationid'] gt 500) and ($vo['operationid'] lt 600)">
-    <a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
-    </if>
-  </volist>
-</div>
-</div>
-</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse5" class="collapsed">
+							<span class="glyphicon glyphicon-wrench"></span>
+							设备管理
+						</a>
+					</h4>
+				</div>
+				<div id="left-collapse5" class="panel-collapse collapse">
+					<div class="panel-body">
+						<volist name="myOperationRowArray" id="vo">
+							<if condition="($vo['operationid'] gt 500) and ($vo['operationid'] lt 600)">
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+							</if>
+						</volist>
+					</div>
+				</div>
+			</div>
 
 
 
 
-<div class="panel panel-default">
-<div class="panel-heading">
-<h4 class="panel-title">
-<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse6" class="collapsed">
-<span class="glyphicon glyphicon-usd"></span>
-  财务管理
-</a>
-</h4>
-</div>
-<div id="left-collapse6" class="panel-collapse collapse">
-<div class="panel-body">
-<volist name="myOperationRowArray" id="vo">
-  <if condition="($vo['operationid'] gt 600) and ($vo['operationid'] lt 700)">
-  <a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
-  </if>
-</volist>
-</div>
-</div>
-</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse6" class="collapsed">
+							<span class="glyphicon glyphicon-usd"></span>
+							财务管理
+						</a>
+					</h4>
+				</div>
+				<div id="left-collapse6" class="panel-collapse collapse">
+					<div class="panel-body">
+						<volist name="myOperationRowArray" id="vo">
+							<if condition="($vo['operationid'] gt 600) and ($vo['operationid'] lt 700)">
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+							</if>
+						</volist>
+					</div>
+				</div>
+			</div>
 
 
-            <div class="panel panel-default">
+			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse7" class="collapsed">
-						<span class="glyphicon glyphicon-user"></span>
-              人力资源
+							<span class="glyphicon glyphicon-user"></span>
+							人力资源
 						</a>
 					</h4>
 				</div>
@@ -145,7 +145,7 @@
 					<div class="panel-body">
 						<volist name="myOperationRowArray" id="vo">
 							<if condition="($vo['operationid'] gt 700) and ($vo['operationid'] lt 800)">
-							<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
 							</if>
 						</volist>
 					</div>
@@ -153,32 +153,32 @@
 			</div>
 
 
-    <div class="panel panel-default">
-<div class="panel-heading">
-  <h4 class="panel-title">
-    <a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse9" class="collapsed">
-    <span class="glyphicon glyphicon-user"></span>
-      基础信息
-    </a>
-  </h4>
-</div>
-<div id="left-collapse9" class="panel-collapse collapse">
-  <div class="panel-body">
-    <volist name="myOperationRowArray" id="vo">
-      <if condition="($vo['operationid'] gt 900) and ($vo['operationid'] lt 1000)">
-      <a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
-      </if>
-    </volist>
-  </div>
-</div>
-</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse9" class="collapsed">
+							<span class="glyphicon glyphicon-user"></span>
+							基础信息
+						</a>
+					</h4>
+				</div>
+				<div id="left-collapse9" class="panel-collapse collapse">
+					<div class="panel-body">
+						<volist name="myOperationRowArray" id="vo">
+							<if condition="($vo['operationid'] gt 900) and ($vo['operationid'] lt 1000)">
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+							</if>
+						</volist>
+					</div>
+				</div>
+			</div>
 
 
-            <div class="panel panel-default">
+			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#left-accordion" href="#left-collapse10" class="collapsed"><span class="glyphicon glyphicon-cog"></span>
-              系统管理
+							系统管理
 						</a>
 					</h4>
 				</div>
@@ -186,7 +186,7 @@
 					<div class="panel-body">
 						<volist name="myOperationRowArray" id="vo">
 							<if condition="$vo['operationid'] gt 1000">
-							<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
+								<a href={:U('Operation/oneoperation',array('operationid'=>$vo['operationid']))}>{$vo.operationname}</a>
 							</if>
 						</volist>
 					</div>
@@ -195,4 +195,4 @@
 		</div>
 
 	</div>
-	</div>
+</div>

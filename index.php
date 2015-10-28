@@ -34,6 +34,7 @@ define('RENT_OUT_ORDER', 405);
 //设备管理
 define('DEVICE_CLASS_MAINTAIN',501);
 define('DEVICE_MAINTAIN',502);
+define('DEVICE_PURCHASING',503);
 
 define('OTHER_BUDGET',601);
 

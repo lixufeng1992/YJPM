@@ -20,7 +20,7 @@
        <div class="navbar-header navbar-brand">设备采购单</div>
         <ul class="nav navbar-nav navbar-right">
 		<!-- ！！！链接地址修改 -->
-          <li><a href="{:U('')}">新增设备采购单</a></li>
+          <li><a href="{:U('OperDeviceManager/addDevicePurchaseOrder')}">新增设备采购单</a></li>
           <li><a href="{:U('')}" class="active">已有设备采购单</a></li>
         </ul>
       </div>
@@ -61,21 +61,21 @@
 							<th>操作</th>
 					</thead>
 					<tbody>
-						<volist name="purchaseOrderArray" id="order">
-						<tr data-id="{$order.order_id}" class="project{$order.project_id}" <if condition="$order[checked] eq 1">disabled="true"<else/></if>>
+						<volist name="devicePurchases" id="order">
+						<tr data-id="{$order.id}" class="project{$order.projectResource_id}" <if condition="$order[checked] eq 1">disabled="true"<else/></if>>
 							<td class="check_state"><if condition="$order[checked] eq 1">已审核<else/>未审核</if></td>
 							<!-- ！！！变量名需要更改 -->
 							<td>{$order.document}</td>
-							<td>{$order.enterprise_name}</td>
-							<td>{$order.project_name}</td>
-							<td>{$order.happen_date}</td>
-							<td>{$order.transactor}</td>
+							<td>{$order.companyName}</td>
+							<td>{$order.projectName}</td>
+							<td>{$order.start_date}</td>
+							<td>{$order.res_person}</td>
 							<td>{$order.price}</td>
-							<td>{$order.default_warehouse}</td>
-							<td>{$order.default_administrator}</td>
-							<td>{$order.creater_name}</td>
+							<td>{$order.departmentName}</td>
+							<td>{$order.administrator}</td>
+							<td>{$order.roleName}</td>
 							<td>{$order.create_date}</td>
-							<td class="checker"><if condition="$order[checked] eq 1">{$order.checker_name}<else/></if></td>
+							<td class="checker"><if condition="$order[checked] eq 1">{$order.roleName}<else/></if></td>
 							<td class="check_date"><if condition="$order[checked] eq 1">{$order.check_date}<else/></if></td>
 							<td>
 							<if condition="$order[checked] eq 1">

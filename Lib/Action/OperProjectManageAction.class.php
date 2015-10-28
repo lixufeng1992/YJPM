@@ -230,46 +230,18 @@ class OperProjectManageAction extends LoginAfterAction{
 
     $isknown_bid_date = 0;
     if(isset($_POST['isknown_bid_date']))$isknown_bid_date = 1;//cb
-    //$biddate_date = $_POST['biddate_date'];
-    //$biddate_preremind_days = $_POST['biddate_preremind_days'];
-    //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
-    //$biddate_is_finished = 0;
-    //if(isset($_POST['biddate_is_finished']))$biddate_is_finished = 1;//cb
 
     $isknown_questionanswer_date = 0;
     if(isset($_POST['isknown_questionanswer_date']))$isknown_questionanswer_date = 1;//cb
-    //$questionanswerdate_date = $_POST['questionanswerdate_date'];
-    //$questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
-    //$questionanswerdate_reminder_employerid = $_POST['questionanswerdate_reminder_employerid'];
-    //$questionanswerdate_is_finished = 0;
-    //if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
-
+    
     $isknown_submitbiddoc_date = 0;
     if(isset($_POST['isknown_submitbiddoc_date']))$isknown_submitbiddoc_date = 1;//cb
-    //$submitbiddocdate_date = $_POST['submitbiddocdate_date'];
-    //$submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
-    //$submitbiddocdate_reminder_employerid = $_POST['submitbiddocdate_reminder_employerid'];
-    //$submitbiddocdate_is_finished = 0;
-    //if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
 
     $isknown_startbid_date = 0;
     if(isset($_POST['isknown_startbid_date']))$isknown_startbid_date = 1;//cb
-    //$startbiddate_date = $_POST['startbiddate_date'];
-    //$startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
-    //$startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
-    //$startbiddate_is_finished = 0;
-    //if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
 
     $isknown_margin_date = 0;
     if(isset($_POST['isknown_margin_date']))$isknown_margin_date = 1;//cb
-    //$margindate_date = $_POST['margindate_date'];
-    //$margindate_preremind_days = $_POST['margindate_preremind_days'];
-    //$margindate_reminder_employerid = $_POST['margindate_reminder_employerid'];
-    //$margindate_amount = $_POST['margindate_amount'];
-    //$margindate_is_submit = 0;
-    //if(isset($_POST['margindate_is_submit']))$margindate_is_submit = 1;//cb
-    //$margindate_is_getback = 0;
-    //if(isset($_POST['margindate_is_getback']))$margindate_is_getback = 1;//cb
 
     $advantage="";
     $drawback="";
@@ -402,10 +374,7 @@ class OperProjectManageAction extends LoginAfterAction{
     if($resourceid <= 0){$this->display('Staticpage/wrongalert');return;}
     //创建文件夹
     $dir = "Data/resource_".$resourceid;
-    while(!is_dir($dir)){
-      mkdir($dir, 0777);
-    }
-
+    mkdir($dir, 0777,true);
     $this->redirect('OperProjectManage/listProject',array(),3,"添加开拓项目成功...");
   }
 
