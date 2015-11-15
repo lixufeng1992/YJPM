@@ -33,13 +33,14 @@ class WarehouseDao extends CommonDao
         return $statement->fetchAll();
     }
 
-    public function add($warehouse_name, $resource_id)
+    public function add($warehouse_name, $info="",$resource_id=0)
     {
        
-        $sql = "insert into tb_pr_warehouse(warehouse_name,resource_id) values(?,?)";
+        $sql = "insert into tb_pr_warehouse(warehouse_name,info,resource_id) values(?,?,?)";
         $statement = $this->commonPDO->prepare($sql);
         $result = $statement->execute(array(
             $warehouse_name,
+            $info,
             $resource_id
         ));
         if ($result == false)
@@ -48,13 +49,14 @@ class WarehouseDao extends CommonDao
             return $this->commonPDO->lastInsertId();
     }
 
-    public function updateById($warehouse_name, $warehouse_id)
+    public function updateById($warehouse_name, $info,$warehouse_id)
     {
        
-        $sql = "update tb_pr_warehouse set warehouse_name=? where warehouse_id=?";
+        $sql = "update tb_pr_warehouse set warehouse_name=?,info=$info where warehouse_id=?";
         $statement = $this->commonPDO->prepare($sql);
         $result = $statement->execute(array(
             $warehouse_name,
+            $info,
             $warehouse_id
         ));
     }

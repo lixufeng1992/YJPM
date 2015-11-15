@@ -1,19 +1,12 @@
 <?php
 header('Content-Type:text/html;charset=utf-8');
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.MaterialClassDao");
-// import("@.Model.MaterialCategoryDao");
-// import("@.Model.MaterialrentDao");
-// import("@.Model.MaterialDao");
 
 class OperRentManageAction extends LoginAfterAction
 {
     private $materialClassDao;
-    
     private $materialCategoryDao;
-    
     private $materialrentDao;
-    
     private $materialDao;
     
     public function _initialize()
@@ -23,62 +16,60 @@ class OperRentManageAction extends LoginAfterAction
         $this->materialCategoryDao = new MaterialCategoryDao();
         $this->materialrentDao = new MaterialrentDao();
         $this->materialDao = new MaterialDao();
+        $this->module = substr(__CLASS__, 0,strlen(__CLASS__)-6);//6:sizeof(Action)
     }
     
     
     public function rentMaterialMaintain()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = RENT_MAINTAIN;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="租赁询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
-        
+
         // 分类，子分类
-        $materialClassRowArray = $this->materialClassDao->findAll();
-        foreach ($materialClassRowArray as $key => $value) {
-            $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
-            $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
-        }
+      $materialClassRowArray = $this->materialClassDao->findAll();
+      foreach ($materialClassRowArray as $key => $value) {
+        $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+        $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+    }
         // 材料实体
-        $materialrentRowArray = $this->materialrentDao->findAll();
-        foreach ($materialrentRowArray as $key => $value) {
-            $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
-            $materialrentRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
-        }
-        $this->assign('materialClassRowArray', $materialClassRowArray);
-        $this->assign('materialrentRowArray', $materialrentRowArray);
-        $this->display('OperRentManage/rentMaterialMaintain');
-        
+    $materialrentRowArray = $this->materialrentDao->findAll();
+    foreach ($materialrentRowArray as $key => $value) {
+        $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+        $materialrentRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+    }
+    $this->assign('materialClassRowArray', $materialClassRowArray);
+    $this->assign('materialrentRowArray', $materialrentRowArray);
+    $this->display('OperRentManage/rentMaterialMaintain');
+
         // $this->display('OperRentManage/rentMaterialMaintain');
-    }
+}
 
-    public function materialMaintain_addClass()
-    {
-        $returnData = array();
-        $returnData['name'] = $_POST['name'];
-        $insertId = $this->materialClassDao->add($_POST['name']);
-        $returnData['id'] = $insertId;
-        echo json_encode($returnData);
-    }
+public function materialMaintain_addClass()
+{
+    $returnData = array();
+    $returnData['name'] = $_POST['name'];
+    $insertId = $this->materialClassDao->add($_POST['name']);
+    $returnData['id'] = $insertId;
+    echo json_encode($returnData);
+}
 
-    public function materialMaintain_editClass()
-    {
-        $returnData = array();
-        $returnData['name'] = $_POST['name'];
-        $returnData['result'] = $this->materialClassDao->updateById($_POST['classid'], $_POST['name']);
-        echo json_encode($returnData);
-    }
+public function materialMaintain_editClass()
+{
+    $returnData = array();
+    $returnData['name'] = $_POST['name'];
+    $returnData['result'] = $this->materialClassDao->updateById($_POST['classid'], $_POST['name']);
+    echo json_encode($returnData);
+}
 
-    public function materialMaintain_deleteClass()
-    {
-        $classid = $_POST['classid'];
-        $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($classid);
-        if (count($materialCategoryRowArray) > 0) {
+public function materialMaintain_deleteClass()
+{
+    $classid = $_POST['classid'];
+    $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($classid);
+    if (count($materialCategoryRowArray) > 0) {
             $returnData = - 1; // 还有子元素，拒绝删除
             echo json_encode($returnData);
             return;
@@ -180,6 +171,12 @@ class OperRentManageAction extends LoginAfterAction
 
     public function rentMaterialEnquiry()
     {
+        //权限检查
+        $operationname="租赁询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/rentMaterialEnquiry');
     }
 
@@ -251,6 +248,12 @@ class OperRentManageAction extends LoginAfterAction
 
     public function addRentInOrder()
     {
+        //权限检查
+        $operationname="租赁租入";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/addRentInOrder');
     }
 
@@ -259,6 +262,12 @@ class OperRentManageAction extends LoginAfterAction
 
     public function editRentInOrder()
     {
+        //权限检查
+        $operationname="租赁租入";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/editRentInOrder');
     }
 
@@ -270,11 +279,23 @@ class OperRentManageAction extends LoginAfterAction
 
     public function listRentOutOrder()
     {
+        //权限检查
+        $operationname="租赁租出";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/listRentOutOrder');
     }
 
     public function addRentOutOrder()
     {
+        //权限检查
+        $operationname="租赁租出";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/addRentOutOrder');
     }
 
@@ -283,6 +304,12 @@ class OperRentManageAction extends LoginAfterAction
 
     public function editRentOutOrder()
     {
+        //权限检查
+        $operationname="租赁租出";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $this->display('OperRentManage/editRentOutOrder');
     }
 

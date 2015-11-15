@@ -369,198 +369,144 @@
 		</div>
 	</div>
 </div>
-<!--项目选择-->
-<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="projectModalLabel">项目选择</h4>    
-				
-			</div>
-			<br>
-			<form class="from-horizontal">
-				<div class="form-group">
-					<label class="col-md-2 control-label">项目名称</label>
-					<div class="col-md-6">
-						<input type="text" class="form-control" name="" id="project_name"/>
-					</div>					
-					<div class="col-md-2">
-						<a class="btn btn-info" data-toggle="collapse" data-target="#project_list">已有项目</a>
-					</div>
-					<div style="clear:both"></div>
-			</div>
-		 </form>
-			<div id="project_list" class="panel-collapse collapse panel">
-							<div class="container-fluid" style="margin-top:15px" >
-                <div class="row" style="margin-top:15px">
-                    <div class="col-md-2">项目名称</div>
-                    <div class="col-md-2">业务员</div>
-                    <div class="col-md-3">施工单位</div>
-                    <div class="col-md-3">设计单位</div>
-										<div class="col-md-2">当前状态</div>
-                </div>
-            </div>
-      
-      <div class="modal-body"  style="max-height:500px;overflow:auto" >
-        <div class="list-group" id="projects">          
-					<volist name="projectRowArray" id="vo_project">
-						<a href="{$vo_project.projectid}" class="list-group-item">
-							<div class="row">
-							<div class="col-md-2">{$vo_project.projectname}</div>
-							<div class="col-md-2">{$vo_project.clerkname}</div>
-							<div class="col-md-3">{$vo_project.buildenterprisename}</div>
-							<div class="col-md-3">{$vo_project.designenterprisename}</div>
-							<div class="col-md-2">{$vo_project.currentstatusname}</div>
-							</div>
-						</a>
-					</volist>
-        </div>
-      </div>
-		</div>
-      <div class="modal-footer">
-		<button type="button" class="btn btn-primary" id="chooseProject">确定</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-  </div>
-</div>  
+
+<include file="./Tpl/Components/dialogs.html"/>
 <include file="./Tpl/Part/loading.html" />
-<include file="./Tpl/Part/script.html" />		
+<include file="./Tpl/Part/script.html" />
 <script>
-	$(function(){
-		$("#project_alert").popover("show");	
-		$("#sidebar").on("click",".tree-item",function(){
+$(function(){
+	$("#project_alert").popover("show");	
+	$("#sidebar").on("click",".tree-item",function(){
 		$("#project_alert").popover("hide");	
-			if($(this).hasClass("add_type")){
-				$("#add_equip_project_btn").css("visibility","hidden");
-				$("#update_project_btn").css("visibility","hidden");
-				$("#delete_project_btn").css("visibility","hidden");
-			}else{
-				$("#add_equip_project_btn").css("visibility","visible");
-				$("#update_project_btn").css("visibility","visible");
-				$("#delete_project_btn").css("visibility","visible");
-			}
-                        var level=$(this).parent().data("level");
-                        if(level>=3){
-                            $("#add_child_project_btn").css("visibility","hidden");
-                        }else $("#add_child_project_btn").css("visibility","visible");
-			var data=$("#sidebar").data("lastActive");
-			if(data){
-				data.removeClass("active");
-			}
-			$(this).parent().addClass("active");
-			$("#sidebar").data("lastActive",$(this).parent());	
-			$("#project_title").text($(this).text());		
-			$("#update_project_name").val($(this).text());
-			
-			var resource_id=$("#sidebar").find(".active").data("id");			
-			$.post("{:U('OperProjectManage/getSubsidiary')}",{
-				resource_id:resource_id
-			},function(subsidiary,textStatus){
+		if($(this).hasClass("add_type")){
+			$("#add_equip_project_btn").css("visibility","hidden");
+			$("#update_project_btn").css("visibility","hidden");
+			$("#delete_project_btn").css("visibility","hidden");
+		}else{
+			$("#add_equip_project_btn").css("visibility","visible");
+			$("#update_project_btn").css("visibility","visible");
+			$("#delete_project_btn").css("visibility","visible");
+		}
+		var level=$(this).parent().data("level");
+		if(level>=3){
+			$("#add_child_project_btn").css("visibility","hidden");
+		}else $("#add_child_project_btn").css("visibility","visible");
+		var data=$("#sidebar").data("lastActive");
+		if(data){
+			data.removeClass("active");
+		}
+		$(this).parent().addClass("active");
+		$("#sidebar").data("lastActive",$(this).parent());	
+		$("#project_title").text($(this).text());		
+		$("#update_project_name").val($(this).text());
+
+		var resource_id=$("#sidebar").find(".active").data("id");			
+		$.post("{:U('OperProjectManage/getSubsidiary')}",{
+			resource_id:resource_id
+		},function(subsidiary,textStatus){
 				//alert(subsidiary);
 				$("#update_select").val(subsidiary);			
 			});
-			
-			$.post("{:U('OperProjectManage/getAuthorityUser')}",{
-				resource_id:resource_id
-			},function(authorityuser,textStatus){
-				$("#authority_user").val(authorityuser);
-			})
+
+		$.post("{:U('OperProjectManage/getAuthorityUser')}",{
+			resource_id:resource_id
+		},function(authorityuser,textStatus){
+			$("#authority_user").val(authorityuser);
+		})
 			//$("#add_equip_project").collapse("show");
 			$("#add_equip_project_name").val("");
 			//$("#add_child_project").collapse("show");
 			$("#add_child_project_name").val("");
 			//$("#update_project").collapse("show");
-					
+
 			$(".check").collapse("hide");
-		
+
 		});
-	
-		$(".project").on("click",function(){
-			$(".resource_select").addClass("readonly");
-			$(".resource_select").attr({readonly:'ture'});
-			$(".resource_select").attr("data-toggle","modal");
-			$(".resource_select").attr("data-target","#projectModal");
-		});	
-		
-		$(".warehouse").on("click",function(){
-			$(".resource_select").removeClass("readonly");
-			$(".resource_select").removeAttr("readonly");
-			$(".resource_select").removeAttr("data-toggle");
-			$(".resource_select").removeAttr("data-target");
-		});
-		
-		$("#projectModal").on("show.bs.modal",function(e){
-			$("#project_name").val("");
-			$("#projectModal").removeData("project");
-			$("#projectModal").data("dataTarget",e.relatedTarget);
-			$("#projects a").removeClass("active");
-			
-			var project_id;
-			$("#sidebar .project").each(function(){
-				project_id=$(this).data("project");
-				$("#projects a").each(function(){
-					if($(this).attr("href")==project_id){
-						$(this).css("display","none");
-					}
-				});
-			});
-		});
-		
-		$("#projects a").click(function(e){
-			e.preventDefault();
-			var data=$("#projectModal").data("lastActive");
-			if(data){
-				data.removeClass("active");
-			}
-			$(this).addClass("active");
-			var projectName=$(this).children().first().children().first().text();
-			$("#project_name").val(projectName);			
-			$("#projectModal").data("lastActive",$(this));
-			$("#projectModal").data("project",{id:$(this).attr("href"),name:projectName});
-		});
-		
-		$("#project_name").focus(function(){
-			$("#projectModal").removeData("project");			
-			$("#projects a").removeClass("active");
-			$("#project_name").val("");
-			$("#project_list").collapse("hide");
-		});
-		
-		$("#chooseProject").click(function(){
-			var data=$("#projectModal").data("project");
-			if(data){
-				$($("#projectModal").data("dataTarget")).val(data.name);				
-				$($("#projectModal").data("dataTarget")).next().val(data.id);					
-				$("#projectModal").modal("hide");
-			}
-			if(!data){
-				if($("#project_name").val()!=""){
-					$($("#projectModal").data("dataTarget")).val($("#project_name").val());
-					$($("#projectModal").data("dataTarget")).next().val(0);
-					$("#projectModal").modal("hide");
-				}else{
-					return false;
-				}
+
+$(".project").on("click",function(){
+	$(".resource_select").addClass("readonly");
+	$(".resource_select").attr({readonly:'ture'});
+	$(".resource_select").attr("data-toggle","modal");
+	$(".resource_select").attr("data-target","#projectModal");
+});	
+
+$(".warehouse").on("click",function(){
+	$(".resource_select").removeClass("readonly");
+	$(".resource_select").removeAttr("readonly");
+	$(".resource_select").removeAttr("data-toggle");
+	$(".resource_select").removeAttr("data-target");
+});
+
+$("#projectModal").on("show.bs.modal",function(e){
+	$("#project_name").val("");
+	$("#projectModal").removeData("project");
+	$("#projectModal").data("dataTarget",e.relatedTarget);
+	$("#projects a").removeClass("active");
+
+	var project_id;
+	$("#sidebar .project").each(function(){
+		project_id=$(this).data("project");
+		$("#projects a").each(function(){
+			if($(this).attr("href")==project_id){
+				$(this).css("display","none");
 			}
 		});
-		
-		$(".cancel").click(function(){
-			$(this).parent().parent().parent().parent().collapse("hide");
-		});
-		
-		$("#add_equip_project_submit").click(function(){					
-			var active=$("#sidebar").find(".active");
-                        if(!active.is("*")) return false;
-			var resource_type;
-			var name=$("#add_equip_project_name").val();
+	});
+});
+
+$("#projects a").click(function(e){
+	e.preventDefault();
+	var data=$("#projectModal").data("lastActive");
+	if(data){
+		data.removeClass("active");
+	}
+	$(this).addClass("active");
+	var projectName=$(this).children().first().children().first().text();
+	$("#project_name").val(projectName);			
+	$("#projectModal").data("lastActive",$(this));
+	$("#projectModal").data("project",{id:$(this).attr("href"),name:projectName});
+});
+
+$("#project_name").focus(function(){
+	$("#projectModal").removeData("project");			
+	$("#projects a").removeClass("active");
+	$("#project_name").val("");
+	$("#project_list").collapse("hide");
+});
+
+$("#chooseProject").click(function(){
+	var data=$("#projectModal").data("project");
+	if(data){
+		$($("#projectModal").data("dataTarget")).val(data.name);				
+		$($("#projectModal").data("dataTarget")).next().val(data.id);					
+		$("#projectModal").modal("hide");
+	}
+	if(!data){
+		if($("#project_name").val()!=""){
+			$($("#projectModal").data("dataTarget")).val($("#project_name").val());
+			$($("#projectModal").data("dataTarget")).next().val(0);
+			$("#projectModal").modal("hide");
+		}else{
+			return false;
+		}
+	}
+});
+
+$(".cancel").click(function(){
+	$(this).parent().parent().parent().parent().collapse("hide");
+});
+
+$("#add_equip_project_submit").click(function(){					
+	var active=$("#sidebar").find(".active");
+	if(!active.is("*")) return false;
+	var resource_type;
+	var name=$("#add_equip_project_name").val();
                         //alert(name);
-			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
-			var user_authority=$(this).parent().parent().next().find(".authority").val();
-			var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
-			var resource_level=$("#sidebar").find(".active").data('level');
-			var resource_haschildren=0;
+                        var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+                        var user_authority=$(this).parent().parent().next().find(".authority").val();
+                        var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
+                        var resource_level=$("#sidebar").find(".active").data('level');
+                        var resource_haschildren=0;
 			//alert(user_authority);
 			var project_id=$("#add_equip_project_name").next().val();
 			/*
@@ -613,22 +559,22 @@
 				return false;
 			}
 		});
-		
-		$("#add_child_project_submit").click(function(){
-			var active=$("#sidebar").find(".active");	
-			if(!active.is("*")) return false;
-			var name=$("#add_child_project_name").val();
-			var resource_type;
-			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
-			var user_authority=$(this).parent().parent().next().find(".authority").val();
-			var resource_father_id=active.data("id");
-			var resource_haschildren=1;
-			
-			var project_id=$("#add_child_project_name").next().val();
-			if(active.attr("id")=="warehouse_level_1" || active.attr("id")=="project_level_1"){
-				active.data("level",1);
-			}
-			var resource_level=active.data('level')+1;	
+
+$("#add_child_project_submit").click(function(){
+	var active=$("#sidebar").find(".active");	
+	if(!active.is("*")) return false;
+	var name=$("#add_child_project_name").val();
+	var resource_type;
+	var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+	var user_authority=$(this).parent().parent().next().find(".authority").val();
+	var resource_father_id=active.data("id");
+	var resource_haschildren=1;
+
+	var project_id=$("#add_child_project_name").next().val();
+	if(active.attr("id")=="warehouse_level_1" || active.attr("id")=="project_level_1"){
+		active.data("level",1);
+	}
+	var resource_level=active.data('level')+1;	
 			//alert(project_id);
 			var sub;			
 			var plus=$("<span class=\"glyphicon glyphicon-plus-sign\"></span>");				
@@ -713,95 +659,97 @@
 			}
 		});		
 
-		$("#update_project_submit").click(function(){
-			var active=$("#sidebar").find(".active");
-			if(!active.is("*")) return false;
-			var id=active.attr("data-id");
-			var name=$("#update_project_name").val();
-			var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
-			var user_authority=$(this).parent().parent().next().find(".authority").val();
-			
-			$.post("{:U('OperProjectManage/updateProjectResource')}",{
-				resource_id:id,
-				resource_name:name,
-				resource_user_authority:user_authority,
-				resource_belonged_subsidiary:belonged_subsidiary
-			});
-			
-			$("#sidebar").find(".active").find("a").text(name);
-			$("#update_project").collapse("hide");
-			$("#update_project_name").val("");
-			$("#project_title").text(name);	
-		});
-		
-		$(".project_alert").click(function(){
-			var active=$("#sidebar").find(".active");
-			if(!active.is("*")){
-				$("#project_alert").popover("show");
-				$(this).attr("data-toggle","");
-				return false;
-			}else{
-				$("#project_alert").popover("hide");
-				$(this).attr("data-toggle","collapse");
-			}
-		});
+$("#update_project_submit").click(function(){
+	var active=$("#sidebar").find(".active");
+	if(!active.is("*")) return false;
+	var id=active.attr("data-id");
+	var name=$("#update_project_name").val();
+	var belonged_subsidiary=$(this).parent().parent().next().find(".subsidiary").val();
+	var user_authority=$(this).parent().parent().next().find(".authority").val();
 
-        $(".project_input_alert").click(function(){
-			var active=$("#sidebar").find(".active");
-			if(!active.is("*")){
-				$("#project_alert").popover("show");
-				$(this).attr("data-toggle","");
-				return false;
-			}else{
-				$("#project_alert").popover("hide");
-				$(this).attr("data-toggle","modal");
-			}
-		});
-		
-		$("#delete_project_btn").click(function(){
-			if(!confirm('确认删除?')){
-				return false;
-			}
-			var active=$("#sidebar").find(".active");
-			var id=active.attr("data-id");
-			var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
-			var children_num=active.parent().find("li").size();
-			var haschildren;
-			
-			if(children_num==1){
-				haschildren=0;
-			}else{
-				haschildren=1;
-			}
-			
-			if(active.is(":has(span)")){
-				var alert=$("<label class=\"control-label label-pop\" id=\"active_alert\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"left\" data-content=\"含有子级，不能删除\"></label>");
-				active.children().first().before(alert);
-				$("#active_alert").popover("show");
-				return false;
-			}else{
-				if(children_num==1){
-					active.parent().parent().prev().find("span").remove();
-					active.parent().parent().remove();
-				}else{
-					active.remove();
-				}
-			}
-			
-			var project_id=active.data("project");
-			$("#projects a").each(function(){
-				if($(this).attr("href")==project_id){
-					$(this).css("display","block");
-				}
-			});
-			$.post("{:U('OperProjectManage/deleteProjectResource')}",{
-				resource_id:id,
-				resource_father_id:resource_father_id,
-				resource_haschildren:haschildren
-			});
-                        $("#active_alert").popover("hide");
-		});
+	$.post("{:U('OperProjectManage/updateProjectResource')}",{
+		resource_id:id,
+		resource_name:name,
+		resource_user_authority:user_authority,
+		resource_belonged_subsidiary:belonged_subsidiary
 	});
+
+	$("#sidebar").find(".active").find("a").text(name);
+	$("#update_project").collapse("hide");
+	$("#update_project_name").val("");
+	$("#project_title").text(name);	
+});
+
+$(".project_alert").click(function(){
+	var active=$("#sidebar").find(".active");
+	if(!active.is("*")){
+		$("#project_alert").popover("show");
+		$(this).attr("data-toggle","");
+		return false;
+	}else{
+		$("#project_alert").popover("hide");
+		$(this).attr("data-toggle","collapse");
+	}
+});
+
+$(".project_input_alert").click(function(){
+	var active=$("#sidebar").find(".active");
+	if(!active.is("*")){
+		$("#project_alert").popover("show");
+		$(this).attr("data-toggle","");
+		return false;
+	}else{
+		$("#project_alert").popover("hide");
+		$(this).attr("data-toggle","modal");
+	}
+});
+
+$("#delete_project_btn").click(function(){
+	if(!confirm('确认删除?')){
+		return false;
+	}
+	var active=$("#sidebar").find(".active");
+	var id=active.attr("data-id");
+	var resource_father_id=$("#sidebar").find(".active").parent().parent().prev().data("id");
+	var children_num=active.parent().find("li").size();
+	var haschildren;
+
+	if(children_num==1){
+		haschildren=0;
+	}else{
+		haschildren=1;
+	}
+
+	if(active.is(":has(span)")){
+		var alert=$("<label class=\"control-label label-pop\" id=\"active_alert\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"left\" data-content=\"含有子级，不能删除\"></label>");
+		active.children().first().before(alert);
+		$("#active_alert").popover("show");
+		return false;
+	}else{
+		if(children_num==1){
+			active.parent().parent().prev().find("span").remove();
+			active.parent().parent().remove();
+		}else{
+			active.remove();
+		}
+	}
+
+	var project_id=active.data("project");
+	$("#projects a").each(function(){
+		if($(this).attr("href")==project_id){
+			$(this).css("display","block");
+		}
+	});
+	$.post("{:U('OperProjectManage/deleteProjectResource')}",{
+		resource_id:id,
+		resource_father_id:resource_father_id,
+		resource_haschildren:haschildren
+	});
+	$("#active_alert").popover("hide");
+});
+
+});
+
 </script>
 
 </body>

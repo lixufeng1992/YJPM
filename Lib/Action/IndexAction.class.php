@@ -1,13 +1,6 @@
 <?php
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.ContractDao");
-// import("@.Model.ProjectResourceDao");
-// import("@.Model.ContractDocumentDao");
-// import("@.Model.MaterialPurchasePlanOrderDao");
-// import("@.Model.MaterialcontractDao");
-// import("@.Model.MaterialcontractDocumentDao");
-// import("@.Model.SubcontractDao");
-// import("@.Model.SubcontractDocumentDao");
+
 class IndexAction extends LoginAfterAction {
   private $contractDao;
   private $projectResourceDao;
@@ -20,7 +13,7 @@ class IndexAction extends LoginAfterAction {
 
   public function _initialize(){
     parent::_initialize();
-    $this->contractDao = new ContractDao();    
+    $this->contractDao = new ContractDao();
     $this->projectResourceDao = new ProjectResourceDao();
     $this->contractDocumentDao = new ContractDocumentDao();
     $this->materialPurchasePlanOrderDao = new MaterialPurchasePlanOrderDao();
@@ -34,6 +27,29 @@ class IndexAction extends LoginAfterAction {
     $resourceInfoArray = array();
     $resourceRowArray = $this->projectResourceDao->findAll();
     $myOperationRowArray = $this->myOperationRowArray;
+
+    // foreach($resourceRowArray as $key=>$value){
+    //   //承包合同
+    //   //分包合同
+    //   //材料采购计划
+    //   //材料采购合同
+    //   //材料采购单
+    //   //材料出库单
+    //   //租赁合同
+    //   //租赁租入单
+    //   //租赁租出单
+    //   //采购/售卖合同
+    //   //采购单
+    //   //售卖单
+    // }
+
+
+
+
+
+
+
+
     $myOperationidArray = arrayColumn($myOperationRowArray,'operationid');
     foreach($resourceRowArray as $key=>$value){
       $resourceInfo = array();

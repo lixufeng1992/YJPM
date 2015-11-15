@@ -25,20 +25,20 @@ import("@.Model.CommonDao");
 			return $statement->fetch();
 		}
 
-		public function add($projectid,$date,$preremind_days,$is_finished){
+		public function add($projectid,$date,$preremind_days,$is_finished,$reminder_personid){
 			
-			$sql="insert into tb_biddate(projectid,date,preremind_days,is_finished) values(?,?,?,?)";
+			$sql="insert into tb_biddate(projectid,date,preremind_days,is_finished,reminder_personid) values(?,?,?,?,?)";
 			$statement = $this->commonPDO->prepare($sql);
-			$result = $statement->execute(array($projectid,$date,$preremind_days,$is_finished));
+			$result = $statement->execute(array($projectid,$date,$preremind_days,$is_finished,$reminder_personid));
 			if($result == false)return -1;
 			else return $this->commonPDO->lastInsertId();
 		}
 
-		public function updateById($biddate_id,$projectid,$date,$preremind_days,$is_finished){
+		public function updateById($biddate_id,$projectid,$date,$preremind_days,$is_finished,$reminder_personid){
 			
-			$sql="update tb_biddate set projectid=?,date=?,preremind_days=?,is_finished=? where biddate_id=?";
+			$sql="update tb_biddate set projectid=?,date=?,preremind_days=?,is_finished=?,reminder_personid=? where biddate_id=?";
 			$statement = $this->commonPDO->prepare($sql);
-			return $statement->execute(array($projectid,$date,$preremind_days,$is_finished,$biddate_id));		
+			return $statement->execute(array($projectid,$date,$preremind_days,$is_finished,$biddate_id,$reminder_personid));		
 		}
 
 		public function deleteById($biddate_id){
@@ -46,6 +46,12 @@ import("@.Model.CommonDao");
 			$sql="delete from tb_biddate where biddate_id=?";
 			$statement = $this->commonPDO->prepare($sql);
 			return $statement->execute(array($biddate_id));		
+		}
+		public function deleteByProjectid($projectid){
+			
+			$sql="delete from tb_biddate where projectid=?";
+			$statement = $this->commonPDO->prepare($sql);
+			return $statement->execute(array($projectid));
 		}
 
 	}

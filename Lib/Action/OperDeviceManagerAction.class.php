@@ -42,101 +42,101 @@ class OperDeviceManagerAction extends LoginAfterAction{
 
 
 	//权限检查
-		public function permissionCheck($operationId){
-			$params = array();
-			$params['result'] = false;
-			$params['operationid'] = $operationId;
-			tag('behavior_authoritycheck',$params);
-			return $params['result'] == false ? false : true;
+	public function permissionCheck($operationId){
+		$params = array();
+		$params['result'] = false;
+		$params['operationid'] = $operationId;
+		tag('behavior_authoritycheck',$params);
+		return $params['result'] == false ? false : true;
 	}
 
 	//设备工种类型
-		public function deviceClassMaintain(){
-			$isPermit = $this->permissionCheck(DEVICE_CLASS_MAINTAIN);
-			if($isPermit == false){
-			   $this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
-			   return;
-			}
+	public function deviceClassMaintain(){
+		$isPermit = $this->permissionCheck(DEVICE_CLASS_MAINTAIN);
+		if($isPermit == false){
+			$this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
+			return;
+		}
 
 			//获得设备工种类型,用于前台展示
-			$deviceCategory = $this->deviceCategoryDao->findAll();
+		$deviceCategory = $this->deviceCategoryDao->findAll();
 
 			//在前端显示的信息
-			$this->assign('deviceCategory',$deviceCategory);
-			$this->display('OperDeviceManage/deviceClassMaintain');
-		}
+		$this->assign('deviceCategory',$deviceCategory);
+		$this->display('OperDeviceManage/deviceClassMaintain');
+	}
 
 
 	//添加设备工种类别
-		public function addDeviceCategory(){
-			$categoryName = $_POST['name'];
-			$returnData = array();
-			if($categoryName != null){
+	public function addDeviceCategory(){
+		$categoryName = $_POST['name'];
+		$returnData = array();
+		if($categoryName != null){
 			$this->deviceCategoryDao->insertDeviceCategory($categoryName);
-    		$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"添加成功...");
-			}
+			$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"添加成功...");
 		}
+	}
 
 
 	//修改设备工种类别
-		public function modifyDeviceCategory(){
-			$id = $_POST['id'];
-			$deviceCategoryName=  $_POST['name'];
-			$result = $this->deviceCategoryDao->updateDeviceCategory($id,$deviceCategoryName);
-			if($result != true){
-				$this->display('Staticpage/wrongalert');
-			    return;
-			}else{
-				$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"修改成功...");
-			}
+	public function modifyDeviceCategory(){
+		$id = $_POST['id'];
+		$deviceCategoryName=  $_POST['name'];
+		$result = $this->deviceCategoryDao->updateDeviceCategory($id,$deviceCategoryName);
+		if($result != true){
+			$this->display('Staticpage/wrongalert');
+			return;
+		}else{
+			$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"修改成功...");
 		}
+	}
 
 	//删除设备工种类别
-		public function deleteDeviceCategory(){
-			$id = $_GET['id'];
-			$this->deviceCategoryDao->deleteDeviceCategoryById($id);
-			$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"删除成功...");
-		}
+	public function deleteDeviceCategory(){
+		$id = $_GET['id'];
+		$this->deviceCategoryDao->deleteDeviceCategoryById($id);
+		$this->redirect('OperDeviceManager/deviceClassMaintain',array(),2,"删除成功...");
+	}
 	
 
 	//设备维护
-		public function deviceMaintain(){
-			$isPermit = $this->permissionCheck(DEVICE_MAINTAIN);
-			if($isPermit == false){
-			   $this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
-			   return;
-			}
-
-			//获得设备工种类型,用于前台展示
-			$devicesInfo = $this->deviceDao->findAll();
-			foreach($devicesInfo as $key => $value){
-				//添加设备工种类别
-				$resultSet = $this->deviceCategoryDao->findById($value['category_id']);
-				$devicesInfo[$key]['categoryName'] = $resultSet[0]['category_name'];
-
-				//添加设备库存信息
-				$resultSet2  = $this->deviceStorageDao->findById($value['device_storage_id']);
-				$devicesInfo[$key]['deviceName'] = $resultSet2[0]['device_name'];
-				$devicesInfo[$key]['deviceNumber'] = $resultSet2[0]['device_number'];
-				$devicesInfo[$key]['ownProject'] = $resultSet2[0]['own_project'];
-				$devicesInfo[$key]['deviceUnit'] = $resultSet2[0]['device_unit'];
-			}
-			
-			//在前端显示的信息
-			$this->assign('devicesInfo',$devicesInfo);
-			$this->display('OperDeviceManage/deviceMaintain');
+	public function deviceMaintain(){
+		$isPermit = $this->permissionCheck(DEVICE_MAINTAIN);
+		if($isPermit == false){
+			$this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
+			return;
 		}
 
+			//获得设备工种类型,用于前台展示
+		$devicesInfo = $this->deviceDao->findAll();
+		foreach($devicesInfo as $key => $value){
+				//添加设备工种类别
+			$resultSet = $this->deviceCategoryDao->findById($value['category_id']);
+			$devicesInfo[$key]['categoryName'] = $resultSet[0]['category_name'];
+
+				//添加设备库存信息
+			$resultSet2  = $this->deviceStorageDao->findById($value['device_storage_id']);
+			$devicesInfo[$key]['deviceName'] = $resultSet2[0]['device_name'];
+			$devicesInfo[$key]['deviceNumber'] = $resultSet2[0]['device_number'];
+			$devicesInfo[$key]['ownProject'] = $resultSet2[0]['own_project'];
+			$devicesInfo[$key]['deviceUnit'] = $resultSet2[0]['device_unit'];
+		}
+		
+			//在前端显示的信息
+		$this->assign('devicesInfo',$devicesInfo);
+		$this->display('OperDeviceManage/deviceMaintain');
+	}
+
 	//修改设备维护信息
-		public function modifyDeviceInfo(){
-			$returnData = array();
-			$device_name = $_POST['name'];
-			$own_project = $_POST['own_project'];
-			$category_name = $_POST['code'];
-			$purchase_date = $_POST['buydate'];
-			$login_date = $_POST['recorddate'];
-			$break_date = $_POST['crashdate'];
-			$factory = $_POST['producer'];
+	public function modifyDeviceInfo(){
+		$returnData = array();
+		$device_name = $_POST['name'];
+		$own_project = $_POST['own_project'];
+		$category_name = $_POST['code'];
+		$purchase_date = $_POST['buydate'];
+		$login_date = $_POST['recorddate'];
+		$break_date = $_POST['crashdate'];
+		$factory = $_POST['producer'];
 			$device_id = $_POST['productid'];//出厂编号
 			$device_status = $_POST['state'];
 			$device_unit = $_POST['unit'];
@@ -169,7 +169,7 @@ class OperDeviceManagerAction extends LoginAfterAction{
 
 			//先删除设备库存信息，再删除设备信息表信息
 			$this->deviceStorageDao->deleteDeviceStorageById($device_storage_id);
-		    $result = $this->deviceDao->deleteDevieById($deviceId);
+			$result = $this->deviceDao->deleteDevieById($deviceId);
 			$returnData['result'] = $result;
 			echo json_encode($returnData);
 			
@@ -179,8 +179,8 @@ class OperDeviceManagerAction extends LoginAfterAction{
 		public function devicePurchase(){
 			$isPermit = $this->permissionCheck(DEVICE_PURCHASING);
 			if($isPermit == false){
-			   $this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
-			   return;
+				$this->redirect('Staticpage/wrongalert',array(),3,"您无法操作权限");
+				return;
 			}
 
 			$devicePurchases = $this->devicePurchaseDao->findAll();
@@ -221,24 +221,24 @@ class OperDeviceManagerAction extends LoginAfterAction{
 		public function addDevicePurchaseOrder(){
 			//权限检查
 			$params = array();
-        	$params['result'] = false;
-	        $params['operationid'] = DEVICE_PURCHASING;
-	        tag('behavior_authoritycheck', $params);
-	        if ($params['result'] == false) {
-            	$this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            	return;
-        	}
+			$params['result'] = false;
+			$params['operationid'] = DEVICE_PURCHASING;
+			tag('behavior_authoritycheck', $params);
+			if ($params['result'] == false) {
+				$this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
+				return;
+			}
 
         	//获得所有设备信息
-        	$deviceInfoArray = $this->deviceDao->findAll();
-        	foreach ($deviceInfoArray as $key => $deviceRow) {
-        		$deviceCategory = $this->deviceCategoryDao->findById($deviceRow['category_id']);
-        		$deviceInfoArray[$key]['deviceCategoryName'] = $deviceCategory[0]['category_name'];
-        		$deviceStorageArray = $this->deviceStorageDao->findById($deviceRow['device_storage_id']);
-        		$deviceInfoArray[$key]['deviceName'] = $deviceStorageArray[0]['device_name'];
-        		$deviceInfoArray[$key]['deviceUnit'] = $deviceStorageArray[0]['device_unit'];
+			$deviceInfoArray = $this->deviceDao->findAll();
+			foreach ($deviceInfoArray as $key => $deviceRow) {
+				$deviceCategory = $this->deviceCategoryDao->findById($deviceRow['category_id']);
+				$deviceInfoArray[$key]['deviceCategoryName'] = $deviceCategory[0]['category_name'];
+				$deviceStorageArray = $this->deviceStorageDao->findById($deviceRow['device_storage_id']);
+				$deviceInfoArray[$key]['deviceName'] = $deviceStorageArray[0]['device_name'];
+				$deviceInfoArray[$key]['deviceUnit'] = $deviceStorageArray[0]['device_unit'];
         		//设备合同表
-        	}
+			}
         	/**
 			* lixufeng
 			*/
@@ -250,16 +250,16 @@ class OperDeviceManagerAction extends LoginAfterAction{
 
 
         	//采购单位选择
-        	$enterpriseRowArray = $this->enterpriseDao->findAll();
-        	$this->assign('enterpriseRowArray',$enterpriseRowArray);
+			$enterpriseRowArray = $this->enterpriseDao->findAll();
+			$this->assign('enterpriseRowArray',$enterpriseRowArray);
         	//项目或机构列表
 			$resourceArray = $this->projectResourceDao->findAll();
 			//设备信息
 			$this->assign('deviceInfoArray',$deviceInfoArray);
 			$this->assign('resourceRowArray',$resourceArray);
 			$this->assign('contractRowArray',$contractRowArray);
-        	$this->display('OperDeviceManage/addPurchaseOrder');
-        	
+			$this->display('OperDeviceManage/addPurchaseOrder');
+			
 
 
 
@@ -289,6 +289,6 @@ class OperDeviceManagerAction extends LoginAfterAction{
 
 
 
-}
+	}
 
-?>
+	?>

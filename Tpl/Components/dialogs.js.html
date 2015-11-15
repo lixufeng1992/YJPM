@@ -1,0 +1,139 @@
+<script>
+$(function(){
+
+//往来单位选择
+    //模态框初始化
+	$('#enterpriseModal').on('show.bs.modal', function (e) {
+		$("#enterpriseModal").removeData("enterprise");
+		$("#enterpriseModal").data("dataTarget",e.relatedTarget);
+		$("#enterprises a").removeClass("active");
+	});
+    //模态框确定
+	$("#chooseEnterprise").click(function(){
+		var data = $("#enterpriseModal").data("enterprise");
+		if (data){
+			$($("#enterpriseModal").data("dataTarget")).val(data.name);
+			$($("#enterpriseModal").data("dataTarget")).next().val(data.id);
+			$('#enterpriseModal').modal('hide');
+		}
+	});
+    //选择某往来单位
+ 	$("#enterprises a").click(function(e){
+		e.preventDefault();
+		var data = $("#enterpriseModal").data("lastActive");
+		if (data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#enterpriseModal").data("lastActive",$(this));
+		$("#enterpriseModal").data("enterprise",{id : $(this).attr("href") , name : $(this).children().first().children().first().text()});
+		return false;
+	});
+
+//人员选择modal
+	//选择某人(已有)
+	$("#modalPersonChoose_people a").click(function(e){
+		e.preventDefault();
+		var data=$("#modalPersonChoose").data("lastActive");
+		if(data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		var personName=$(this).children().first().children().first().text();
+		var personPhone=$(this).children().first().children().first().next().text();
+		var enterpriseName=$(this).children().first().children().first().next().next().text();
+		var enterpriseId = $(this).children().first().children().first().next().next().next().text();
+		$("#modalPersonChoose_person_name").val(personName);	
+		$("#modalPersonChoose_person_phone").val(personPhone);
+		$("#modalPersonChoose_enterprisename").val(enterpriseName);
+		$("#modalPersonChoose_person_name").attr("readonly","readonly");
+		$("#modalPersonChoose_person_phone").attr("readonly","readonly");
+
+		$("#modalPersonChoose").data("lastActive",$(this));
+		$("#modalPersonChoose").data("person",{'id':$(this).attr("href"),'name':personName,'phone':personPhone,
+			'enterprisename':enterpriseName,'enterpriseid':enterpriseId});
+	});
+
+	//选择某往来单位(新增人员时)
+	$("#modalPersonChoose_enterprises a").click(function(e){
+		//alert("a111sdasd");
+		e.preventDefault();
+		var data = $("#modalPersonChoose").data("person");
+		if(data && data.id>0)return;
+
+		var data=$("#modalPersonChoose").data("lastActive");
+		if(data){
+			data.removeClass("active");
+		}
+		$(this).addClass("active");
+		$("#modalPersonChoose").data("lastActive",$(this));
+	
+		var enterpriseName=$(this).children().first().children().first().text();
+		var enterpriseid = $(this).children().first().children().first().next().next().text();
+		var personPhone=$("#modalPersonChoose_person_phone").val();
+		var personName=$("#modalPersonChoose_person_name").val();
+		//alert(enterpriseName);
+
+		$("#modalPersonChoose_enterprisename").val(enterpriseName);
+		$("#modalPersonChoose_enterprisename").next().val(enterpriseid);
+		
+	});
+
+	//模态框初始化
+	$('#modalPersonChoose').on('show.bs.modal', function (e) {
+		$("#modalPersonChoose").removeData("person");
+		$("#modalPersonChoose").data("dataTarget",e.relatedTarget);
+		$("#modalPersonChoose_people a").removeClass("active");
+		$("#modalPersonChoose_enterprises a").removeClass("active");
+		$("#modalPersonChoose_person_name").attr("readonly",false);
+		$("#modalPersonChoose_person_phone").attr("readonly",false);
+		$("#modalPersonChoose_enterprise_list").removeClass("hide");
+		$("#modalPersonChoose_people_list").addClass("hide");
+		$("#modalPersonChoose_person_name").val("");	
+		$("#modalPersonChoose_person_phone").val("");
+		$("#modalPersonChoose_enterprisename").val("");
+	});
+
+	//模态框确定
+	$("#modalPersonChoose_btn_ok").click(function(){
+		var data = $("#modalPersonChoose").data("person");
+		if (data && data.id>0){
+			var personInfo = data.name;
+			if(data.enterprisename.length>0)personInfo+="_"+data.enterprisename;
+			if(data.phone.length>0)personInfo+="("+data.phone+")";
+			$($("#modalPersonChoose").data("dataTarget")).val(personInfo);
+			$($("#modalPersonChoose").data("dataTarget")).next().val(data.id);
+			$($("#modalPersonChoose").data("dataTarget")).next().next().val(0);
+			$('#modalPersonChoose').modal('hide');
+		}
+		else{
+			var personInfo = $("#modalPersonChoose_person_name").val();
+			var personEnterpriseid = $("#modalPersonChoose_enterprisename").next().val();
+			
+			if(personInfo.length==0){alert("请输入新人员姓名");return;}
+			if($("#modalPersonChoose_enterprisename").val().length>0)personInfo+="_"+$("#modalPersonChoose_enterprisename").val();
+			if($("#modalPersonChoose_person_phone").val().length>0)personInfo+="("+$("#modalPersonChoose_person_phone").val()+")";
+			$($("#modalPersonChoose").data("dataTarget")).val(personInfo);
+			//person_id
+			$($("#modalPersonChoose").data("dataTarget")).next().val(0);
+			//newman_enterpriseid
+			$($("#modalPersonChoose").data("dataTarget")).next().next().val(personEnterpriseid);
+			$('#modalPersonChoose').modal('hide');
+		}
+
+	});
+
+	//是否收起往来单位列表
+	$("#modalPersonChoose_btn_people_list").click(function(){
+		if($("#modalPersonChoose_enterprise_list").hasClass("hide")){
+			$("#modalPersonChoose_enterprise_list").removeClass("hide");
+			$("#modalPersonChoose_people_list").addClass("hide");
+		}
+		else{
+			$("#modalPersonChoose_enterprise_list").addClass("hide");
+			$("#modalPersonChoose_people_list").removeClass("hide");
+		}
+		
+	});
+});
+</script>

@@ -44,22 +44,22 @@
         	<div class="row list-row">
                <label class="control-label col-md-2">当前状态</label>
                <label class="control-label col-md-3">项目名称</label>
-               <label class="control-label col-md-2">业务员</label>
+               <label class="control-label col-md-3">业务员</label>
                <label class="control-label col-md-2">项目类型</label>
             </div>
           <volist name="projectRowArray" id="vo" key="index">
             <div class="row list-row">
-                <a href={:U('OperProjectManage/editProject',array('projectid'=>$vo['projectid']))} class="list-row-a">
-                    <label class="control-label col-md-2">{$currentstatusArray[$index-1]}</label>
-                    <label class="control-label col-md-3">{$vo.projectname}</label>
-                    <label class="control-label col-md-2">{$vo.clerkname}</label>
+                <a href={:U('OperProjectManage/editProject',array('projectid'=>$vo['id']))} class="list-row-a">
+                    <label class="control-label col-md-2">{$vo.currentstatusName}</label>
+                    <label class="control-label col-md-3">{$vo.name}</label>
+                    <label class="control-label col-md-3">{$vo.clerk_info}</label>
                     <label class="control-label col-md-2">{$vo.project_type}</label>
                 </a>
-                <div class="col-md-1 col-md-offset-1">
-                    <a class="btn btn-primary btn-block" href={:U('OperProjectManage/editProject',array('projectid'=>$vo['projectid']))}>编辑</a>
+                <div class="col-md-1">
+                    <a class="btn btn-primary btn-block" href={:U('OperProjectManage/editProject',array('projectid'=>$vo['id']))}>编辑</a>
                 </div>
                 <div class="col-md-1">
-                    <a class="btn btn-danger btn-block" href={:U('OperProjectManage/deleteProject',array('projectid'=>$vo['projectid']))}>删除</a>
+                    <a class="btn btn-danger btn-block" href={:U('OperProjectManage/deleteProject',array('projectid'=>$vo['id']))}>删除</a>
                 </div>
             </div>
           </volist>

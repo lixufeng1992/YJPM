@@ -1,51 +1,12 @@
 <?php
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.CompanyDao");
-// import("@.Model.EmployerDao");
-// import("@.Model.DepartmentDao");
-// import("@.Model.EnterpriseDao");
-// import("@.Model.ProjectDao");
-// import("@.Model.ProjectstatusDao");
-// import("@.Model.ProjectstatuscategoryDao");
-// import("@.Model.ProjecttypeDao");
-// import("@.Model.ClerkDao");
-// import("@.Model.BiddateDao");
-// import("@.Model.MargindateDao");
-// import("@.Model.QuestionanswerdateDao");
-// import("@.Model.StartbiddateDao");
-// import("@.Model.SubmitbiddocdateDao");
-// import("@.Model.ProjectProgressDao");
-// import("@.Model.ProjectTracecostDao");
-// import("@.Model.ResourceDocumentDao");
-// import("@.Model.BiddingrivalDao");
-// import("@.Model.BiddateReminduserDao");
-// import("@.Model.MargindateReminduserDao");
-// import("@.Model.QuestionanswerdateReminduserDao");
-// import("@.Model.SubmitbiddocdateReminduserDao");
-// import("@.Model.StartbiddateReminduserDao");
-// import("@.Model.ProjectResourceDao");
-// import("@.Model.SubcontractorDao");
-// import("@.Model.WarehouseDao");
-// import("@.Model.WarehouseWorkerDao");
-// import("@.Model.SubcontractorWorkerDao");
-// import("@.Model.ProjectProcessDao");
-// import("@.Model.StandardProjectDao");
-// import("@.Model.ControlSettingDao");
-// import("@.Model.ProcessPeriodworkDao");
-// import("@.Model.ContractDao");
-// import("@.Model.ContractContentDao");
-// import("@.Model.ContractDocumentDao");
-// import("@.Model.ContractDocumentOriginDao");
-// import("@.Model.ProcessClassifyDao");
-// import("@.Model.ProcessDao");
 
 header('Content-Type:text/html;charset=utf-8');
-
 class OperProjectManageAction extends LoginAfterAction{
   private $companyDao;
   private $employerDao;
   private $departmentDao;
-  private $enterpriseDao;
+  //private $enterpriseDao;
   private $projectDao;
   private $projectstatusDao;
   private $projectstatuscategoryDao;
@@ -80,14 +41,14 @@ class OperProjectManageAction extends LoginAfterAction{
   private $contractDocumentOriginDao;
   private $processClassifyDao;
   private $processDao;
+  private $personDao;
 
   public function _initialize(){
     parent::_initialize();
-
     $this->companyDao=new CompanyDao();
     $this->employerDao=new EmployerDao();
     $this->departmentDao=new DepartmentDao();
-    $this->enterpriseDao=new EnterpriseDao();
+    //$this->enterpriseDao=new EnterpriseDao();
     $this->projectDao=new ProjectDao();
     $this->projectstatusDao=new ProjectstatusDao();
     $this->projectstatuscategoryDao=new ProjectstatuscategoryDao();
@@ -123,58 +84,62 @@ class OperProjectManageAction extends LoginAfterAction{
     $this->processClassifyDao=new ProcessClassifyDao();
     $this->processDao=new ProcessDao();
     $this->userDao=new UserDao();
-
+    $this->personDao=new PersonDao();
+    $this->module = substr(__CLASS__, 0,strlen(__CLASS__)-6);//6:sizeof(Action)
   }    
 
-
+  public function index(){
+    $this->redirect('Index/index');
+  }
 
   //项目开拓--------------------------------------------------------------------------------
   public function listProject(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
 
+    $enterpriseRowArrayById = $this->getAllEnterprises();
     $projectRowArray = $this->projectDao->findAll();
-    $currentstatusArray = array();
+    //$currentstatusArray = array();
     foreach($projectRowArray as $key => $value){
       $currentstatusid = $value['currentstatusid'];
       $projectstatusRow = $this->projectstatusDao->findById($currentstatusid);
       $categoryid = $projectstatusRow['categoryid'];
       $projectstatuscategoryRow = $this->projectstatuscategoryDao->findById($categoryid);
       $currentstatusName = $projectstatuscategoryRow['name']."/".$projectstatusRow['name'];
-      $currentstatusArray[$key]=$currentstatusName;
+      //$currentstatusArray[$key]=$currentstatusName;
+      $projectRowArray[$key]['currentstatusName']=$currentstatusName;
+      $projectRowArray[$key]['clerk_info']="";
+      if(!empty($projectRowArray[$key]['clerk_personid'])){
+        $personRow = $this->personDao->findById($projectRowArray[$key]['clerk_personid']);
+        $clerk_info=$personRow['name'];
+        if(!empty($enterpriseRowArrayById[$personRow['enterpriseid']]['name']))$clerk_info.="_".$enterpriseRowArrayById[$personRow['enterpriseid']]['name'];
+        if(!empty($personRow['phone']))$clerk_info.="(".$personRow['phone'].")";
+        $projectRowArray[$key]['clerk_info']=$clerk_info;
+      }
+
     }
     $this->assign('projectRowArray',$projectRowArray);
-    $this->assign('currentstatusArray',$currentstatusArray);
-
+    //$this->assign('currentstatusArray',$currentstatusArray);
     $this->display('OperProjectManage/listProject');
   }
 
   public function addProject(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
-
-
 
     //项目所有状态
     $projectstatuscategoryRowArray = $this->projectstatuscategoryDao->findAll();
     $projectstatusRowArray = $this->projectstatusDao->findAll();
     //业务员
-    $clerknameArray = $this->clerkDao->findAll_name();
+   // $clerknameArray = $this->clerkDao->findAll_name();
     //项目类型
     $projecttypeRowArray = $this->projecttypeDao->findAll();
     //往来单位
@@ -185,8 +150,12 @@ class OperProjectManageAction extends LoginAfterAction{
     $departmentRowArray = $this->departmentDao->findAll();
     //所有用户
     $userRowArray = $this->userDao->findAll();
-    //所有员工
-    $employerRowArray = $this->employerDao->findAll();
+    //所有人员
+    $peopleRowArray = $this->personDao->findAll();
+    foreach ($peopleRowArray as $key => $value) {
+      $enterpriseRow = $this->enterpriseDao->findById($value['enterpriseid']);
+      $peopleRowArray[$key]['enterprisename']=$enterpriseRow['name'];
+    }
 
     $this->assign('projectstatuscategoryRowArray',$projectstatuscategoryRowArray);
     $this->assign('projectstatusRowArray',$projectstatusRowArray);
@@ -196,30 +165,129 @@ class OperProjectManageAction extends LoginAfterAction{
     $this->assign('companyRowArray',$companyRowArray);
     $this->assign('departmentRowArray',$departmentRowArray);
     $this->assign('userRowArray',$userRowArray);
-    $this->assign('employerRowArray',$employerRowArray);
+    $this->assign('peopleRowArray',$peopleRowArray);
 
 
     $this->display('OperProjectManage/addProject');
   }
 
   public function addProjectSubmit(){
+    //权限检查
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $projectname = $_POST['projectname'];
     $project_address = $_POST['project_address'];
     $currentstatusid = $_POST['currentstatusid'];
-    $clerkname = $_POST['clerkname'];
+    //业务员
+    $clerk_personid=$_POST['clerk_personid'];
+    if(empty($clerk_personid)){
+      //新增人员
+      $clerkInfo=$_POST['clerk_info'];
+
+      $clerkArr = func_getPersonArray($clerkInfo);
+      $clerk_name = $clerkArr['name'];
+      $clerk_phone = $clerkArr['phone'];
+      $clerk_enterpriseid=intval($_POST['clerk_enterpriseid']);
+    
+      $result = $this->personDao->findByNamePhoneEnterpriseid($clerk_name,$clerk_phone,$clerk_enterpriseid);
+      if($result===false){
+        $clerk_personid = $this->personDao->add($clerk_name,$clerk_phone,$clerk_enterpriseid);
+        if(empty($clerk_personid) || $clerk_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $clerk_personid=$result['id'];
+      }
+    }
+
     $project_type = $_POST['project_type'];
     $constract_counterparty = $_POST['constract_counterparty'];
     $biddoc_type = $_POST['biddoc_type'];
     $getbid_price = $_POST['getbid_price'];
     $build_enterpriseid = $_POST['build_enterpriseid'];
-    $a_project_director_name = $_POST['a_project_director_name'];
-    $a_project_director_phone = $_POST['a_project_director_phone'];
+
+    //甲方项目负责人
+    $a_project_director_personid=$_POST['a_project_director_personid'];
+    if(empty($a_project_director_personid)){
+      //新增人员
+      $a_project_directorInfo=$_POST['a_project_director_info'];
+      
+      $a_project_directorArr = func_getPersonArray($a_project_directorInfo);
+      $a_project_director_name = $a_project_directorArr['name'];
+      $a_project_director_phone = $a_project_directorArr['phone'];
+
+      $a_project_director_enterpriseid=intval($_POST['a_project_director_enterpriseid']);
+      $result = $this->personDao->findByNamePhoneEnterpriseid($a_project_director_name,$a_project_director_phone,$a_project_director_enterpriseid);
+      if($result===false){
+        $a_project_director_personid = $this->personDao->add($a_project_director_name,$a_project_director_phone,$a_project_director_enterpriseid);
+        if(empty($a_project_director_personid) || $a_project_director_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $a_project_director_personid=$result['id'];
+      }
+    }
+
     $design_enterpriseid = $_POST['design_enterpriseid'];
-    $a_technology_director_name = $_POST['a_technology_director_name'];
-    $a_technology_director_phone = $_POST['a_technology_director_phone'];
+
+    //甲方技术负责人
+    $a_technology_director_personid=$_POST['a_technology_director_personid'];
+    if(empty($a_technology_director_personid)){
+      //新增人员
+      $a_technology_directorInfo=$_POST['a_technology_director_info'];
+     
+      $a_technology_directorArr = func_getPersonArray($a_technology_directorInfo);
+      $a_technology_director_name = $a_technology_directorArr['name'];
+      $a_technology_director_phone = $a_technology_directorArr['phone'];
+
+      $a_technology_director_enterpriseid=intval($_POST['a_technology_director_enterpriseid']);
+      $result = $this->personDao->findByNamePhoneEnterpriseid($a_technology_director_name,$a_technology_director_phone,$a_technology_director_enterpriseid);
+      if($result===false){
+        $a_technology_director_personid = $this->personDao->add($a_technology_director_name,$a_technology_director_phone,$a_technology_director_enterpriseid);
+        if(empty($a_technology_director_personid) || $a_technology_director_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $a_technology_director_personid=$result['id'];
+      }
+    }
+    
     $construct_enterpriseid = $_POST['construct_enterpriseid'];
-    $constructunit_director_name = $_POST['constructunit_director_name'];
-    $constructunit_director_phone = $_POST['constructunit_director_phone'];
+
+    //施工单位负责人
+    $constructunit_director_personid=$_POST['constructunit_director_personid'];
+    if(empty($constructunit_director_personid)){
+      //新增人员
+      $constructunit_directorInfo=$_POST['constructunit_director_info'];
+      
+      $constructunit_directorArr = func_getPersonArray($constructunit_directorInfo);
+      $constructunit_director_name = $constructunit_directorArr['name'];
+      $constructunit_director_phone = $constructunit_directorArr['phone'];  
+
+      $constructunit_director_enterpriseid=intval($_POST['constructunit_director_enterpriseid']);
+      $result = $this->personDao->findByNamePhoneEnterpriseid($constructunit_director_name,$constructunit_director_phone,$constructunit_director_enterpriseid);
+      if($result===false){
+        $constructunit_director_personid = $this->personDao->add($constructunit_director_name,$constructunit_director_phone,$constructunit_director_enterpriseid);
+        if(empty($constructunit_director_personid) || $constructunit_director_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $constructunit_director_personid=$result['id'];
+      }
+    }
+
     $mediator_enterpriseid = $_POST['mediator_enterpriseid'];
     $mediator_constract = $_POST['mediator_constract'];
     $covered_area = $_POST['covered_area'];
@@ -246,13 +314,35 @@ class OperProjectManageAction extends LoginAfterAction{
     $advantage="";
     $drawback="";
     //dealing data
-    $projectid = $this->projectDao->add($projectname,$currentstatusid,$clerkname,$build_enterpriseid,$design_enterpriseid,
-      $construct_enterpriseid,$mediator_enterpriseid,$mediator_constract,$project_address,$project_type,
-      $constract_counterparty,$a_project_director_name,$a_project_director_phone,$a_technology_director_name,$a_technology_director_phone,
-      $constructunit_director_name,$constructunit_director_phone,$biddoc_type,$getbid_price,$use_purpose,
-      $covered_area,$info_source,$scale,$project_basic_info,$isknown_bid_date,
-      $isknown_questionanswer_date,$isknown_submitbiddoc_date,$isknown_startbid_date,$isknown_margin_date,$advantage,
-      $drawback);
+    $projectid = $this->projectDao->add(
+        $projectname, 
+        $currentstatusid, 
+        $clerk_personid, 
+        $build_enterpriseid, 
+        $design_enterpriseid, 
+        $construct_enterpriseid, 
+        $mediator_enterpriseid, 
+        $mediator_constract, 
+        $project_address, 
+        $project_type, 
+        $constract_counterparty, 
+        $a_project_director_personid, 
+        $a_technology_director_personid, 
+        $constructunit_director_personid, 
+        $biddoc_type, 
+        $getbid_price, 
+        $use_purpose, 
+        $covered_area, 
+        $info_source, 
+        $scale, 
+        $project_basic_info, 
+        $isknown_bid_date, 
+        $isknown_questionanswer_date, 
+        $isknown_submitbiddoc_date, 
+        $isknown_startbid_date, 
+        $isknown_margin_date, 
+        $advantage, 
+        $drawback);
 
     if($projectid <=0 ){
       $this->display('Staticpage/wrongalert');
@@ -272,103 +362,103 @@ class OperProjectManageAction extends LoginAfterAction{
       }
       $biddate_reminder_userid = $_POST['biddate_reminder_userid'];
       //处理字串
-      $useridArray = explode(",",$biddate_reminder_userid);
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->biddateReminduserDao->add($biddate_id,$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
+      // $useridArray = explode(",",$biddate_reminder_userid);
+      // foreach($useridArray as $value){
+      //   $value = trim($value);
+      //   if($value == "")continue;
+      //   $result = $this->biddateReminduserDao->add($biddate_id,$value);
+      //   if($result == false)$this->display('Staticpage/wrongalert');
+      // }
     }
 
-    if($isknown_questionanswer_date == 1){
-      $questionanswerdate_date = $_POST['questionanswerdate_date'];
-      $questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
-      //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
-      $questionanswerdate_is_finished = 0;
-      if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
-      $questionanswerdate_id = $this->questionanswerdateDao->add($projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
-      if($questionanswerdate_id <= 0){
-        $this->display('Staticpage/wrongalert');
-        return;
-      }
-      $questionanswerdate_reminder_userid = $_POST['questionanswerdate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$questionanswerdate_reminder_userid);
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->questionanswerdateReminduserDao->add($questionanswerdate_id,$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
+    // if($isknown_questionanswer_date == 1){
+    //   $questionanswerdate_date = $_POST['questionanswerdate_date'];
+    //   $questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
+    //   //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
+    //   $questionanswerdate_is_finished = 0;
+    //   if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
+    //   $questionanswerdate_id = $this->questionanswerdateDao->add($projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
+    //   if($questionanswerdate_id <= 0){
+    //     $this->display('Staticpage/wrongalert');
+    //     return;
+    //   }
+    //   $questionanswerdate_reminder_userid = $_POST['questionanswerdate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$questionanswerdate_reminder_userid);
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->questionanswerdateReminduserDao->add($questionanswerdate_id,$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
 
-    if($isknown_submitbiddoc_date == 1){
-      $submitbiddocdate_date = $_POST['submitbiddocdate_date'];
-      $submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
-      //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
-      $submitbiddocdate_is_finished = 0;
-      if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
-      $submitbiddocdate_id = $this->submitbiddocdateDao->add($projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
-      if($submitbiddocdate_id <= 0){
-        $this->display('Staticpage/wrongalert');
-        return;
-      }
-      $submitbiddocdate_reminder_userid = $_POST['submitbiddocdate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$submitbiddocdate_reminder_userid);
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->submitbiddocdateReminduserDao->add($submitbiddocdate_id,$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
+    // if($isknown_submitbiddoc_date == 1){
+    //   $submitbiddocdate_date = $_POST['submitbiddocdate_date'];
+    //   $submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
+    //   //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
+    //   $submitbiddocdate_is_finished = 0;
+    //   if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
+    //   $submitbiddocdate_id = $this->submitbiddocdateDao->add($projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
+    //   if($submitbiddocdate_id <= 0){
+    //     $this->display('Staticpage/wrongalert');
+    //     return;
+    //   }
+    //   $submitbiddocdate_reminder_userid = $_POST['submitbiddocdate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$submitbiddocdate_reminder_userid);
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->submitbiddocdateReminduserDao->add($submitbiddocdate_id,$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
 
-    if($isknown_startbid_date == 1){
-      $startbiddate_date = $_POST['startbiddate_date'];
-      $startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
-      //$startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
-      $startbiddate_is_finished = 0;
-      if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
-      $startbiddate_id = $this->startbiddateDao->add($projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
-      if($startbiddate_id <= 0){
-        $this->display('Staticpage/wrongalert');
-        return;
-      }
-      $startbiddate_reminder_userid = $_POST['startbiddate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$startbiddate_reminder_userid);
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->startbiddateReminduserDao->add($startbiddate_id,$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
+    // if($isknown_startbid_date == 1){
+    //   $startbiddate_date = $_POST['startbiddate_date'];
+    //   $startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
+    //   //$startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
+    //   $startbiddate_is_finished = 0;
+    //   if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
+    //   $startbiddate_id = $this->startbiddateDao->add($projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
+    //   if($startbiddate_id <= 0){
+    //     $this->display('Staticpage/wrongalert');
+    //     return;
+    //   }
+    //   $startbiddate_reminder_userid = $_POST['startbiddate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$startbiddate_reminder_userid);
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->startbiddateReminduserDao->add($startbiddate_id,$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
 
-    if($isknown_margin_date == 1){
-      $margindate_date = $_POST['margindate_date'];
-      $margindate_preremind_days = $_POST['margindate_preremind_days'];
-      //$margindate_reminder_employerid = $_POST['margindate_reminder_employerid'];
-      $margindate_amount = $_POST['margindate_amount'];
-      $margindate_is_submit = 0;
-      if(isset($_POST['margindate_is_submit']))$margindate_is_submit = 1;//cb
-      $margindate_is_getback = 0;
-      if(isset($_POST['margindate_is_getback']))$margindate_is_getback = 1;//cb
-      $margindateRow = $this->margindateDao->findByProjectid($projectid);
-      $margindate_id = $this->margindateDao->add($projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
+    // if($isknown_margin_date == 1){
+    //   $margindate_date = $_POST['margindate_date'];
+    //   $margindate_preremind_days = $_POST['margindate_preremind_days'];
+    //   //$margindate_reminder_employerid = $_POST['margindate_reminder_employerid'];
+    //   $margindate_amount = $_POST['margindate_amount'];
+    //   $margindate_is_submit = 0;
+    //   if(isset($_POST['margindate_is_submit']))$margindate_is_submit = 1;//cb
+    //   $margindate_is_getback = 0;
+    //   if(isset($_POST['margindate_is_getback']))$margindate_is_getback = 1;//cb
+    //   $margindateRow = $this->margindateDao->findByProjectid($projectid);
+    //   $margindate_id = $this->margindateDao->add($projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
 
-      $margindate_reminder_userid = $_POST['margindate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$margindate_reminder_userid);	
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->margindateReminduserDao->add($margindate_id,$value);
-        if($result == false){$this->display('Staticpage/wrongalert');return;}
-      }
-    }
+    //   $margindate_reminder_userid = $_POST['margindate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$margindate_reminder_userid);	
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->margindateReminduserDao->add($margindate_id,$value);
+    //     if($result == false){$this->display('Staticpage/wrongalert');return;}
+    //   }
+    // }
 
     $resourceid = $this->projectResourceDao->add($projectid,$projectname,0,0,0,0,0,0);
     if($resourceid <= 0){$this->display('Staticpage/wrongalert');return;}
@@ -380,27 +470,56 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
 
     if(isset($_GET['projectid']))$projectid = $_GET['projectid'];
     else $projectid = $this->projectid;
     $projectRow = $this->projectDao->findById($projectid);
     $projectstatusRow = $this->projectstatusDao->findById($projectRow['currentstatusid']);
 
-
+    //当前状态
     $categoryid = $projectstatusRow['categoryid'];
     $projectstatuscategoryRow = $this->projectstatuscategoryDao->findById($categoryid);
     $currentstatusName = $projectstatuscategoryRow['name']."/".$projectstatusRow['name'];
     $projectRow['currentstatusName'] = $currentstatusName;
+    //所有往来单位信息
+    $enterpriseRowArrayById = $this->getAllEnterprises();
+    //业务员
+    $clerkRow = $this->personDao->findById($projectRow['clerk_personid']);
+    $clerk_info = "";
+    if($clerkRow!=false)$clerk_info = func_getPersonInfo($clerkRow['name'],$clerkRow['phone'],$enterpriseRowArrayById[$clerkRow['enterpriseid']]['name']);
+    $projectRow['clerkInfo']=$clerk_info;
+    //甲方项目负责人
+    $aProjectDirectorRow = $this->personDao->findById($projectRow['a_project_director_personid']);
+    $aProjectDirectorInfo = "";
+    if($aProjectDirectorRow!=false)$aProjectDirectorInfo = func_getPersonInfo($aProjectDirectorRow['name'],$aProjectDirectorRow['phone'],$enterpriseRowArrayById[$aProjectDirectorRow['enterpriseid']]['name']);
+    $projectRow['aProjectDirectorInfo']=$aProjectDirectorInfo;
 
+    //甲方技术负责人
+    $aTechnologyDirectorRow = $this->personDao->findById($projectRow['a_technology_director_personid']);
+    $aTechnologyDirectorInfo = "";
+    if($aTechnologyDirectorRow!=false)$aTechnologyDirectorInfo = func_getPersonInfo($aTechnologyDirectorRow['name'],$aTechnologyDirectorRow['phone'],$enterpriseRowArrayById[$aTechnologyDirectorRow['enterpriseid']]['name']);
+    $projectRow['aTechnologyDirectorInfo']=$aTechnologyDirectorInfo;
+
+    //施工单位负责人
+    $constructunitDirectorRow = $this->personDao->findById($projectRow['constructunit_director_personid']);
+    $constructunitDirectorInfo = "";
+    if($constructunitDirectorRow!=false)$constructunitDirectorInfo = func_getPersonInfo($constructunitDirectorRow['name'],$constructunitDirectorRow['phone'],$enterpriseRowArrayById[$constructunitDirectorRow['enterpriseid']]['name']);
+    $projectRow['constructunitDirectorInfo']=$constructunitDirectorInfo;
+
+    //建设单位
+    $projectRow['buildEnterprisename'] = $enterpriseRowArrayById[$projectRow['build_enterpriseid']]['name'];
+    //设计单位
+    $projectRow['designEnterprisename'] = $enterpriseRowArrayById[$projectRow['design_enterpriseid']]['name'];
+    //施工单位
+    $projectRow['constructEnterprisename'] = $enterpriseRowArrayById[$projectRow['construct_enterpriseid']]['name'];
+    //中介单位
+    $projectRow['mediatorEnterprisename'] = $enterpriseRowArrayById[$projectRow['mediator_enterpriseid']]['name'];
+    
     if($projectRow['isknown_bid_date'] == 1){
       $biddateRow = $this->biddateDao->findByProjectid($projectRow['projectid']);
       $biddateReminduserRowArray = $this->biddateReminduserDao->findByBiddateid($biddateRow['biddate_id']);
@@ -503,8 +622,13 @@ class OperProjectManageAction extends LoginAfterAction{
     $departmentRowArray = $this->departmentDao->findAll();
     //所有用户
     $userRowArray = $this->userDao->findAll();
-    //所有员工
-    $employerRowArray = $this->employerDao->findAll();
+    //所有人员
+    $peopleRowArray = $this->personDao->findAll();
+
+    foreach ($peopleRowArray as $key => $value) {
+      $enterpriseRow = $this->enterpriseDao->findById($value['enterpriseid']);
+      $peopleRowArray[$key]['enterprisename']=$enterpriseRow['name'];
+    }
 
     $this->assign('projectRow',$projectRow);
     //$this->assign('currentstatusName',$currentstatusName);
@@ -521,7 +645,7 @@ class OperProjectManageAction extends LoginAfterAction{
     $this->assign('projectDocumentRowArray',$projectDocumentRowArray);
     $this->assign('biddingrivalRowArray',$biddingrivalRowArray);
     $this->assign('userRowArray',$userRowArray);
-    $this->assign('employerRowArray',$employerRowArray);
+    $this->assign('peopleRowArray',$peopleRowArray);
 
     if(isset($this->tagIndex) == false){
       $tagIndex = 0;
@@ -531,6 +655,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editProject_addProgress(){
+    //权限检查
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $projectid = $_POST['projectid'];
     $content = $_POST['content'];
     $createdateArray = localtime(time(),true);
@@ -550,6 +681,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editProject_editProgress(){
+    //权限检查
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $progressid = $_POST['progressid'];
     $projectid = $_POST['projectid'];
     $content = $_POST['content'];
@@ -567,11 +705,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_deleteProgress(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -592,11 +727,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_addDocument(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -646,11 +778,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_editDocument(){	
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -708,14 +837,10 @@ class OperProjectManageAction extends LoginAfterAction{
     // $this->display('Test/test');
   }
 
-
   public function editProject_deleteDocument(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -744,15 +869,11 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_downloadFile(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
 
     $filepath = $_GET['filepath'];
     $filepatharray = explode("-_-",$filepath);
@@ -764,15 +885,11 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_addBiddingrival(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
 
     $projectid = $_POST['projectid'];
     $name = $_POST['name'];
@@ -796,11 +913,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_editBiddingrival(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -829,11 +943,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProject_deleteBiddingrival(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -853,11 +964,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProjectSubmit(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -866,20 +974,108 @@ class OperProjectManageAction extends LoginAfterAction{
     $projectname = $_POST['projectname'];
     $project_address = $_POST['project_address'];
     $currentstatusid = $_POST['currentstatusid'];
-    $clerkname = $_POST['clerkname'];
+
+    $clerk_personid = $_POST['clerk_personid'];
+    if(empty($clerk_personid)){
+      //新增人员
+      $clerkInfo=$_POST['clerk_info'];
+
+      $clerkArr = func_getPersonArray($clerkInfo);
+      $clerk_name = $clerkArr['name'];
+      $clerk_phone = $clerkArr['phone'];
+      $clerk_enterpriseid=intval($_POST['clerk_enterpriseid']);
+    
+      $result = $this->personDao->findByNamePhoneEnterpriseid($clerk_name,$clerk_phone,$clerk_enterpriseid);
+      if($result===false){
+        $clerk_personid = $this->personDao->add($clerk_name,$clerk_phone,$clerk_enterpriseid);
+        if(empty($clerk_personid) || $clerk_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $clerk_personid=$result['id'];
+      }
+    }
+
     $project_type = $_POST['project_type'];
     $constract_counterparty = $_POST['constract_counterparty'];
     $biddoc_type = $_POST['biddoc_type'];
     $getbid_price = $_POST['getbid_price'];
     $build_enterpriseid = $_POST['build_enterpriseid'];
-    $a_project_director_name = $_POST['a_project_director_name'];
-    $a_project_director_phone = $_POST['a_project_director_phone'];
+
+    $aProjectDirector_personid = $_POST['a_project_director_personid'];
+    if(empty($aProjectDirector_personid)){
+      //新增人员
+      $aProjectDirectorInfo=$_POST['a_project_director_info'];
+
+      $aProjectDirectorArr = func_getPersonArray($aProjectDirectorInfo);
+      $aProjectDirectorName = $aProjectDirectorArr['name'];
+      $aProjectDirectorPhone = $aProjectDirectorArr['phone'];
+      $aProjectDirectorEnterpriseid=intval($_POST['a_project_director_enterpriseid']);
+    
+      $result = $this->personDao->findByNamePhoneEnterpriseid($aProjectDirectorName,$aProjectDirectorPhone,$aProjectDirectorEnterpriseid);
+      if($result===false){
+        $aProjectDirector_personid = $this->personDao->add($aProjectDirectorName,$aProjectDirectorPhone,$aProjectDirectorEnterpriseid);
+        if(empty($aProjectDirector_personid) || $aProjectDirector_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $aProjectDirector_personid=$result['id'];
+      }
+    }
     $design_enterpriseid = $_POST['design_enterpriseid'];
-    $a_technology_director_name = $_POST['a_technology_director_name'];
-    $a_technology_director_phone = $_POST['a_technology_director_phone'];
+
+    $aTechnologyDirector_personid = $_POST['a_technology_director_personid'];
+    if(empty($aTechnologyDirector_personid)){
+      //新增人员
+      $aTechnologyDirectorInfo=$_POST['a_technology_director_info'];
+
+      $aTechnologyDirectorArr = func_getPersonArray($aTechnologyDirectorInfo);
+      $aTechnologyDirectorName = $aTechnologyDirectorArr['name'];
+      $aTechnologyDirectorPhone = $aTechnologyDirectorArr['phone'];
+      $aTechnologyDirectorEnterpriseid=intval($_POST['a_technology_director_enterpriseid']);
+    
+      $result = $this->personDao->findByNamePhoneEnterpriseid($aTechnologyDirectorName,$aTechnologyDirectorPhone,$aTechnologyDirectorEnterpriseid);
+      if($result===false){
+        $aTechnologyDirector_personid = $this->personDao->add($aTechnologyDirectorName,$aTechnologyDirectorPhone,$aTechnologyDirectorEnterpriseid);
+        if(empty($aTechnologyDirector_personid) || $aTechnologyDirector_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $aTechnologyDirector_personid=$result['id'];
+      }
+    }
+
+
     $construct_enterpriseid = $_POST['construct_enterpriseid'];
-    $constructunit_director_name = $_POST['constructunit_director_name'];
-    $constructunit_director_phone = $_POST['constructunit_director_phone'];
+
+    $aConstructunitDirector_personid = $_POST['a_constructunit_director_personid'];
+    if(empty($aConstructunitDirector_personid)){
+      //新增人员
+      $aConstructunitDirectorInfo=$_POST['a_constructunit_director_info'];
+      $aConstructunitDirectorArr = func_getPersonArray($aConstructunitDirectorInfo);
+      $aConstructunitDirectorName = $aConstructunitDirectorArr['name'];
+      $aConstructunitDirectorPhone = $aConstructunitDirectorArr['phone'];
+      $aConstructunitDirectorEnterpriseid=intval($_POST['a_constructunit_director_enterpriseid']);
+    
+      $result = $this->personDao->findByNamePhoneEnterpriseid($aConstructunitDirectorName,$aConstructunitDirectorPhone,$aConstructunitDirectorEnterpriseid);
+      if($result===false){
+        $aConstructunitDirector_personid = $this->personDao->add($aConstructunitDirectorName,$aConstructunitDirectorPhone,$aConstructunitDirectorEnterpriseid);
+        if(empty($aConstructunitDirector_personid) || $aConstructunitDirector_personid<=0){
+          $this->display('Staticpage/wrongalert');
+          return;
+        }
+      }
+      else{
+        $aConstructunitDirector_personid=$result['id'];
+      }
+    }
+
     $mediator_enterpriseid = $_POST['mediator_enterpriseid'];
     $mediator_constract = $_POST['mediator_constract'];
     $covered_area = $_POST['covered_area'];
@@ -888,121 +1084,148 @@ class OperProjectManageAction extends LoginAfterAction{
     $scale = $_POST['scale'];
     $project_basic_info = $_POST['project_basic_info'];
 
+    //招标时间
     $isknown_bid_date = 0;
     if(isset($_POST['isknown_bid_date']))$isknown_bid_date = 1;//cb
-    if($isknown_bid_date == 1){
+    if($isknown_bid_date == 0){
+      $this->biddateDao->deleteByProjectid($projectid);
+    }
+    else{
+      $biddateReminder_personid = $_POST['biddate_reminder_personid'];
+      if(empty($biddateReminder_personid)){
+      //新增人员
+        $biddateReminderInfo=$_POST['biddate_reminder_info'];
+        $biddateReminderArr = func_getPersonArray($biddateReminderInfo);
+        $biddateReminderName = $biddateReminderArr['name'];
+        $biddateReminderPhone = $biddateReminderArr['phone'];
+        $biddateReminderEnterpriseid=intval($_POST['biddate_reminder_enterpriseid']);
+
+        $result = $this->personDao->findByNamePhoneEnterpriseid($biddateReminderName,$biddateReminderPhone,$biddateReminderEnterpriseid);
+        if($result===false){
+          $biddateReminder_personid = $this->personDao->add($biddateReminderName,$biddateReminderPhone,$biddateReminderEnterpriseid);
+          if(empty($biddateReminder_personid) || $biddateReminder_personid<=0){
+            $this->display('Staticpage/wrongalert');
+            return;
+          }
+        }
+        else{
+          $biddateReminder_personid=$result['id'];
+        }
+      }
+
       $biddate_date = $_POST['biddate_date'];
       $biddate_preremind_days = $_POST['biddate_preremind_days'];
-      //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
       $biddate_is_finished = 0;
       if(isset($_POST['biddate_is_finished']))$biddate_is_finished = 1;//cb
       $biddateRow = $this->biddateDao->findByProjectid($projectid);
-      if($biddateRow == NULL){
-        $this->biddateDao->add($projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished);
-        $biddateRow = $this->biddateDao->findByProjectid($projectid);
-      }
-      else $this->biddateDao->updateById($biddateRow['biddate_id'],$projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished);
-
-      $biddate_reminder_userid = $_POST['biddate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$biddate_reminder_userid);
-      $biddateReminduserRowArray = $this->biddateReminduserDao->findByBiddateid($biddateRow['biddate_id']);
-      foreach($biddateReminduserRowArray as $value){
-        $result = $this->biddateReminduserDao->deleteById($value['id']);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->biddateReminduserDao->add($biddateRow['biddate_id'],$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
-    else{
-      $biddateRow = $this->biddateDao->findByProjectid($projectid);
-      if($biddateRow != NULL)$this->biddateDao->deleteById($biddateRow['biddate_id']);
+      if($biddateRow==false)$this->biddateDao->add($projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished,$biddateReminder_personid);
+      else{$this->biddateDao->updateById($biddateRow['biddate_id'],$projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished,$biddateReminder_personid);}
     }
 
+    // if($isknown_bid_date == 1){
+    //   $biddate_date = $_POST['biddate_date'];
+    //   $biddate_preremind_days = $_POST['biddate_preremind_days'];
+    //   //$biddate_reminder_employerid = $_POST['biddate_reminder_employerid'];
+    //   $biddate_is_finished = 0;
+    //   if(isset($_POST['biddate_is_finished']))$biddate_is_finished = 1;//cb
+    //   $biddateRow = $this->biddateDao->findByProjectid($projectid);
+    //   if($biddateRow == NULL){
+    //     $this->biddateDao->add($projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished);
+    //     $biddateRow = $this->biddateDao->findByProjectid($projectid);
+    //   }
+    //   else $this->biddateDao->updateById($biddateRow['biddate_id'],$projectid,$biddate_date,$biddate_preremind_days,$biddate_is_finished);
 
-
-    $isknown_questionanswer_date = 0;
-    if(isset($_POST['isknown_questionanswer_date']))$isknown_questionanswer_date = 1;//cb
-    if($isknown_questionanswer_date == 1){
-      $questionanswerdate_date = $_POST['questionanswerdate_date'];
-      $questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
-      //$questionanswerdate_reminder_employerid = $_POST['questionanswerdate_reminder_userid'];
-      $questionanswerdate_is_finished = 0;
-      if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
-      $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
-      if($questionanswerdateRow == NULL){
-        $this->questionanswerdateDao->add($projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
-        $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
-      }
-      else $this->questionanswerdateDao->updateById($questionanswerdateRow['questionanswerdate_id'],$projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
-
-      $questionanswerdate_reminder_userid = $_POST['questionanswerdate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$questionanswerdate_reminder_userid);
-      $questionanswerdateReminduserRowArray = $this->questionanswerdateReminduserDao->findByquestionanswerdateid($questionanswerdateRow['questionanswerdate_id']);
-      foreach($questionanswerdateReminduserRowArray as $value){
-        $result = $this->questionanswerdateReminduserDao->deleteById($value['id']);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->questionanswerdateReminduserDao->add($questionanswerdateRow['questionanswerdate_id'],$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
-    else{
-      $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
-      if($questionanswerdateRow != NULL)$this->questionanswerdateDao->deleteById($questionanswerdateRow['questionanswerdate_id']);
-    }
-    // $questionanswerdate_date = $_POST['questionanswerdate_date'];
-    // $questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
-    // $questionanswerdate_reminder_employerid = $_POST['questionanswerdate_reminder_employerid'];
-    // $questionanswerdate_is_finished = 0;
-    // if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
+    //   $biddate_reminder_userid = $_POST['biddate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$biddate_reminder_userid);
+    //   $biddateReminduserRowArray = $this->biddateReminduserDao->findByBiddateid($biddateRow['biddate_id']);
+    //   foreach($biddateReminduserRowArray as $value){
+    //     $result = $this->biddateReminduserDao->deleteById($value['id']);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->biddateReminduserDao->add($biddateRow['biddate_id'],$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
+    // else{
+    //   $biddateRow = $this->biddateDao->findByProjectid($projectid);
+    //   if($biddateRow != NULL)$this->biddateDao->deleteById($biddateRow['biddate_id']);
+    // }
 
 
 
+    // $isknown_questionanswer_date = 0;
+    // if(isset($_POST['isknown_questionanswer_date']))$isknown_questionanswer_date = 1;//cb
+    // if($isknown_questionanswer_date == 1){
+    //   $questionanswerdate_date = $_POST['questionanswerdate_date'];
+    //   $questionanswerdate_preremind_days = $_POST['questionanswerdate_preremind_days'];
+    //   //$questionanswerdate_reminder_employerid = $_POST['questionanswerdate_reminder_userid'];
+    //   $questionanswerdate_is_finished = 0;
+    //   if(isset($_POST['questionanswerdate_is_finished']))$questionanswerdate_is_finished = 1;//cb
+    //   $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
+    //   if($questionanswerdateRow == NULL){
+    //     $this->questionanswerdateDao->add($projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
+    //     $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
+    //   }
+    //   else $this->questionanswerdateDao->updateById($questionanswerdateRow['questionanswerdate_id'],$projectid,$questionanswerdate_date,$questionanswerdate_preremind_days,$questionanswerdate_is_finished);
 
+    //   $questionanswerdate_reminder_userid = $_POST['questionanswerdate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$questionanswerdate_reminder_userid);
+    //   $questionanswerdateReminduserRowArray = $this->questionanswerdateReminduserDao->findByquestionanswerdateid($questionanswerdateRow['questionanswerdate_id']);
+    //   foreach($questionanswerdateReminduserRowArray as $value){
+    //     $result = $this->questionanswerdateReminduserDao->deleteById($value['id']);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->questionanswerdateReminduserDao->add($questionanswerdateRow['questionanswerdate_id'],$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
+    // else{
+    //   $questionanswerdateRow = $this->questionanswerdateDao->findByProjectid($projectid);
+    //   if($questionanswerdateRow != NULL)$this->questionanswerdateDao->deleteById($questionanswerdateRow['questionanswerdate_id']);
+    // }
+    
+    // $isknown_submitbiddoc_date = 0;
+    // if(isset($_POST['isknown_submitbiddoc_date']))$isknown_submitbiddoc_date = 1;//cb
+    // if($isknown_submitbiddoc_date == 1){
+    //   $submitbiddocdate_date = $_POST['submitbiddocdate_date'];
+    //   $submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
+    //   //$submitbiddocdate_reminder_employerid = $_POST['submitbiddocdate_reminder_employerid'];
+    //   $submitbiddocdate_is_finished = 0;
+    //   if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
+    //   $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
+    //   if($submitbiddocdateRow == NULL){
+    //     $this->submitbiddocdateDao->add($projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
+    //     $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
+    //   }
+    //   else $this->submitbiddocdateDao->updateById($submitbiddocdateRow['submitbiddocdate_id'],$projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
 
-    $isknown_submitbiddoc_date = 0;
-    if(isset($_POST['isknown_submitbiddoc_date']))$isknown_submitbiddoc_date = 1;//cb
-    if($isknown_submitbiddoc_date == 1){
-      $submitbiddocdate_date = $_POST['submitbiddocdate_date'];
-      $submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
-      //$submitbiddocdate_reminder_employerid = $_POST['submitbiddocdate_reminder_employerid'];
-      $submitbiddocdate_is_finished = 0;
-      if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
-      $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
-      if($submitbiddocdateRow == NULL){
-        $this->submitbiddocdateDao->add($projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
-        $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
-      }
-      else $this->submitbiddocdateDao->updateById($submitbiddocdateRow['submitbiddocdate_id'],$projectid,$submitbiddocdate_date,$submitbiddocdate_preremind_days,$submitbiddocdate_is_finished);
-
-      $submitbiddocdate_reminder_userid = $_POST['submitbiddocdate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$submitbiddocdate_reminder_userid);
-      $submitbiddocdateReminduserRowArray = $this->submitbiddocdateReminduserDao->findBysubmitbiddocdateid($submitbiddocdateRow['submitbiddocdate_id']);
-      foreach($submitbiddocdateReminduserRowArray as $value){
-        $result = $this->submitbiddocdateReminduserDao->deleteById($value['id']);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->submitbiddocdateReminduserDao->add($submitbiddocdateRow['submitbiddocdate_id'],$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
-    else{
-      $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
-      if($submitbiddocdateRow != NULL)$this->submitbiddocdateDao->deleteById($submitbiddocdateRow['submitbiddocdate_id']);
-    }
+    //   $submitbiddocdate_reminder_userid = $_POST['submitbiddocdate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$submitbiddocdate_reminder_userid);
+    //   $submitbiddocdateReminduserRowArray = $this->submitbiddocdateReminduserDao->findBysubmitbiddocdateid($submitbiddocdateRow['submitbiddocdate_id']);
+    //   foreach($submitbiddocdateReminduserRowArray as $value){
+    //     $result = $this->submitbiddocdateReminduserDao->deleteById($value['id']);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->submitbiddocdateReminduserDao->add($submitbiddocdateRow['submitbiddocdate_id'],$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
+    // else{
+    //   $submitbiddocdateRow = $this->submitbiddocdateDao->findByProjectid($projectid);
+    //   if($submitbiddocdateRow != NULL)$this->submitbiddocdateDao->deleteById($submitbiddocdateRow['submitbiddocdate_id']);
+    // }
 
     // $submitbiddocdate_date = $_POST['submitbiddocdate_date'];
     // $submitbiddocdate_preremind_days = $_POST['submitbiddocdate_preremind_days'];
@@ -1010,84 +1233,85 @@ class OperProjectManageAction extends LoginAfterAction{
     // $submitbiddocdate_is_finished = 0;
     // if(isset($_POST['submitbiddocdate_is_finished']))$submitbiddocdate_is_finished = 1;//cb
 
-    $isknown_startbid_date = 0;
-    if(isset($_POST['isknown_startbid_date']))$isknown_startbid_date = 1;//cb
-    if($isknown_startbid_date == 1){
-      $startbiddate_date = $_POST['startbiddate_date'];
-      $startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
-      //$startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
-      $startbiddate_is_finished = 0;
-      if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
-      $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
-      if($startbiddateRow == NULL){
-        $this->startbiddateDao->add($projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
-        $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
-      }
+    // $isknown_startbid_date = 0;
+    // if(isset($_POST['isknown_startbid_date']))$isknown_startbid_date = 1;//cb
+    // if($isknown_startbid_date == 1){
+    //   $startbiddate_date = $_POST['startbiddate_date'];
+    //   $startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
+    //   //$startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
+    //   $startbiddate_is_finished = 0;
+    //   if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
+    //   $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
+    //   if($startbiddateRow == NULL){
+    //     $this->startbiddateDao->add($projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
+    //     $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
+    //   }
 
-      else $this->startbiddateDao->updateById($startbiddateRow['startbiddate_id'],$projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
+    //   else $this->startbiddateDao->updateById($startbiddateRow['startbiddate_id'],$projectid,$startbiddate_date,$startbiddate_preremind_days,$startbiddate_is_finished);
 
-      $startbiddate_reminder_userid = $_POST['startbiddate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$startbiddate_reminder_userid);
-      $startbiddateReminduserRowArray = $this->startbiddateReminduserDao->findBystartbiddateid($startbiddateRow['startbiddate_id']);
-      foreach($startbiddateReminduserRowArray as $value){
-        $result = $this->startbiddateReminduserDao->deleteById($value['id']);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->startbiddateReminduserDao->add($startbiddateRow['startbiddate_id'],$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
-    else{
-      $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
-      if($startbiddateRow != NULL)$this->startbiddateDao->deleteById($startbiddateRow['startbiddate_id']);
-    }
+    //   $startbiddate_reminder_userid = $_POST['startbiddate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$startbiddate_reminder_userid);
+    //   $startbiddateReminduserRowArray = $this->startbiddateReminduserDao->findBystartbiddateid($startbiddateRow['startbiddate_id']);
+    //   foreach($startbiddateReminduserRowArray as $value){
+    //     $result = $this->startbiddateReminduserDao->deleteById($value['id']);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->startbiddateReminduserDao->add($startbiddateRow['startbiddate_id'],$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
+    // else{
+    //   $startbiddateRow = $this->startbiddateDao->findByProjectid($projectid);
+    //   if($startbiddateRow != NULL)$this->startbiddateDao->deleteById($startbiddateRow['startbiddate_id']);
+    // }
+
     // $startbiddate_date = $_POST['startbiddate_date'];
     // $startbiddate_preremind_days = $_POST['startbiddate_preremind_days'];
     // $startbiddate_reminder_employerid = $_POST['startbiddate_reminder_employerid'];
     // $startbiddate_is_finished = 0;
     // if(isset($_POST['startbiddate_is_finished']))$startbiddate_is_finished = 1;//cb
 
-    $isknown_margin_date = 0;
-    if(isset($_POST['isknown_margin_date']))$isknown_margin_date = 1;//cb
-    if($isknown_margin_date == 1){
-      $margindate_date = $_POST['margindate_date'];
-      $margindate_preremind_days = $_POST['margindate_preremind_days'];
-      //$margindate_reminder_employerid = $_POST['margindate_reminder_employerid'];
-      $margindate_amount = $_POST['margindate_amount'];
-      $margindate_is_submit = 0;
-      if(isset($_POST['margindate_is_submit']))$margindate_is_submit = 1;//cb
-      $margindate_is_getback = 0;
-      if(isset($_POST['margindate_is_getback']))$margindate_is_getback = 1;//cb
-      $margindateRow = $this->margindateDao->findByProjectid($projectid);
-      if($margindateRow == NULL){
-        $this->margindateDao->add($projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
-        $margindateRow = $this->margindateDao->findByProjectid($projectid);
-      }
-      else $this->margindateDao->updateById($margindateRow['margindate_id'],$projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
+    // $isknown_margin_date = 0;
+    // if(isset($_POST['isknown_margin_date']))$isknown_margin_date = 1;//cb
+    // if($isknown_margin_date == 1){
+    //   $margindate_date = $_POST['margindate_date'];
+    //   $margindate_preremind_days = $_POST['margindate_preremind_days'];
+    //   //$margindate_reminder_employerid = $_POST['margindate_reminder_employerid'];
+    //   $margindate_amount = $_POST['margindate_amount'];
+    //   $margindate_is_submit = 0;
+    //   if(isset($_POST['margindate_is_submit']))$margindate_is_submit = 1;//cb
+    //   $margindate_is_getback = 0;
+    //   if(isset($_POST['margindate_is_getback']))$margindate_is_getback = 1;//cb
+    //   $margindateRow = $this->margindateDao->findByProjectid($projectid);
+    //   if($margindateRow == NULL){
+    //     $this->margindateDao->add($projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
+    //     $margindateRow = $this->margindateDao->findByProjectid($projectid);
+    //   }
+    //   else $this->margindateDao->updateById($margindateRow['margindate_id'],$projectid,$margindate_date,$margindate_preremind_days,$margindate_amount,$margindate_is_submit,$margindate_is_getback);
 
-      $margindate_reminder_userid = $_POST['margindate_reminder_userid'];
-      //处理字串
-      $useridArray = explode(",",$margindate_reminder_userid);
-      $margindateReminduserRowArray = $this->margindateReminduserDao->findBymargindateid($margindateRow['margindate_id']);
-      foreach($margindateReminduserRowArray as $value){
-        $result = $this->margindateReminduserDao->deleteById($value['id']);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-      foreach($useridArray as $value){
-        $value = trim($value);
-        if($value == "")continue;
-        $result = $this->margindateReminduserDao->add($margindateRow['margindate_id'],$value);
-        if($result == false)$this->display('Staticpage/wrongalert');
-      }
-    }
-    else{
-      $margindateRow = $this->margindateDao->findByProjectid($projectid);
-      if($margindateRow != NULL)$this->margindateDao->deleteById($margindateRow['margindate_id']);
-    }
+    //   $margindate_reminder_userid = $_POST['margindate_reminder_userid'];
+    //   //处理字串
+    //   $useridArray = explode(",",$margindate_reminder_userid);
+    //   $margindateReminduserRowArray = $this->margindateReminduserDao->findBymargindateid($margindateRow['margindate_id']);
+    //   foreach($margindateReminduserRowArray as $value){
+    //     $result = $this->margindateReminduserDao->deleteById($value['id']);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    //   foreach($useridArray as $value){
+    //     $value = trim($value);
+    //     if($value == "")continue;
+    //     $result = $this->margindateReminduserDao->add($margindateRow['margindate_id'],$value);
+    //     if($result == false)$this->display('Staticpage/wrongalert');
+    //   }
+    // }
+    // else{
+    //   $margindateRow = $this->margindateDao->findByProjectid($projectid);
+    //   if($margindateRow != NULL)$this->margindateDao->deleteById($margindateRow['margindate_id']);
+    // }
 
     // $margindate_date = $_POST['margindate_date'];
     // $margindate_preremind_days = $_POST['margindate_preremind_days'];
@@ -1105,25 +1329,46 @@ class OperProjectManageAction extends LoginAfterAction{
     //$this->assign('test',$build_enterpriseid);
     //$this->display('Test/test');
 
-    //dealing data
-    $result = $this->projectDao->updateById($projectid,$projectname,$currentstatusid,$clerkname,$build_enterpriseid,$design_enterpriseid,
-      $construct_enterpriseid,$mediator_enterpriseid,$mediator_constract,$project_address,$project_type,
-      $constract_counterparty,$a_project_director_name,$a_project_director_phone,$a_technology_director_name,$a_technology_director_phone,
-      $constructunit_director_name,$constructunit_director_phone,$biddoc_type,$getbid_price,$use_purpose,
-      $covered_area,$info_source,$scale,$project_basic_info,$isknown_bid_date,
-      $isknown_questionanswer_date,$isknown_submitbiddoc_date,$isknown_startbid_date,$isknown_margin_date,$advantage,
-      $drawback);
+    $result = $this->projectDao->updateById(
+      $projectid,
+      $projectname,
+      $currentstatusid,
+      $clerk_personid,
+      $build_enterpriseid,
+      $design_enterpriseid,
+      $construct_enterpriseid,
+      $mediator_enterpriseid,
+      $mediator_constract,
+      $project_address,
+      $project_type,
+      $constract_counterparty,
+      $aProjectDirector_personid,
+      $aTechnologyDirector_personid,
+      $constructunit_director_personid,
+      $biddoc_type,
+      $getbid_price,
+      $use_purpose,
+      $covered_area,
+      $info_source,
+      $scale,
+      $project_basic_info,
+      $isknown_bid_date,
+      $isknown_questionanswer_date,
+      $isknown_submitbiddoc_date,
+      $isknown_startbid_date,
+      $isknown_margin_date,
+      $advantage,
+      $drawback
+      );
+
     if($result == false)$this->display('Staticpage/wrongalert');
     else $this->redirect('OperProjectManage/listProject');
   }
 
   public function deleteProject(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_EXPLORE;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目开拓";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1147,11 +1392,8 @@ class OperProjectManageAction extends LoginAfterAction{
   //项目维护--------------------------------------------------------------------------------
   public function maintenanceProject(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1176,11 +1418,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function projectResource(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1209,11 +1448,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function addProjectResource(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1259,11 +1495,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function getSubsidiary(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1276,11 +1509,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function getAuthorityUser(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1292,11 +1522,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function updateProjectResource(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1312,11 +1539,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteProjectResource(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1351,11 +1575,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function getSubcontractor(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1368,11 +1589,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function addSubcontractor(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1393,11 +1611,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteSubcontractor(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1409,11 +1624,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function getSubcontractorWorker(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1426,11 +1638,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function addSubcontractorWorker(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1448,12 +1657,9 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function updateSubcontractorWorker(){
-    //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+   //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1466,11 +1672,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteSubcontractorWorker(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1480,17 +1683,30 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function getWarehouse(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
 
     $resource_id=$_POST['resource_id'];
     $related_warehouse=$this->warehouseDao->getByResourceId($resource_id);
-
     $this->ajaxReturn($related_warehouse,'JSON');
   }
 
   public function addWarehouse(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $warehouse_name=$_POST['warehouse_name'];
-    $result=$this->warehouseDao->add($warehouse_name,$resource_id);
+    $warehouse_info = $_POST['warehouse_info'];
+    $result=$this->warehouseDao->add($warehouse_name,$warehouse_info,$resource_id);
 
     if($result == -1){
       $this->display('Staticpage/wrongalert');
@@ -1502,28 +1718,23 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function updateWarehouse(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
 
     $warehouse_name=$_POST['warehouse_name'];
     $warehouse_id=$_POST['warehouse_id'];
+    $warehouse_info = $_POST['warehouse_info'];
 
     $result=$this->warehouseDao->updateById($warehouse_name,$warehouse_id);
   }
 
   public function deleteWarehouse(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1533,6 +1744,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function getWarehouseWorker(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $related_warehouse_worker=$this->warehouseWorkerDao->getByResourceId($resource_id);
 
@@ -1540,6 +1758,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function addWarehouseWorker(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $warehouse_worker_name=$_POST['warehouse_worker_name'];
     $result=$this->warehouseWorkerDao->add($warehouse_worker_name,$resource_id);
@@ -1554,11 +1779,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function updateWarehouseWorker(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1571,11 +1793,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteWarehouseWorker(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1585,6 +1804,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function getProjectProcess(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $related_project_process=$this->projectProcessDao->findByResourceId($resource_id);
 
@@ -1593,11 +1819,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function addProjectProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1624,11 +1847,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function updateProjectProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1649,11 +1869,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteProjectProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1665,11 +1882,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editProjectResource(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1736,6 +1950,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function getStandardProject(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $standardProjectRow=$this->standardProjectDao->findByResourceId($resource_id);		
 
@@ -1747,12 +1968,26 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function getControlSetting(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $controlSettingRow=$this->controlSettingDao->findByResourceId($resource_id);			
     $this->ajaxReturn($controlSettingRow,'JSON');
   }
 
   public function getResourceDocument(){
+    //权限检查
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $related_resource_document=$this->resourceDocumentDao->findByResourceid($resource_id);
     foreach($related_resource_document as $key=>$value){
@@ -1764,24 +1999,12 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function addResourceDocument(){
- /*           $check=$_POST['check'];    
-            if(!empty($_FILES['documentFile'])){
-                $data['id']=$check;
-          echo json_encode($data);
-
-            }           
-
-  */
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
-    }   
-
+    }  
 
     $resource_id=$_POST['resource_id'];
     $check=$_POST['check'];
@@ -1823,14 +2046,12 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editResourceDocument(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
+
     $document_id=$_POST['document_id'];
     $serial_number = $_POST['serial_number'];
     $update_date = date("Y-m-d",time());
@@ -1862,11 +2083,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function deleteResourceDocument(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1888,15 +2106,11 @@ class OperProjectManageAction extends LoginAfterAction{
   //项目进度填报----------------------------------------------------------------------------
   public function resourceProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_SCHEDULE_INPUT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目进度填报";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
 
     $resourceRowArray = $this->projectResourceDao->findAll();
     $this->assign('resourceRowArray',$resourceRowArray);
@@ -1936,11 +2150,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function resourceProcess_addPeriodwork(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_SCHEDULE_INPUT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目进度填报";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1972,11 +2183,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function resourceProcess_editPeriodwork(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_SCHEDULE_INPUT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目进度填报";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -1999,11 +2207,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function resourceProcess_deletePeriodwork(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_SCHEDULE_INPUT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目进度填报";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -2025,15 +2230,11 @@ class OperProjectManageAction extends LoginAfterAction{
   //项目形象进度------------------------------------------------------------------------------
   public function chartsProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_SCHEDULE_SHOW;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="项目形象进度";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-
 
     $resourceRowArray = $this->projectResourceDao->findAll();
     $this->assign('resourceRowArray',$resourceRowArray);
@@ -2083,11 +2284,8 @@ class OperProjectManageAction extends LoginAfterAction{
   //承包合同----------------------------------------------------------------------------------
   public function addContract(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_CONTRACT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -2120,6 +2318,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function addContractSubmit(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     if(isset($_POST['resource_id'])==false || $_POST['resource_id']==0){
       $this->display('Staticpage/wrongalert');
       return;
@@ -2210,11 +2415,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editContract(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_CONTRACT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -2281,11 +2483,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function editContract_addcontent(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_CONTRACT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -2313,13 +2512,26 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_deleteContent(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contentid = $_POST['contentid'];
     $result = $this->contractContentDao->deleteById($contentid);
-
     echo json_encode($result);
   }
 
   public function editContract_editContent(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contentid = $_POST['contentid'];
     $category = $_POST['category'];
     $name = $_POST['name'];
@@ -2337,11 +2549,14 @@ class OperProjectManageAction extends LoginAfterAction{
 
 
   public function editContract_uploadfile(){
-    $returnData = array();
-    //$returnData['documentid'] = -1;
-    //echo json_encode($returnData);
-    //return;
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
 
+    $returnData = array();
     $doc_name = $_POST['name'];
     $doc_remark = $_POST['remark'];
     $contractid = $_POST['contractid'];
@@ -2380,6 +2595,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_uploadfileOrigin(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $doc_name = $_POST['name'];
     $doc_remark = $_POST['remark'];
     $contractid = $_POST['contractid'];
@@ -2413,6 +2635,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_deletefile(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $data = false;
     $documentid = $_POST['documentid'];
     if($documentid <= 0){$data=false;return;}
@@ -2431,6 +2660,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_downloadDocument(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_GET['documentid'];
     $documentRow = $this->contractDocumentDao->findById($documentid);
     $filepath = $documentRow['path'];
@@ -2446,33 +2682,18 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_downloadDocumentOrigin(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_GET['documentid'];
     $documentRow = $this->contractDocumentOriginDao->findById($documentid);
     $filepath = $documentRow['path'];
-
-    //$downloadFilename = preg_replace('/^.+[\\\\\\/]/','',$filepath );
-    //$this->assign('test',basename($filepath));
-    //$this->display('Test/test');
-    //return;
-    //$filepath = iconv("utf-8", "gbk", $filepath);
     if(is_file($filepath)){
       func_downloadFile($filepath);
-      // header("Content-Type: application/force-download");
-      // header("Content-Disposition: attachment; filename=".basename($filepath));
-      // readfile($filepath);
-      // exit;
-
-      // $file = fopen($filepath,"r"); // 打开文件
-      // // 输入文件标签
-      // Header("Content-type: application/octet-stream");
-      // Header("Accept-Ranges: bytes");
-      // Header("Accept-Length: ".filesize($filepath));
-      // Header("Content-Disposition: attachment; filename=" ."abc.xlsx");
-      // // 输出文件内容
-      // echo fread($file,filesize($filepath));
-      // fclose($file);
-      // exit();
-
     }else{
       echo "文件不存在！";
       exit;
@@ -2480,15 +2701,20 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_deletefileOrigin(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $data = false;
     $documentid = $_POST['documentid'];
     if($documentid <= 0){$data=false;return;}
     $documentRow = $this->contractDocumentOriginDao->findById($documentid);
     $filepath = $documentRow['path'];
-    //echo json_encode($filepath);
-    //return;
+    
     //删除文件
-    //$filepath = iconv("utf-8", "gbk", $filepath);
     $result = unlink($filepath);
     if($result == false){echo json_encode($data);return;}
     //删除数据库信息
@@ -2498,6 +2724,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_editDocument(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $returnData = array();
     $doc_name = $_POST['doc_name'];
     $doc_remark = $_POST['doc_remark'];
@@ -2508,12 +2741,6 @@ class OperProjectManageAction extends LoginAfterAction{
     $contractDocumentRow = $this->contractDocumentDao->findById($documentid);
     $result = $this->contractDocumentDao->updateById($documentid,$contractDocumentRow['contractid'],$doc_name,$contractDocumentRow['path'],$doc_remark,$contractDocumentRow['create_userid'],$userRow['userid'],$contractDocumentRow['checked_userid']);
     if($result == false){$returnData['documentid'] = 0;echo json_encode($returnData);return;}
-
-    //扩展名
-    //$suffix = substr($contractDocumentRow['path'],strrpos($contractDocumentRow['path'],".")+1);
-    //创建人
-    //$userInfoRow = $this->userInfoByUserid($contractDocumentRow['create_userid']);
-    //$create_user_info = $userInfoRow['name']."[".$userInfoRow['employer_number']."]";
 
     //最后修改人
     $userInfoRow = $this->userInfoByUserid($userRow['userid']);
@@ -2531,6 +2758,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_editDocumentOrigin(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $returnData = array();
     $doc_name = $_POST['doc_name'];
     $doc_remark = $_POST['doc_remark'];
@@ -2550,6 +2784,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function editContract_checkDocument(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_POST['documentid'];
     $operation = $_POST['operation'];
     $returnData = array();
@@ -2566,19 +2807,13 @@ class OperProjectManageAction extends LoginAfterAction{
       $returnData['result'] = $result;
     }
 
-
-    //$returnData['operation'] = $operation;
-    //$returnData['result'] = $operation;
     echo json_encode($returnData);
   }
 
   public function deleteContract(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_CONTRACT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -2623,6 +2858,13 @@ class OperProjectManageAction extends LoginAfterAction{
 
 
   public function checkContract(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contractid = $_POST['contractid'];
     $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
     //修改状态
@@ -2634,8 +2876,14 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function cancelcheckContract(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contractid = $_POST['contractid'];
-    //$userRow = $this->userDao->findByUsername($_SESSION['my_username']);
     //修改状态
     $this->contractDao->updateCheckstatusById($contractid,0);
     //返回
@@ -2645,6 +2893,13 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function finalcostContract(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contractid = $_POST['contractid'];
     $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
     //修改状态
@@ -2656,8 +2911,14 @@ class OperProjectManageAction extends LoginAfterAction{
   }
 
   public function cancelfinalcostContract(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contractid = $_POST['contractid'];
-    //$userRow = $this->userDao->findByUsername($_SESSION['my_username']);
     //修改状态
     $this->contractDao->updateFinalcoststatusById($contractid,0);
     //返回
@@ -2668,13 +2929,18 @@ class OperProjectManageAction extends LoginAfterAction{
 
 
   public function editContractSubmit(){
+    //权限检查
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     if(isset($_POST['contractid'])==false || $_POST['contractid']==0){
       $this->display('Staticpage/wrongalert');
       return;
     }
 
-    // $this->display('Test/test');
-    // return;
     $contractid = $_POST['contractid'];
     $contractRow = $this->contractDao->findById($contractid);
 
@@ -2742,9 +3008,6 @@ class OperProjectManageAction extends LoginAfterAction{
       $finalcost_userid = $userRow['userid'];
     }
 
-
-
-
     $result = $this->contractDao->updateById(
       $contractid,
       $contractRow['resourceid'],$contract_name,$contract_number,$duty_officer,$companyid,
@@ -2769,11 +3032,8 @@ class OperProjectManageAction extends LoginAfterAction{
 
   public function listContract(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROJECT_CONTRACT;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="承包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }

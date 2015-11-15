@@ -1,32 +1,5 @@
 <?php
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.MaterialClassDao");
-// import("@.Model.MaterialCategoryDao");
-// import("@.Model.MaterialDao");
-// import("@.Model.MaterialrentDao");
-// import("@.Model.EnterpriseDao");
-// import("@.Model.MaterialEnquiryDao");
-// import("@.Model.ProjectResourceDao");
-// import("@.Model.MaterialEnquiryDao");
-// import("@.Model.MaterialPurchasePlanOrderDao");
-// import("@.Model.MaterialPurchasePlanOrderDetailsDao");
-// import("@.Model.MaterialcontractDao");
-// import("@.Model.MaterialcontractContentDao");
-// import("@.Model.MaterialcontractDocumentDao");
-// import("@.Model.MaterialcontractDocumentOriginDao");
-// import("@.Model.EmployerDao");
-// import("@.Model.DepartmentDao");
-// import("@.Model.CompanyDao");
-// import("@.Model.WarehouseDao");
-// import("@.Model.WarehouseWorkerDao");
-// import("@.Model.SubcontractorDao");
-// import("@.Model.SubcontractorWorkerDao");
-// import("@.Model.MaterialcontractDetailDao");
-// import("@.Model.MaterialPurchaseOrderDao");
-// import("@.Model.MaterialPurchaseOrderDetailsDao");
-// import("@.Model.MaterialOutboundOrderDao");
-// import("@.Model.MaterialOutboundOrderDetailsDao");
-// import("@.Model.MaterialInventoryDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
@@ -64,7 +37,7 @@ class OperMaterialManageAction extends LoginAfterAction
 
     private $departmentDao;
 
-    private $enterpriseDao;
+   // private $enterpriseDao;
 
     private $warehouseDao;
 
@@ -105,7 +78,7 @@ class OperMaterialManageAction extends LoginAfterAction
         $this->companyDao = new CompanyDao();
         $this->employerDao = new EmployerDao();
         $this->departmentDao = new DepartmentDao();
-        $this->enterpriseDao = new EnterpriseDao();
+       // $this->enterpriseDao = new EnterpriseDao();
         $this->warehouseDao = new WarehouseDao();
         $this->warehouseWorkerDao = new WarehouseWorkerDao();
         $this->subcontractorDao = new SubcontractorDao();
@@ -116,180 +89,17 @@ class OperMaterialManageAction extends LoginAfterAction
         $this->materialOutboundOrderDao = new MaterialOutboundOrderDao();
         $this->materialOutboundOrderDetailsDao = new MaterialOutboundOrderDetailsDao();
         $this->materialInventoryDao = new MaterialInventoryDao();
+        $this->module = substr(__CLASS__, 0,strlen(__CLASS__)-6);//6:sizeof(Action)
     }
     
-    // 材料维护------------------------------------------------------------------------------------
-    public function materialMaintain()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_MAINTAIN;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        
-        if (isset($_POST['operation'])) {
-            $result['name'] = '' . $_POST['name'] . 'succ';
-            $result['id'] = 1;
-            $this->ajaxReturn($result, "不能删除", true);
-        } else {
-            
-            // 分类，子分类
-            $materialClassRowArray = $this->materialClassDao->findAll();
-            foreach ($materialClassRowArray as $key => $value) {
-                $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
-                $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
-            }
-            // 材料实体
-            $materialRowArray = $this->materialDao->findAll();
-            foreach ($materialRowArray as $key => $value) {
-                $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
-                $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
-            }
-            $this->assign('materialClassRowArray', $materialClassRowArray);
-            $this->assign('materialRowArray', $materialRowArray);
-            $this->display('OperMaterialManage/materialMaintain');
-        }
-    }
-
-    public function materialMaintain_addClass()
-    {
-        $returnData = array();
-        $returnData['name'] = $_POST['name'];
-        $insertId = $this->materialClassDao->add($_POST['name']);
-        $returnData['id'] = $insertId;
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_deleteClass()
-    {
-        $classid = $_POST['classid'];
-        $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($classid);
-        if (count($materialCategoryRowArray) > 0) {
-            $returnData = - 1; // 还有子元素，拒绝删除
-            echo json_encode($returnData);
-            return;
-        }
-        $returnData = $this->materialClassDao->deleteById($classid);
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_editClass()
-    {
-        $returnData = array();
-        // $returnData['classid'] = $_POST['classid'];
-        $returnData['name'] = $_POST['name'];
-        $returnData['result'] = $this->materialClassDao->updateById($_POST['classid'], $_POST['name']);
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_addCategory()
-    {
-        $returnData = array();
-        $returnData['name'] = $_POST['name'];
-        // $returnData['classid'] = $_POST['classid'];
-        $insertId = $this->materialCategoryDao->add($_POST['classid'], $_POST['name']);
-        $returnData['id'] = $insertId;
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_deleteCategory()
-    {
-        $returnData = array();
-        $categoryid = $_POST['categoryid'];
-        $returnData['categoryid'] = $categoryid;
-        $materialRowArray = $this->materialDao->findByCategoryid($categoryid);
-        $materialrentRowArray = $this->materialrentDao->findByCategoryid($categoryid);
-        if (count($materialRowArray) > 0 || count($materialrentRowArray) > 0) {
-            $returnData['result'] = - 1;
-            echo json_encode($returnData);
-            return;
-        }
-        $result = $this->materialCategoryDao->deleteById($categoryid);
-        $returnData['result'] = $result;
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_editCategory()
-    {
-        $returnData = array();
-        // $returnData['categoryid'] = $_POST['categoryid'];
-        $returnData['name'] = $_POST['name'];
-        $materialCategoryRow = $this->materialCategoryDao->findById($_POST['categoryid']);
-        $returnData['result'] = $this->materialCategoryDao->updateById($_POST['categoryid'], $materialCategoryRow['classid'], $_POST['name']);
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_addMaterial()
-    {
-        $name = $_POST['name'];
-        $categoryid = $_POST['categoryid'];
-        $worktype = $_POST['worktype'];
-        $unit = $_POST['unit'];
-        $price_in = $_POST['price_in'];
-        $parameter = $_POST['parameter'];
-        $specification = $_POST['specification'];
-        $brand = $_POST['brand'];
-        $returnData = array();
-        $insertId = $this->materialDao->add($name, $categoryid, $worktype, $unit, $price_in, $parameter, $specification, $brand);
-        $materialCategoryRow = $this->materialCategoryDao->findById($categoryid);
-        $returnData['materialid'] = $insertId;
-        $returnData['classid'] = $materialCategoryRow['classid'];
-        $returnData['category_name'] = $materialCategoryRow['name'];
-        echo json_encode($returnData);
-    }
-
-    public function materialMaintain_deleteMaterial()
-    {
-        $materialid = $_POST['materialid'];
-        $result = $this->materialDao->deleteById($materialid);
-        echo json_encode($result);
-    }
-
-    public function materialMaintain_editMaterial()
-    {
-        $materialid = $_POST['id'];
-        $name = $_POST['name'];
-        $categoryid = $_POST['classid'];
-        $worktype = $_POST['type'];
-        $unit = $_POST['unit'];
-        $price_in = $_POST['price'];
-        $parameter = $_POST['parameter'];
-        $specification = $_POST['standard'];
-        $brand = $_POST['brand'];
-        $returnData = array();
-        
-        $returnData['materialid'] = $materialid;
-        $returnData['name'] = $name;
-        $returnData['categoryid'] = $categoryid;
-        $returnData['worktype'] = $worktype;
-        $returnData['unit'] = $unit;
-        $returnData['price_in'] = $price_in;
-        $returnData['parameter'] = $parameter;
-        $returnData['specification'] = $specification;
-        $returnData['brand'] = $brand;
-        
-        $result = $this->materialDao->updateById($materialid, $name, $categoryid, $worktype, $unit, $price_in, $parameter, $specification, $brand);
-        $returnData['result'] = $result;
-        // $materialid = $_POST['materialid'];
-        // $result = $this->materialDao->deleteById($materialid);
-        echo json_encode($returnData);
-    }
-    // 材料维护================================================================================
     // 材料询价================================================================================
     public function materialEnquiry()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_ENQUIRY;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
         
         // 分类，子分类
@@ -314,15 +124,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addEnquiry()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_ENQUIRY;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $enterprise_id = $_POST['enterprise_id'];
         $enquiry_offer = $_POST['enquiry_offer'];
         $offer_date = $_POST['offer_date'];
@@ -335,6 +143,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function updateEnquiry()
     {
+        //权限检查
+        $operationname="材料询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $enquiry_id = $_POST['enquiry_id'];
         $enterprise_id = $_POST['enterprise_id'];
         $enquiry_offer = $_POST['enquiry_offer'];
@@ -345,15 +160,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function getEnquiry()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_ENQUIRY;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $material_id = $_GET['material_id'];
         
         $enquiryRow = $this->materialEnquiryDao->findByMaterialId($material_id);
@@ -367,310 +180,28 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function deleteEnquiry()
     {
-        $enquiry_id = $_POST['enquiry_id'];
-        
+        //权限检查
+        $operationname="材料询价";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $enquiry_id = $_POST['enquiry_id'];    
         $result = $this->materialEnquiryDao->deleteById($enquiry_id);
     }
     // 材料询价================================================================================
-    // 材料采购单------------------------------------------------------------------------------------
-    public function listPurchaseOrder()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_PURCHASE_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        $purchaseOrderArray = $this->materialPurchaseOrderDao->getAll();
-        $resourceRowArray = $this->projectResourceDao->findAll();
-        $this->assign('purchaseOrderArray', $purchaseOrderArray);
-        $this->assign('resourceRowArray', $resourceRowArray);
-        $this->display('OperMaterialManage/listPurchaseOrder');
-    }
-
-    public function addPurchaseOrder()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_PURCHASE_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        
-        $resourceRowArray = $this->projectResourceDao->findAll();
-        $enterpriseRowArray = $this->enterpriseDao->findAll();
-        // 分类，子分类
-        $materialClassRowArray = $this->materialClassDao->findAll();
-        foreach ($materialClassRowArray as $key => $value) {
-            $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
-            $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
-        }
-        // 材料实体
-        $materialRowArray = $this->materialDao->findAll();
-        foreach ($materialRowArray as $key => $value) {
-            $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
-            $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
-        }
-        $purchasePlanOrderRow = $this->materialPurchasePlanOrderDao->findAll();
-        foreach ($purchasePlanOrderRow as $key => $value) {
-            $details = $this->materialPurchasePlanOrderDetailsDao->findByPlanId($value['plan_id']);
-            foreach ($details as $key2 => $value2) {
-                $material = $this->materialDao->findById($value2['material_id']);
-                $details[$key2]['material'] = $material;
-            }
-            $purchasePlanOrderRow[$key]['details'] = $details;
-            $resource_name = $this->projectResourceDao->findById($value['resource_id']);
-            $purchasePlanOrderRow[$key]['resource_name'] = $resource_name['resource_name'];
-        }
-        $contractRowArray = $this->materialcontractDao->findAll();
-        foreach ($contractRowArray as $key => $value) {
-            $supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
-            $contractRowArray[$key]['supplier'] = $supplier;
-            $contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
-            $totalValue = 0;
-            foreach ($contractContentRowArray as $key2 => $value2) {
-                $material = $this->materialDao->findById($value2['material_id']);
-                $contractContentRowArray[$key2]['material'] = $material;
-                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
-                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
-                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
-            }
-            $contractRowArray[$key]['totalValue'] = $totalValue;
-            $contractRowArray[$key]['content'] = $contractContentRowArray;
-        }
-        $this->assign('materialClassRowArray', $materialClassRowArray);
-        $this->assign('materialRowArray', $materialRowArray);
-        $this->assign('resourceRowArray', $resourceRowArray);
-        $this->assign('enterpriseRowArray', $enterpriseRowArray);
-        $this->assign('purchasePlanOrderRowArray', $purchasePlanOrderRow);
-        $this->assign('contractRowArray', $contractRowArray);
-        
-        $this->display('OperMaterialManage/addPurchaseOrder');
-    }
-
-    public function addPurchaseOrderSubmit()
-    {
-        $plan_id = $_POST['planid'];
-        $contract_id = $_POST['contractid'];
-        $project_id = $_POST['projectid'];
-        $enterprise_id = $_POST['enterpriseid'];
-        $document = $_POST['document'];
-        $happen_date = $_POST['happen_date'];
-        $transactor = $_POST['transactor'];
-        $in_method = $_POST['in_method'];
-        $default_warehose_id = $_POST['default_warehouse'];
-        $default_administrator_id = $_POST['default_administrator'];
-        $price = $_POST['price'];
-        $remark = $_POST['remark'];
-        $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
-        $create_user_id = $userRow['userid'];
-        $create_date = date("Y-m-d", time());
-        $material_ids = $_POST['material_id'];
-        $administrators = $_POST['administrator'];
-        $warehouses = $_POST['warehouse'];
-        $material_remarks = $_POST['material_remark'];
-        $material_prices = $_POST['material_price'];
-        $amounts = $_POST['amount'];
-        $unit_prices = $_POST['unit_price'];
-        $specifications = $_POST['specification'];
-        
-        $purchaseOrderid = $this->materialPurchaseOrderDao->add($plan_id, $contract_id, $project_id, $enterprise_id, $document, $happen_date, $transactor, $in_method, $default_warehose_id, $default_administrator_id, $price, $remark, $create_user_id, $create_date);
-        if ($purchaseOrderid <= 0) {
-            $this->display('Staticpage/wrongalert');
-            return;
-        }
-        foreach ($material_ids as $key => $value) {
-            if ($key > 0) {
-                $this->materialPurchaseOrderDetailsDao->add($value, $specifications[$key], $unit_prices[$key], $amounts[$key], $material_prices[$key], $material_remarks[$key], $warehouses[$key], $administrators[$key], $purchaseOrderid);
-            }
-        }
-        $this->redirect('OperMaterialManage/listPurchaseOrder', array(), 3, "添加采购单成功...");
-    }
-
-    public function editPurchaseOrder()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_PURCHASE_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        $enterpriseRowArray = $this->enterpriseDao->findAll();
-        // 分类，子分类
-        $materialClassRowArray = $this->materialClassDao->findAll();
-        foreach ($materialClassRowArray as $key => $value) {
-            $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
-            $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
-        }
-        // 材料实体
-        $materialRowArray = $this->materialDao->findAll();
-        foreach ($materialRowArray as $key => $value) {
-            $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
-            $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
-        }
-        $purchasePlanOrderRow = $this->materialPurchasePlanOrderDao->findAll();
-        foreach ($purchasePlanOrderRow as $key => $value) {
-            $details = $this->materialPurchasePlanOrderDetailsDao->findByPlanId($value['plan_id']);
-            foreach ($details as $key2 => $value2) {
-                $material = $this->materialDao->findById($value2['material_id']);
-                $details[$key2]['material'] = $material;
-            }
-            $purchasePlanOrderRow[$key]['details'] = $details;
-            $resource_name = $this->projectResourceDao->findById($value['resource_id']);
-            $purchasePlanOrderRow[$key]['resource_name'] = $resource_name['resource_name'];
-        }
-        $contractRowArray = $this->materialcontractDao->findAll();
-        foreach ($contractRowArray as $key => $value) {
-            $supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
-            $contractRowArray[$key]['supplier'] = $supplier;
-            $contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
-            $totalValue = 0;
-            foreach ($contractContentRowArray as $key2 => $value2) {
-                $material = $this->materialDao->findById($value2['material_id']);
-                $contractContentRowArray[$key2]['material'] = $material;
-                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
-                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
-                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
-            }
-            $contractRowArray[$key]['totalValue'] = $totalValue;
-            $contractRowArray[$key]['content'] = $contractContentRowArray;
-        }
-        $order_id = $_GET['order_id'];
-        $purchaseOrder = $this->materialPurchaseOrderDao->getById($order_id);
-        $purchaseOrderDetailsArray = $this->materialPurchaseOrderDetailsDao->getByOrderId($order_id);
-        $resource_id = $purchaseOrder['project_id'];
-        $related_warehouse = $this->warehouseDao->getByResourceId($resource_id);
-        $related_administrator = $this->warehouseWorkerDao->getByResourceId($resource_id);
-        $purchaseOrder['related_warehouse'] = $related_warehouse;
-        $purchaseOrder['related_administrator'] = $related_administrator;
-        $contractRow = $this->materialcontractDao->findById($purchaseOrder['contract_id']);
-        $purchaseOrder['contract_name'] = $contractRow['name'];
-        
-        $this->assign('materialClassRowArray', $materialClassRowArray);
-        $this->assign('materialRowArray', $materialRowArray);
-        $this->assign('enterpriseRowArray', $enterpriseRowArray);
-        $this->assign('purchasePlanOrderRowArray', $purchasePlanOrderRow);
-        $this->assign('purchaseOrder', $purchaseOrder);
-        $this->assign('purchaseOrderDetailsArray', $purchaseOrderDetailsArray);
-        $this->assign('contractRowArray', $contractRowArray);
-        $this->display('OperMaterialManage/editPurchaseOrder');
-    }
-
-    public function editPurchaseOrderSubmit()
-    {
-        $order_id = $_POST['order_id'];
-        $plan_id = $_POST['planid'];
-        $contract_id = $_POST['contractid'];
-        $project_id = $_POST['projectid'];
-        $enterprise_id = $_POST['enterpriseid'];
-        $document = $_POST['document'];
-        $happen_date = $_POST['happen_date'];
-        $transactor = $_POST['transactor'];
-        $in_method = $_POST['in_method'];
-        $default_warehouse_id = $_POST['default_warehouse'];
-        $default_administrator_id = $_POST['default_administrator'];
-        $price = $_POST['price'];
-        $remark = $_POST['remark'];
-        
-        $material_ids = $_POST['material_id'];
-        $administrators = $_POST['administrator'];
-        $warehouses = $_POST['warehouse'];
-        $material_remarks = $_POST['material_remark'];
-        $material_prices = $_POST['material_price'];
-        $amounts = $_POST['amount'];
-        $unit_prices = $_POST['unit_price'];
-        $specifications = $_POST['specification'];
-        $this->materialPurchaseOrderDao->updateById($plan_id, $contract_id, $enterprise_id, $document, $happen_date, $transactor, $in_method, $default_warehouse_id, $default_administrator_id, $price, $remark, $order_id);
-        $this->materialPurchaseOrderDetailsDao->deleteByOrderId($order_id);
-        foreach ($material_ids as $key => $value) {
-            if ($key > 0) {
-                $this->materialPurchaseOrderDetailsDao->add($value, $specifications[$key], $unit_prices[$key], $amounts[$key], $material_prices[$key], $material_remarks[$key], $warehouses[$key], $administrators[$key], $order_id);
-            }
-        }
-        $this->redirect('OperMaterialManage/listPurchaseOrder', "修改采购单成功...");
-    }
-
-    public function deletePurchaseOrder()
-    {
-        $order_id = $_GET['order_id'];
-        $this->materialPurchaseOrderDao->deleteById($order_id);
-        $this->materialPurchaseOrderDetailsDao->deleteByOrderId($order_id);
-        $this->redirect('OperMaterialManage/listPurchaseOrder', array(), 3, "删除采购单成功...");
-    }
-
-    public function checkPurchaseOrder()
-    {
-        $order_id = $_POST['order_id'];
-        $purchaseOrderDetailsRowArray = $this->materialPurchaseOrderDetailsDao->findById($order_id);
-        $flag = 1;
-        foreach ($purchaseOrderDetailsRowArray as $value) {
-            // $this->materialInventoryDao->add($value['warehouse_id'],$value['material_id'],$value['price'],$value['count'],$value['order_id']);
-            $inventoryRowArray = $this->materialInventoryDao->findAll();
-            foreach ($inventoryRowArray as $value_2) {
-                if ($value['warehouse_id'] == $value_2['warehouse_id'] && $value['material_id'] == $value_2['material_id']) {
-                    $final_count = $value_2['count'] + $value['count'];
-                    $this->materialInventoryDao->updateCountById($final_count, $value_2['inventory_id']);
-                    $flag = 0;
-                    break;
-                } else
-                    $flag = 1;
-            }
-            if ($flag == 1) {
-                $this->materialInventoryDao->add($value['warehouse_id'], $value['material_id'], $value['count']);
-            }
-        }
-        
-        $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
-        $userId = $userRow['userid'];
-        $date = date("Y-m-d", time());
-        $this->materialPurchaseOrderDao->updateCheckById($_POST['order_id'], true, $userId, $date);
-        $this->ajaxReturn(Array(
-            $_SESSION['my_username'],
-            $date
-        ), "JSON");
-    }
-
-    public function uncheckPurchaseOrder()
-    {
-        $order_id = $_POST['order_id'];
-        $purchaseOrderDetailsRowArray = $this->materialPurchaseOrderDetailsDao->findById($order_id);
-        $inventoryRowArray = $this->materialInventoryDao->findAll();
-        foreach ($purchaseOrderDetailsRowArray as $value) {
-            foreach ($inventoryRowArray as $value_2) {
-                if ($value['warehouse_id'] == $value_2['warehouse_id'] && $value['material_id'] == $value_2['material_id']) {
-                    $final_count = $value_2['count'] - $value['count'];
-                    $this->materialInventoryDao->updateCountById($final_count, $value_2['inventory_id']);
-                    break;
-                }
-            }
-        }
-        
-        $this->materialPurchaseOrderDao->updateCheckById($_POST['order_id'], false, null, null);
-        $this->ajaxReturn($_POST['order_id'], "JSON");
-    }
     
-    // 材料采购单================================================================================
-    // 材料采购计划单============================================================================
+    // 材料采购计划单--------------------------------------------------------------------------
     public function listPurchasePlanOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = PURCHASE_PLAN_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $purchasePlanOrderRowArray = $this->materialPurchasePlanOrderDao->findAll();
         foreach ($purchasePlanOrderRowArray as $key => $value) {
             $creatorRow = $this->userInfoByUserid($value['user_id']);
@@ -692,15 +223,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addPurchasePlanOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = PURCHASE_PLAN_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         // 分类，子分类
         $materialClassRowArray = $this->materialClassDao->findAll();
         foreach ($materialClassRowArray as $key => $value) {
@@ -735,6 +264,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addPurchasePlanOrderSubmit()
     {
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $resource_id = $_POST['resource_id'];
         $plan_name = $_POST['plan_name'];
         $plan_number = $_POST['plan_number'];
@@ -769,15 +305,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editPurchasePlanOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = PURCHASE_PLAN_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $plan_id = $_POST['plan_id'];
         
         $purchasePlanOrderRow = $this->materialPurchasePlanOrderDao->findById($plan_id);
@@ -818,6 +352,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editPurchasePlanOrderSubmit()
     {
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $plan_id = $_POST['plan_id'];
         $plan_name = $_POST['plan_name'];
         $plan_number = $_POST['plan_number'];
@@ -854,6 +395,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function deletePurchasePlanOrder()
     {
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $plan_id = $_GET['plan_id'];
         $this->materialPurchasePlanOrderDao->deleteById($plan_id);
         $this->materialPurchasePlanOrderDetailsDao->deleteByPlanId($plan_id);
@@ -862,6 +410,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function PurchasePlanOrderUpdateVerify()
     {
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $plan_id = $_POST['plan_id'];
         $state = $_POST['state'];
         
@@ -880,6 +435,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function PurchasePlanOrderUpdateFinish()
     {
+        //权限检查
+        $operationname="采购计划";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $plan_id = $_POST['plan_id'];
         $state = $_POST['state'];
         $this->materialPurchasePlanOrderDao->updateFinishById($plan_id, $state);
@@ -889,15 +451,13 @@ class OperMaterialManageAction extends LoginAfterAction
     // 材料采购合同---------------------------------------------------------------------------------
     public function listContract()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_CONTRACT;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $resourceRowArray = $this->projectResourceDao->findAll();
         $this->assign('resourceRowArray', $resourceRowArray);
         $resource_id = $_GET['resource_id'];
@@ -939,6 +499,12 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function checkContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $returnData = array();
         $contractid = $_POST['contractid'];
         $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
@@ -949,6 +515,12 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function cancelcheckContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $returnData = array();
         $contractid = $_POST['contractid'];
         $this->materialcontractDao->updateCheckstatusById($contractid, 0);
@@ -958,6 +530,12 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function finalcostContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $returnData = array();
         $contractid = $_POST['contractid'];
         $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
@@ -968,6 +546,12 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function cancelfinalcostContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
         $returnData = array();
         $contractid = $_POST['contractid'];
         $this->materialcontractDao->updateFinalcoststatusById($contractid, 0);
@@ -977,15 +561,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addContract()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_CONTRACT;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $resourceRowArray = $this->projectResourceDao->findAll();
         $this->assign('resourceRowArray', $resourceRowArray);
         $companyRowArray = $this->companyDao->findAll();
@@ -1012,6 +594,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addContractSubmit()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $contract_number = $_POST['contract_number'];
         $name = $_POST['name'];
         $a_part_enterpriseid = $_POST['a_part_enterpriseid'];
@@ -1051,14 +640,11 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_CONTRACT;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
         // $contractid=$_POST['contract_id'];
         // echo "contractid:".$contractid;
@@ -1220,6 +806,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContractSubmit()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $contractid = $_POST['contractid'];
         $contract_number = $_POST['contract_number'];
         $name = $_POST['name'];
@@ -1261,6 +854,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_uploadfile()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $doc_name = $_POST['name'];
         $doc_remark = $_POST['remark'];
@@ -1313,6 +913,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_checkDocument()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $documentid = $_POST['documentid'];
         $operation = $_POST['operation'];
         $returnData = array();
@@ -1333,6 +940,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_editDocument()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $doc_name = $_POST['doc_name'];
         $doc_remark = $_POST['doc_remark'];
@@ -1371,15 +985,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_downloadDocument()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_CONTRACT;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $documentid = $_GET['documentid'];
         $documentRow = $this->materialcontractDocumentDao->findById($documentid);
         $filepath = $documentRow['path'];
@@ -1396,6 +1008,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_deletefile()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $data = false;
         $documentid = $_POST['documentid'];
         if ($documentid <= 0) {
@@ -1419,6 +1038,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_uploadfileOrigin()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $doc_name = $_POST['name'];
         $doc_remark = $_POST['remark'];
         $contractid = $_POST['contractid'];
@@ -1472,6 +1098,13 @@ class OperMaterialManageAction extends LoginAfterAction
     // }
     public function editContract_importPlanToContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $detail_ids = explode(",", $_POST['detail_ids']);
         $contractid = $_POST['contractid'];
@@ -1527,6 +1160,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_importEnquiryToContract()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $enquiry_id = $_POST['enquiry_id'];
         $enquiryRow = $this->materialEnquiryDao->findById($enquiry_id);
@@ -1559,6 +1199,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_deleteContent()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $contentid = $_POST['contentid'];
         $result = $this->materialcontractContentDao->deleteById($contentid);
@@ -1568,6 +1215,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editContract_editContent()
     {
+        //权限检查
+        $operationname="采购合同";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $returnData = array();
         $contentid = $_POST['contentid'];
         $amount = $_POST['amount'];
@@ -1580,17 +1234,331 @@ class OperMaterialManageAction extends LoginAfterAction
     
     // 材料采购合同==================================================================================
     
+    // 材料采购单------------------------------------------------------------------------------------
+    public function listPurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $purchaseOrderArray = $this->materialPurchaseOrderDao->getAll();
+        $resourceRowArray = $this->projectResourceDao->findAll();
+        $this->assign('purchaseOrderArray', $purchaseOrderArray);
+        $this->assign('resourceRowArray', $resourceRowArray);
+        $this->display('OperMaterialManage/listPurchaseOrder');
+    }
+
+    public function addPurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        
+        $resourceRowArray = $this->projectResourceDao->findAll();
+        $enterpriseRowArray = $this->enterpriseDao->findAll();
+        // 分类，子分类
+        $materialClassRowArray = $this->materialClassDao->findAll();
+        foreach ($materialClassRowArray as $key => $value) {
+            $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+            $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+        }
+        // 材料实体
+        $materialRowArray = $this->materialDao->findAll();
+        foreach ($materialRowArray as $key => $value) {
+            $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+            $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+        }
+        $purchasePlanOrderRow = $this->materialPurchasePlanOrderDao->findAll();
+        foreach ($purchasePlanOrderRow as $key => $value) {
+            $details = $this->materialPurchasePlanOrderDetailsDao->findByPlanId($value['plan_id']);
+            foreach ($details as $key2 => $value2) {
+                $material = $this->materialDao->findById($value2['material_id']);
+                $details[$key2]['material'] = $material;
+            }
+            $purchasePlanOrderRow[$key]['details'] = $details;
+            $resource_name = $this->projectResourceDao->findById($value['resource_id']);
+            $purchasePlanOrderRow[$key]['resource_name'] = $resource_name['resource_name'];
+        }
+        $contractRowArray = $this->materialcontractDao->findAll();
+        foreach ($contractRowArray as $key => $value) {
+            $supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
+            $contractRowArray[$key]['supplier'] = $supplier;
+            $contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
+            $totalValue = 0;
+            foreach ($contractContentRowArray as $key2 => $value2) {
+                $material = $this->materialDao->findById($value2['material_id']);
+                $contractContentRowArray[$key2]['material'] = $material;
+                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
+                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
+                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
+            }
+            $contractRowArray[$key]['totalValue'] = $totalValue;
+            $contractRowArray[$key]['content'] = $contractContentRowArray;
+        }
+        $this->assign('materialClassRowArray', $materialClassRowArray);
+        $this->assign('materialRowArray', $materialRowArray);
+        $this->assign('resourceRowArray', $resourceRowArray);
+        $this->assign('enterpriseRowArray', $enterpriseRowArray);
+        $this->assign('purchasePlanOrderRowArray', $purchasePlanOrderRow);
+        $this->assign('contractRowArray', $contractRowArray);
+        
+        $this->display('OperMaterialManage/addPurchaseOrder');
+    }
+
+    public function addPurchaseOrderSubmit()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $plan_id = $_POST['planid'];
+        $contract_id = $_POST['contractid'];
+        $project_id = $_POST['projectid'];
+        $enterprise_id = $_POST['enterpriseid'];
+        $document = $_POST['document'];
+        $happen_date = $_POST['happen_date'];
+        $transactor = $_POST['transactor'];
+        $in_method = $_POST['in_method'];
+        $default_warehose_id = $_POST['default_warehouse'];
+        $default_administrator_id = $_POST['default_administrator'];
+        $price = $_POST['price'];
+        $remark = $_POST['remark'];
+        $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
+        $create_user_id = $userRow['userid'];
+        $create_date = date("Y-m-d", time());
+        $material_ids = $_POST['material_id'];
+        $administrators = $_POST['administrator'];
+        $warehouses = $_POST['warehouse'];
+        $material_remarks = $_POST['material_remark'];
+        $material_prices = $_POST['material_price'];
+        $amounts = $_POST['amount'];
+        $unit_prices = $_POST['unit_price'];
+        $specifications = $_POST['specification'];
+        
+        $purchaseOrderid = $this->materialPurchaseOrderDao->add($plan_id, $contract_id, $project_id, $enterprise_id, $document, $happen_date, $transactor, $in_method, $default_warehose_id, $default_administrator_id, $price, $remark, $create_user_id, $create_date);
+        if ($purchaseOrderid <= 0) {
+            $this->display('Staticpage/wrongalert');
+            return;
+        }
+        foreach ($material_ids as $key => $value) {
+            if ($key > 0) {
+                $this->materialPurchaseOrderDetailsDao->add($value, $specifications[$key], $unit_prices[$key], $amounts[$key], $material_prices[$key], $material_remarks[$key], $warehouses[$key], $administrators[$key], $purchaseOrderid);
+            }
+        }
+        $this->redirect('OperMaterialManage/listPurchaseOrder', array(), 3, "添加采购单成功...");
+    }
+
+    public function editPurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $enterpriseRowArray = $this->enterpriseDao->findAll();
+        // 分类，子分类
+        $materialClassRowArray = $this->materialClassDao->findAll();
+        foreach ($materialClassRowArray as $key => $value) {
+            $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+            $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+        }
+        // 材料实体
+        $materialRowArray = $this->materialDao->findAll();
+        foreach ($materialRowArray as $key => $value) {
+            $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+            $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+        }
+        $purchasePlanOrderRow = $this->materialPurchasePlanOrderDao->findAll();
+        foreach ($purchasePlanOrderRow as $key => $value) {
+            $details = $this->materialPurchasePlanOrderDetailsDao->findByPlanId($value['plan_id']);
+            foreach ($details as $key2 => $value2) {
+                $material = $this->materialDao->findById($value2['material_id']);
+                $details[$key2]['material'] = $material;
+            }
+            $purchasePlanOrderRow[$key]['details'] = $details;
+            $resource_name = $this->projectResourceDao->findById($value['resource_id']);
+            $purchasePlanOrderRow[$key]['resource_name'] = $resource_name['resource_name'];
+        }
+        $contractRowArray = $this->materialcontractDao->findAll();
+        foreach ($contractRowArray as $key => $value) {
+            $supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
+            $contractRowArray[$key]['supplier'] = $supplier;
+            $contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
+            $totalValue = 0;
+            foreach ($contractContentRowArray as $key2 => $value2) {
+                $material = $this->materialDao->findById($value2['material_id']);
+                $contractContentRowArray[$key2]['material'] = $material;
+                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
+                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
+                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
+            }
+            $contractRowArray[$key]['totalValue'] = $totalValue;
+            $contractRowArray[$key]['content'] = $contractContentRowArray;
+        }
+        $order_id = $_GET['order_id'];
+        $purchaseOrder = $this->materialPurchaseOrderDao->getById($order_id);
+        $purchaseOrderDetailsArray = $this->materialPurchaseOrderDetailsDao->getByOrderId($order_id);
+        $resource_id = $purchaseOrder['project_id'];
+        $related_warehouse = $this->warehouseDao->getByResourceId($resource_id);
+        $related_administrator = $this->warehouseWorkerDao->getByResourceId($resource_id);
+        $purchaseOrder['related_warehouse'] = $related_warehouse;
+        $purchaseOrder['related_administrator'] = $related_administrator;
+        $contractRow = $this->materialcontractDao->findById($purchaseOrder['contract_id']);
+        $purchaseOrder['contract_name'] = $contractRow['name'];
+        
+        $this->assign('materialClassRowArray', $materialClassRowArray);
+        $this->assign('materialRowArray', $materialRowArray);
+        $this->assign('enterpriseRowArray', $enterpriseRowArray);
+        $this->assign('purchasePlanOrderRowArray', $purchasePlanOrderRow);
+        $this->assign('purchaseOrder', $purchaseOrder);
+        $this->assign('purchaseOrderDetailsArray', $purchaseOrderDetailsArray);
+        $this->assign('contractRowArray', $contractRowArray);
+        $this->display('OperMaterialManage/editPurchaseOrder');
+    }
+
+    public function editPurchaseOrderSubmit()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $order_id = $_POST['order_id'];
+        $plan_id = $_POST['planid'];
+        $contract_id = $_POST['contractid'];
+        $project_id = $_POST['projectid'];
+        $enterprise_id = $_POST['enterpriseid'];
+        $document = $_POST['document'];
+        $happen_date = $_POST['happen_date'];
+        $transactor = $_POST['transactor'];
+        $in_method = $_POST['in_method'];
+        $default_warehouse_id = $_POST['default_warehouse'];
+        $default_administrator_id = $_POST['default_administrator'];
+        $price = $_POST['price'];
+        $remark = $_POST['remark'];
+        
+        $material_ids = $_POST['material_id'];
+        $administrators = $_POST['administrator'];
+        $warehouses = $_POST['warehouse'];
+        $material_remarks = $_POST['material_remark'];
+        $material_prices = $_POST['material_price'];
+        $amounts = $_POST['amount'];
+        $unit_prices = $_POST['unit_price'];
+        $specifications = $_POST['specification'];
+        $this->materialPurchaseOrderDao->updateById($plan_id, $contract_id, $enterprise_id, $document, $happen_date, $transactor, $in_method, $default_warehouse_id, $default_administrator_id, $price, $remark, $order_id);
+        $this->materialPurchaseOrderDetailsDao->deleteByOrderId($order_id);
+        foreach ($material_ids as $key => $value) {
+            if ($key > 0) {
+                $this->materialPurchaseOrderDetailsDao->add($value, $specifications[$key], $unit_prices[$key], $amounts[$key], $material_prices[$key], $material_remarks[$key], $warehouses[$key], $administrators[$key], $order_id);
+            }
+        }
+        $this->redirect('OperMaterialManage/listPurchaseOrder', "修改采购单成功...");
+    }
+
+    public function deletePurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $order_id = $_GET['order_id'];
+        $this->materialPurchaseOrderDao->deleteById($order_id);
+        $this->materialPurchaseOrderDetailsDao->deleteByOrderId($order_id);
+        $this->redirect('OperMaterialManage/listPurchaseOrder', array(), 3, "删除采购单成功...");
+    }
+
+    public function checkPurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $order_id = $_POST['order_id'];
+        $purchaseOrderDetailsRowArray = $this->materialPurchaseOrderDetailsDao->findById($order_id);
+        $flag = 1;
+        foreach ($purchaseOrderDetailsRowArray as $value) {
+            // $this->materialInventoryDao->add($value['warehouse_id'],$value['material_id'],$value['price'],$value['count'],$value['order_id']);
+            $inventoryRowArray = $this->materialInventoryDao->findAll();
+            foreach ($inventoryRowArray as $value_2) {
+                if ($value['warehouse_id'] == $value_2['warehouse_id'] && $value['material_id'] == $value_2['material_id']) {
+                    $final_count = $value_2['count'] + $value['count'];
+                    $this->materialInventoryDao->updateCountById($final_count, $value_2['inventory_id']);
+                    $flag = 0;
+                    break;
+                } else
+                    $flag = 1;
+            }
+            if ($flag == 1) {
+                $this->materialInventoryDao->add($value['warehouse_id'], $value['material_id'], $value['count']);
+            }
+        }
+        
+        $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
+        $userId = $userRow['userid'];
+        $date = date("Y-m-d", time());
+        $this->materialPurchaseOrderDao->updateCheckById($_POST['order_id'], true, $userId, $date);
+        $this->ajaxReturn(Array(
+            $_SESSION['my_username'],
+            $date
+        ), "JSON");
+    }
+
+    public function uncheckPurchaseOrder()
+    {
+        //权限检查
+        $operationname="材料采购";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
+        $order_id = $_POST['order_id'];
+        $purchaseOrderDetailsRowArray = $this->materialPurchaseOrderDetailsDao->findById($order_id);
+        $inventoryRowArray = $this->materialInventoryDao->findAll();
+        foreach ($purchaseOrderDetailsRowArray as $value) {
+            foreach ($inventoryRowArray as $value_2) {
+                if ($value['warehouse_id'] == $value_2['warehouse_id'] && $value['material_id'] == $value_2['material_id']) {
+                    $final_count = $value_2['count'] - $value['count'];
+                    $this->materialInventoryDao->updateCountById($final_count, $value_2['inventory_id']);
+                    break;
+                }
+            }
+        }
+        
+        $this->materialPurchaseOrderDao->updateCheckById($_POST['order_id'], false, null, null);
+        $this->ajaxReturn($_POST['order_id'], "JSON");
+    }
+    
+    // 材料采购单================================================================================
+
+
+
     // 材料出库单====================================================================================
     public function listOutboundOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_OUTBOUND_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
         
         $resourceRowArray = $this->projectResourceDao->findAll();
@@ -1622,14 +1590,11 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addOutboundOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_OUTBOUND_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
         
         $resourceRowArray = $this->projectResourceDao->findAll();
@@ -1659,6 +1624,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function addOutboundOrderSubmit()
     {
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $resource_id = $_POST['resource_id'];
         $outbound_number = $_POST['outbound_number'];
         $outbound_man = $_POST['outbound_man'];
@@ -1693,15 +1665,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editOutboundOrder()
     {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_OUTBOUND_ORDER;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
         }
+
         $outbound_id = $_POST['outbound_id'];
         
         $outboundOrderRow = $this->materialOutboundOrderDao->findById($outbound_id);
@@ -1787,6 +1757,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function editOutboundOrderSubmit()
     {
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $outbound_id = $_POST['outbound_id'];
         $outbound_man = $_POST['outbound_man'];
         $outbound_date = $_POST['outbound_date'];
@@ -1850,6 +1827,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function OutboundOrderUpdateVerify()
     {
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $outbound_id = $_POST['outbound_id'];
         $state = $_POST['state'];
         
@@ -1886,6 +1870,13 @@ class OperMaterialManageAction extends LoginAfterAction
 
     public function deleteOutboundOrder()
     {
+        //权限检查
+        $operationname="材料出库";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+
         $outbound_id = $_GET['outbound_id'];
         $this->materialOutboundOrderDao->deleteById($outbound_id);
         $this->materialOutboundOrderDetailsDao->deleteByOutboundId($outbound_id);
@@ -1894,49 +1885,51 @@ class OperMaterialManageAction extends LoginAfterAction
     }
     
     // 材料出库单====================================================================================
-    // 库存==========================================================================================
-    public function listInventory()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_INVENTORY;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        
-        $resourceRowArray = $this->projectResourceDao->findAll();
-        $warehouseRowArray = $this->warehouseDao->findAll();
-        foreach ($warehouseRowArray as $key => $value) {
-            $resourceRow = $this->projectResourceDao->findById($value['resource_id']);
-            $warehouseRowArray[$key]['resource_name'] = $resourceRow['resource_name'];
-        }
-        $this->assign('warehouseRowArray', $warehouseRowArray);
-        $this->assign('resourceRowArray', $resourceRowArray);
-        $this->display('OperMaterialManage/listInventory');
-    }
 
-    public function getInventory()
-    {
-        // 权限检查
-        $params = array();
-        $params['result'] = false;
-        $params['operationid'] = MATERIAL_INVENTORY;
-        tag('behavior_authoritycheck', $params);
-        if ($params['result'] == false) {
-            $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
-            return;
-        }
-        $warehouse_id = $_GET['warehouse_id'];
-        $materialRowArray = $this->materialInventoryDao->findByWarehouseId($warehouse_id);
-        foreach ($materialRowArray as $key => $value) {
-            $materialRow = $this->materialDao->findById($value['material_id']);
-            $materialRowArray[$key]['material'] = $materialRow;
-        }
-        $this->ajaxReturn($materialRowArray, "JSON");
-    }
+    
+    // 库存==========================================================================================
+    // public function listInventory()
+    // {
+    //     // 权限检查
+    //     $params = array();
+    //     $params['result'] = false;
+    //     $params['operationid'] = MATERIAL_INVENTORY;
+    //     tag('behavior_authoritycheck', $params);
+    //     if ($params['result'] == false) {
+    //         $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
+    //         return;
+    //     }
+        
+    //     $resourceRowArray = $this->projectResourceDao->findAll();
+    //     $warehouseRowArray = $this->warehouseDao->findAll();
+    //     foreach ($warehouseRowArray as $key => $value) {
+    //         $resourceRow = $this->projectResourceDao->findById($value['resource_id']);
+    //         $warehouseRowArray[$key]['resource_name'] = $resourceRow['resource_name'];
+    //     }
+    //     $this->assign('warehouseRowArray', $warehouseRowArray);
+    //     $this->assign('resourceRowArray', $resourceRowArray);
+    //     $this->display('OperMaterialManage/listInventory');
+    // }
+
+    // public function getInventory()
+    // {
+    //     // 权限检查
+    //     $params = array();
+    //     $params['result'] = false;
+    //     $params['operationid'] = MATERIAL_INVENTORY;
+    //     tag('behavior_authoritycheck', $params);
+    //     if ($params['result'] == false) {
+    //         $this->redirect('Staticpage/wrongalert', array(), 3, "您无此操作权限!");
+    //         return;
+    //     }
+    //     $warehouse_id = $_GET['warehouse_id'];
+    //     $materialRowArray = $this->materialInventoryDao->findByWarehouseId($warehouse_id);
+    //     foreach ($materialRowArray as $key => $value) {
+    //         $materialRow = $this->materialDao->findById($value['material_id']);
+    //         $materialRowArray[$key]['material'] = $materialRow;
+    //     }
+    //     $this->ajaxReturn($materialRowArray, "JSON");
+    // }
     
     // 库存==========================================================================================
     // 公共函数======================================================================================

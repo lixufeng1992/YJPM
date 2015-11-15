@@ -1,14 +1,5 @@
 <?php
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.ProjectResourceDao");
-// import("@.Model.EnterpriseDao");
-// import("@.Model.SubcontractDao");
-// import("@.Model.EmployerDao");
-// import("@.Model.DepartmentDao");
-// import("@.Model.CompanyDao");
-// import("@.Model.SubcontractContentDao");
-// import("@.Model.SubcontractDocumentDao");
-// import("@.Model.SubcontractDocumentOriginDao");
 
 header('Content-Type:text/html;charset=utf-8');
 class OperSubcontractManageAction extends LoginAfterAction{
@@ -33,16 +24,15 @@ class OperSubcontractManageAction extends LoginAfterAction{
     $this->subcontractContentDao=new SubcontractContentDao();
     $this->subcontractDocumentDao=new SubcontractDocumentDao();
     $this->subcontractDocumentOriginDao=new SubcontractDocumentOriginDao();
+    $this->module = substr(__CLASS__, 0,strlen(__CLASS__)-6);//6:sizeof(Action)
 
   }
 
   //分包合同
   public function listSubcontract(){
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = SUBCONTRACT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -75,6 +65,12 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function checkSubcontract(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
     $contractid = $_POST['contractid'];
     $returnData = array();
     $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
@@ -87,6 +83,12 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function cancelcheckSubcontract(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
     $contractid = $_POST['contractid'];
     $returnData = array();
 
@@ -99,6 +101,12 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function finalcostSubcontract(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
     $contractid = $_POST['contractid'];
     $returnData = array();
     $userRow = $this->userDao->findByUsername($_SESSION['my_username']);
@@ -111,6 +119,12 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function cancelfinalcostSubcontract(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
     $contractid = $_POST['contractid'];
     $returnData = array();
 
@@ -122,15 +136,10 @@ class OperSubcontractManageAction extends LoginAfterAction{
     }
   }
 
-
-
-
   public function addSubcontract(){
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = SUBCONTRACT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -155,7 +164,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function addSubcontractSubmit(){
-    //$contractid,
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $resource_id=$_POST['resource_id'];
     $contract_number=$_POST['contract_number'];
     $name=$_POST['name'];
@@ -196,6 +211,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $params = array();
     $params['result'] = false;
     $params['operationid'] = SUBCONTRACT_MAINTAIN;
@@ -265,6 +287,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
 
   //---------------------------------------
   public function editSubcontract_uploadfile(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $returnData = array();
     //$returnData['documentid'] = -1;
     //echo json_encode($returnData);
@@ -310,6 +339,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_uploadfileOrigin(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $doc_name = $_POST['name'];
     $doc_remark = $_POST['remark'];
     $contractid = $_POST['contractid'];
@@ -343,6 +379,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_deletefile(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $data = false;
     $documentid = $_POST['documentid'];
     if($documentid <= 0){$data=false;return;}
@@ -361,6 +404,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_downloadDocument(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_GET['documentid'];
     $documentRow = $this->subcontractDocumentDao->findById($documentid);
     $filepath = $documentRow['path'];
@@ -376,6 +426,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_downloadDocumentOrigin(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_GET['documentid'];
     $documentRow = $this->subcontractDocumentOriginDao->findById($documentid);
     $filepath = $documentRow['path'];
@@ -390,6 +447,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_deletefileOrigin(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $data = false;
     $documentid = $_POST['documentid'];
     if($documentid <= 0){$data=false;return;}
@@ -408,6 +472,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_editDocument(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $returnData = array();
     $doc_name = $_POST['doc_name'];
     $doc_remark = $_POST['doc_remark'];
@@ -432,6 +503,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_editDocumentOrigin(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $returnData = array();
     $doc_name = $_POST['doc_name'];
     $doc_remark = $_POST['doc_remark'];
@@ -451,6 +529,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_checkDocument(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $documentid = $_POST['documentid'];
     $operation = $_POST['operation'];
     $returnData = array();
@@ -467,37 +552,19 @@ class OperSubcontractManageAction extends LoginAfterAction{
       $returnData['result'] = $result;
     }
 
-
-    //$returnData['operation'] = $operation;
-    //$returnData['result'] = $operation;
     echo json_encode($returnData);
   }
 
   //========================================
 
-
-
-
-
-
-
-
-
-
-
   public function editSubcontract_addContent(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = SUBCONTRACT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
-    //$aa = 0;
-    //echo json_encode($aa);
-    //return;
+    
     $contractid = $_POST['contractid'];
     $category = $_POST['contractcontent_category'];
     $name = $_POST['contractcontent_name'];
@@ -522,6 +589,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_editContent(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contentid = $_POST['contentid'];
     $category = $_POST['category'];
     $name = $_POST['name'];
@@ -536,6 +610,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontract_deleteContent(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contentid = $_POST['contentid'];
     $result = $this->subcontractContentDao->deleteById($contentid);
     echo json_encode($result);
@@ -543,6 +624,13 @@ class OperSubcontractManageAction extends LoginAfterAction{
   }
 
   public function editSubcontractSubmit(){
+    //权限检查
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $contractid = $_POST['contractid'];
     $resource_id = $_POST['resource_id'];
     $contract_number = $_POST['contract_number'];
@@ -587,14 +675,12 @@ class OperSubcontractManageAction extends LoginAfterAction{
 
   public function deleteSubcontract(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = SUBCONTRACT_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="分包合同";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
+
     if(isset($_GET['contractid'])==false || $_GET['contractid']<=0){
       $this->display('Staticpage/wrongalert');
       return;
@@ -628,10 +714,6 @@ class OperSubcontractManageAction extends LoginAfterAction{
     return $resultArray;
 
   }
-
-
-
-
   //公共函数=====================================================
 }
 ?>

@@ -1,8 +1,5 @@
 <?PHP
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.ProcessClassifyDao");
-// import("@.Model.ProcessDao");
-// import("@.Model.EnterpriseDao");
 
 header('Content-Type:text/html;charset=utf-8');
 
@@ -16,20 +13,19 @@ class OperBasicInfoManageAction extends LoginAfterAction{
     $this->processClassifyDao = new ProcessClassifyDao();
     $this->processDao = new ProcessDao();
     $this->enterpriseDao=new EnterpriseDao();
+    $this->module = substr(__CLASS__, 0,strlen(__CLASS__)-6);//6:sizeof(Action)
   }
   // 项目管理==========================================================================
 
   // 项目部位维护
   public function listProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
+
     $processRowArray=$this->processDao->findAll();
     $processClassifyRowArray=$this->processClassifyDao->findAll();
     $this->assign('processRowArray',$processRowArray);
@@ -39,11 +35,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
   //项目部位分类
   public function addProcessClassify(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -57,11 +50,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function updateProcessClassify(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -74,11 +64,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function deleteProcessClassify(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -91,11 +78,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
   //项目部位
   public function addProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -111,11 +95,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function updateProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -128,11 +109,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function deleteProcess(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = PROCESS_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="部位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -145,11 +123,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
   //往来单位维护--------------------------------------------------------------------------------
   public function listEnterprise(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = ENTERPRISE_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -161,11 +136,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function addEnterprise(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = ENTERPRISE_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -174,6 +146,13 @@ class OperBasicInfoManageAction extends LoginAfterAction{
   }
 
   public function addEnterpriseSubmit(){
+    //权限检查
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $name = $_POST['name'];
     $address = $_POST['address'];
     $contact_person = $_POST['contact_person'];
@@ -203,11 +182,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function editEnterprise(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = ENTERPRISE_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -219,6 +195,13 @@ class OperBasicInfoManageAction extends LoginAfterAction{
   }
 
   public function editEnterpriseSubmit(){
+    //权限检查
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
+      $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+      return;
+    }
+
     $enterpriseid = $_POST['enterpriseid'];
     $name = $_POST['name'];
     $address = $_POST['address'];
@@ -250,11 +233,8 @@ class OperBasicInfoManageAction extends LoginAfterAction{
 
   public function deleteEnterprise(){
     //权限检查
-    $params = array();
-    $params['result'] = false;
-    $params['operationid'] = ENTERPRISE_MAINTAIN;
-    tag('behavior_authoritycheck',$params);
-    if($params['result'] == false){
+    $operationname="往来单位维护";
+    if($this->authoritycheck($this->module,$operationname)==false){
       $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
       return;
     }
@@ -265,6 +245,220 @@ class OperBasicInfoManageAction extends LoginAfterAction{
     else $this->redirect('OperBasicInfoManage/listEnterprise',array(),3,"删除往来单位成功...");
   }
   //往来单位维护================================================================================
+
+  // 材料维护------------------------------------------------------------------------------------
+    public function materialMaintain()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        
+        if (isset($_POST['operation'])) {
+            $result['name'] = '' . $_POST['name'] . 'succ';
+            $result['id'] = 1;
+            $this->ajaxReturn($result, "不能删除", true);
+        } else {
+            
+            // 分类，子分类
+            $materialClassRowArray = $this->materialClassDao->findAll();
+            foreach ($materialClassRowArray as $key => $value) {
+                $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+                $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+            }
+            // 材料实体
+            $materialRowArray = $this->materialDao->findAll();
+            foreach ($materialRowArray as $key => $value) {
+                $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+                $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+            }
+            $this->assign('materialClassRowArray', $materialClassRowArray);
+            $this->assign('materialRowArray', $materialRowArray);
+            $this->display('OperBasicInfoManage/materialMaintain');
+        }
+    }
+
+    public function materialMaintain_addClass()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $returnData = array();
+        $returnData['name'] = $_POST['name'];
+        $insertId = $this->materialClassDao->add($_POST['name']);
+        $returnData['id'] = $insertId;
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_deleteClass()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $classid = $_POST['classid'];
+        $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($classid);
+        if (count($materialCategoryRowArray) > 0) {
+            $returnData = - 1; // 还有子元素，拒绝删除
+            echo json_encode($returnData);
+            return;
+        }
+        $returnData = $this->materialClassDao->deleteById($classid);
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_editClass()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $returnData = array();
+        // $returnData['classid'] = $_POST['classid'];
+        $returnData['name'] = $_POST['name'];
+        $returnData['result'] = $this->materialClassDao->updateById($_POST['classid'], $_POST['name']);
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_addCategory()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $returnData = array();
+        $returnData['name'] = $_POST['name'];
+        // $returnData['classid'] = $_POST['classid'];
+        $insertId = $this->materialCategoryDao->add($_POST['classid'], $_POST['name']);
+        $returnData['id'] = $insertId;
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_deleteCategory()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $returnData = array();
+        $categoryid = $_POST['categoryid'];
+        $returnData['categoryid'] = $categoryid;
+        $materialRowArray = $this->materialDao->findByCategoryid($categoryid);
+        $materialrentRowArray = $this->materialrentDao->findByCategoryid($categoryid);
+        if (count($materialRowArray) > 0 || count($materialrentRowArray) > 0) {
+            $returnData['result'] = - 1;
+            echo json_encode($returnData);
+            return;
+        }
+        $result = $this->materialCategoryDao->deleteById($categoryid);
+        $returnData['result'] = $result;
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_editCategory()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $returnData = array();
+        // $returnData['categoryid'] = $_POST['categoryid'];
+        $returnData['name'] = $_POST['name'];
+        $materialCategoryRow = $this->materialCategoryDao->findById($_POST['categoryid']);
+        $returnData['result'] = $this->materialCategoryDao->updateById($_POST['categoryid'], $materialCategoryRow['classid'], $_POST['name']);
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_addMaterial()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $name = $_POST['name'];
+        $categoryid = $_POST['categoryid'];
+        $worktype = $_POST['worktype'];
+        $unit = $_POST['unit'];
+        $price_in = $_POST['price_in'];
+        $parameter = $_POST['parameter'];
+        $specification = $_POST['specification'];
+        $brand = $_POST['brand'];
+        $returnData = array();
+        $insertId = $this->materialDao->add($name, $categoryid, $worktype, $unit, $price_in, $parameter, $specification, $brand);
+        $materialCategoryRow = $this->materialCategoryDao->findById($categoryid);
+        $returnData['materialid'] = $insertId;
+        $returnData['classid'] = $materialCategoryRow['classid'];
+        $returnData['category_name'] = $materialCategoryRow['name'];
+        echo json_encode($returnData);
+    }
+
+    public function materialMaintain_deleteMaterial()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $materialid = $_POST['materialid'];
+        $result = $this->materialDao->deleteById($materialid);
+        echo json_encode($result);
+    }
+
+    public function materialMaintain_editMaterial()
+    {
+        //权限检查
+        $operationname="材料维护";
+        if($this->authoritycheck($this->module,$operationname)==false){
+          $this->redirect('Staticpage/wrongalert',array(),3,"您无此操作权限!");
+          return;
+        }
+        $materialid = $_POST['id'];
+        $name = $_POST['name'];
+        $categoryid = $_POST['classid'];
+        $worktype = $_POST['type'];
+        $unit = $_POST['unit'];
+        $price_in = $_POST['price'];
+        $parameter = $_POST['parameter'];
+        $specification = $_POST['standard'];
+        $brand = $_POST['brand'];
+        $returnData = array();
+        
+        $returnData['materialid'] = $materialid;
+        $returnData['name'] = $name;
+        $returnData['categoryid'] = $categoryid;
+        $returnData['worktype'] = $worktype;
+        $returnData['unit'] = $unit;
+        $returnData['price_in'] = $price_in;
+        $returnData['parameter'] = $parameter;
+        $returnData['specification'] = $specification;
+        $returnData['brand'] = $brand;
+        
+        $result = $this->materialDao->updateById($materialid, $name, $categoryid, $worktype, $unit, $price_in, $parameter, $specification, $brand);
+        $returnData['result'] = $result;
+        // $materialid = $_POST['materialid'];
+        // $result = $this->materialDao->deleteById($materialid);
+        echo json_encode($returnData);
+    }
+    // 材料维护================================================================================
+
 
 }
 ?>

@@ -1,15 +1,14 @@
 <?php
 require_once dirname(__FILE__).'/../auto_load.php';
-// import("@.Model.UserDao");
-// import("@.Model.RoleDao");
-// import("@.Model.RoleOperationDao");
-// import("@.Model.OperationDao");
+
 class LoginAfterAction extends Action {
   protected $userDao;
   protected $roleDao;
   protected $roleOperationDao;
   protected $operationDao;
   protected $myOperationRowArray;
+  protected $module;
+  protected $enterpriseDao;
 
   public function _initialize(){
     $isLogin = false;
@@ -22,6 +21,7 @@ class LoginAfterAction extends Action {
     $this->roleDao=new RoleDao();
     $this->roleOperationDao=new RoleOperationDao();
     $this->operationDao=new OperationDao();
+    $this->enterpriseDao=new EnterpriseDao();
     //全局操作
     $my_username = $_SESSION['my_username'];
     $this->assign('my_username',$my_username);
@@ -49,6 +49,25 @@ class LoginAfterAction extends Action {
     if($nowArray['hours']>=22 || $nowArray['hours']<5)$greetingWords = "夜深了，要注意休息啊";
     $this->assign('greetingWords',$greetingWords);
   }
+
+  protected function authoritycheck($module,$operationname){
+    foreach ($this->myOperationRowArray as $value) {
+      if($value['operationname']==$operationname && $value['module']==$module)return true;
+    }
+    return false;
+  }
+
+  protected function getAllEnterprises(){
+    $enterpriseRowArray = $this->enterpriseDao->findAll();
+    $enterpriseRowArrayById=array();
+    foreach($enterpriseRowArray as $key => $value){
+      $id=$value['id'];
+      $enterpriseRowArrayById[$id]=$value;
+    }
+    return $enterpriseRowArrayById;
+  }
+
+
 }
 
 ?>

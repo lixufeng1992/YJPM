@@ -96,6 +96,21 @@
     }
   }
 
+  //person_info str -> person_name,person_phone
+  function func_getPersonArray($person_str){
+  	$personArray=array();
+  	$personArray['name'] = substr($person_str, 0,strpos($person_str,"_"));
+  	$personArray['phone']=substr($person_str,strrpos($person_str,'(')+1,strrpos($person_str, ')')-strrpos($person_str,'(')-1);
+  	return $personArray;
+  }
+
+  //person_name,person_phone,person_enterprisename -> person_info str
+  function func_getPersonInfo($name,$phone,$enterprisename){
+  	$personInfo=$name;
+  	if(strlen($enterprisename)>0)$personInfo.="_".$enterprisename;
+  	if(strlen($phone)>0)$personInfo.="(".$phone.")";
+  	return $personInfo;
+  }
 
 
 ?>

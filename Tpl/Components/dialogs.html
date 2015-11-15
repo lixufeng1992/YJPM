@@ -1,0 +1,242 @@
+<!--项目选择-->
+<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="projectModalLabel">项目选择</h4>    
+				
+			</div>
+			<br>
+			<form class="from-horizontal">
+				<div class="form-group">
+					<label class="col-md-2 control-label">项目名称</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" name="" id="project_name"/>
+					</div>					
+					<div class="col-md-2">
+						<a class="btn btn-info" data-toggle="collapse" data-target="#project_list">已有项目</a>
+					</div>
+					<div style="clear:both"></div>
+				</div>
+			</form>
+			<div id="project_list" class="panel-collapse collapse panel">
+				<div class="container-fluid" style="margin-top:15px" >
+					<div class="row" style="margin-top:15px">
+						<div class="col-md-2">项目名称</div>
+						<div class="col-md-2">业务员</div>
+						<div class="col-md-3">施工单位</div>
+						<div class="col-md-3">设计单位</div>
+						<div class="col-md-2">当前状态</div>
+					</div>
+				</div>
+
+				<div class="modal-body"  style="max-height:500px;overflow:auto" >
+					<div class="list-group" id="projects">          
+						<volist name="projectRowArray" id="vo_project">
+							<a href="{$vo_project.projectid}" class="list-group-item">
+								<div class="row">
+									<div class="col-md-2">{$vo_project.projectname}</div>
+									<div class="col-md-2">{$vo_project.clerkname}</div>
+									<div class="col-md-3">{$vo_project.buildenterprisename}</div>
+									<div class="col-md-3">{$vo_project.designenterprisename}</div>
+									<div class="col-md-2">{$vo_project.currentstatusname}</div>
+								</div>
+							</a>
+						</volist>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="chooseProject">确定</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 往来单位选择 -->
+<div class="modal fade" id="enterpriseModal" tabindex="-1" role="dialog" aria-labelledby="enterpriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="enterpriseModalLabel">往来单位选择</h4>
+            <div class="container-fluid" style="margin-top:15px">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_all" checked>全部
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_1part">甲方
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_divideman">分包商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_materialman">材料商
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_machineman">机械商
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_transman">内部单位
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_client">客户
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="classify" value="is_otherpart">其他单位
+                            </label>
+                        </div>
+                    </div>   	
+                </div>
+                <div class="row" style="margin-top:15px">
+                    <div class="col-md-4">客户名称</div>
+                    <div class="col-md-2">联系人</div>
+                    <div class="col-md-3">联系电话</div>
+                    <div class="col-md-3">地址</div>
+                </div>
+            </div>
+      </div>
+      <div class="modal-body"  style="max-height:500px;overflow:auto" >
+        <div class="list-group" id="enterprises">
+            <volist name="enterpriseRowArray" id="vo">
+                <a href="{$vo.id}" class="list-group-item 
+                <if condition="$vo['is_1part'] eq 1">is_1part <else/> </if>
+                <if condition="$vo['is_divideman'] eq 1">is_divideman <else/> </if>
+                <if condition="$vo['is_materialman'] eq 1">is_materialman <else/> </if>
+                <if condition="$vo['is_machineman'] eq 1">is_machineman <else/> </if>
+                <if condition="$vo['is_transman'] eq 1">is_transman <else/> </if>
+                <if condition="$vo['is_client'] eq 1">is_client <else/> </if>
+                <if condition="$vo['is_otherpart'] eq 1">is_otherpart <else/> </if>
+                ">
+                <div class="row">
+                    <div class="col-md-4">{$vo.name}</div>
+                    <div class="col-md-2">{$vo.contact_person}</div>
+                    <div class="col-md-3">{$vo.phone_number}</div>
+                    <div class="col-md-3">{$vo.address}</div>
+                </div>
+                </a>
+            </volist>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="chooseEnterprise">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Person选择-->
+<div class="modal fade" id="modalPersonChoose" tabindex="-1" role="dialog" aria-labelledby="personModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      	<div class="modal-header">
+        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        	<h4 class="modal-title">人员选择</h4>    		
+		</div>
+		<br>
+		<form class="from-horizontal">
+			<div class="form-group">
+				<label class="col-md-1 control-label">姓名</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="modalPersonChoose_person_name" id="modalPersonChoose_person_name"/>
+				</div>
+				<label class="col-md-2 control-label">联系方式</label>					
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="modalPersonChoose_person_phone" id="modalPersonChoose_person_phone"/>
+				</div>
+				<label class="col-md-2 control-label">所属单位</label>
+				<div class="col-md-2">
+					<input type="text" class="form-control" name="modalPersonChoose_enterprisename" readonly="readonly" id="modalPersonChoose_enterprisename"/>
+					<input type="hidden" name="modalPersonChoose_enterprisid" value="0"/>
+				</div>
+				<div class="col-md-1">
+					<a id="modalPersonChoose_btn_people_list" class="btn btn-info">已有人员</a>
+				</div>
+				<div style="clear:both"></div>
+			</div>
+			<!-- <div class="form-group">
+				<div class="col-md-2">
+					<a class="btn btn-info" data-toggle="collapse" data-target="#people_list">已有人员</a>
+				</div>
+			</div> -->
+			<!-- <div style="clear:both"></div> -->
+		 </form>
+
+		 <div class="modal-body"  style="max-height:500px;overflow:auto" >
+		 	<div id="modalPersonChoose_enterprise_list" class="panel-collapse panel">
+		 		<div class="container-fluid" style="margin-top:15px" >
+		 			<div class="row" style="margin-top:15px">
+		 				<div class="col-md-offset-1 col-md-3">单位</div>
+		 				<div class="col-md-offset-1 col-md-7">单位说明</div>
+		 			</div>
+		 		</div>
+		 		<div class="list-group" id="modalPersonChoose_enterprises">          
+		 			<volist name="enterpriseRowArray" id="vo">
+		 				<a href="{$vo.id}" class="list-group-item">
+		 					<div class="row">
+		 						<div class="col-md-offset-1 col-md-3">{$vo.name}</div>
+		 						<div class="col-md-offset-1 col-md-7">{$vo.remark}</div>
+		 						<div class="hide">{$vo.id}</div>
+		 					</div>
+		 				</a>
+		 			</volist>
+		 		</div>
+		 	</div>
+		 	<div id="modalPersonChoose_people_list" class="panel-collapse panel">
+		 		<div class="container-fluid" style="margin-top:15px" >
+		 			<div class="row" style="margin-top:15px">
+		 				<div class="col-md-offset-1 col-md-3">姓名</div>
+		 				<div class="col-md-offset-1 col-md-3">联系方式</div>
+		 				<div class="col-md-offset-1 col-md-3">单位</div>
+		 			</div>
+		 		</div>
+
+		 		<div class="list-group" id="modalPersonChoose_people">
+		 			<volist name="peopleRowArray" id="vo">
+		 				<a href="{$vo.id}" class="list-group-item">
+		 					<div class="row">
+		 						<div class="col-md-offset-1 col-md-3">{$vo.name}</div>
+		 						<div class="col-md-offset-1 col-md-3">{$vo.phone}</div>
+		 						<div class="col-md-offset-1 col-md-3">{$vo.enterprisename}</div>
+		 						<div class="hide">{$vo.enterpriseid}</div>
+		 					</div>
+		 				</a>
+		 			</volist>
+		 		</div>
+		 	</div>
+		 </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="modalPersonChoose_btn_ok">确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
