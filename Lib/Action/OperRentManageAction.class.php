@@ -366,7 +366,7 @@ class OperRentManageAction extends LoginAfterAction
         		}
        			 
             
-      		  $this->display('OperRentManage/addRentOutOrders');
+      		  $this->display('OperRentManage/addRentOutOrder');
     }
 
     public function addRentOutOrderSubmit()
