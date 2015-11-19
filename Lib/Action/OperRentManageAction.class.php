@@ -322,7 +322,7 @@ class OperRentManageAction extends LoginAfterAction
 		            $contractRowArray[$key]['content'] = $contractContentRowArray;
 		            $this->assign('contractRowArray', $contractRowArray);
         		}
-        $this->display('OperRentManage/listRentOutOrder_2');
+        $this->display('OperRentManage/listRentOutOrder');
     }
 
     public function addRentOutOrder()
@@ -366,7 +366,7 @@ class OperRentManageAction extends LoginAfterAction
         		}
        			 
             
-      		  $this->display('OperRentManage/addRentOutOrder_2');
+      		  $this->display('OperRentManage/addRentOutOrders');
     }
 
     public function addRentOutOrderSubmit()
