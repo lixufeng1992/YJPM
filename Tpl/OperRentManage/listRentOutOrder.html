@@ -17,10 +17,10 @@
 <div id="right" style="min-width:1500px">
     <nav class="navbar navbar-default" role="navigation" id="bodynav">
       <div class="container-fluid">
-       <div class="navbar-header navbar-brand">租赁还租单</div>
+       <div class="navbar-header navbar-brand">租赁租出</div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="{:U('OperRentManage/addRentOutOrder')}">新增租赁还租单</a></li>
-          <li><a href="{:U('OperRentManage/listRentOutOrder')}" class="active">已有租赁还租单</a></li>
+          <li><a href="{:U('OperRentManage/addRentOutOrder')}">新增租出</a></li>
+          <li><a href="{:U('OperRentManage/listRentOutOrder')}" class="active">已有租出信息</a></li>
         </ul>
       </div>
     </nav>
@@ -29,7 +29,7 @@
             <div class="panel-body">
                 <div class="page-header">
                                                 <div class="col-md-4">
-                                                <h4>已有租赁还租单</h4>
+                                                <h4>已有租出信息</h4>
                                                 </div>
 					<div class="col-md-4">
 						<h4 id="project_name"></h4>
@@ -44,43 +44,38 @@
 				</div>
                 <table class="table">
 					<thead>
-							<th>审核</th>
-							<th>对应单据</th>
-							<th>往来单位</th>
-							<th>退场项目</th>
-							<th>发生日期</th>
-							<th>经办人</th>
-							<th>退换班组</th>
-							<th>退还人</th>
-							<th>创建人</th>
-							<th>创建时间</th>
-							<th>审核人</th>
-							<th>审核时间</th>
-							<th>操作</th>
+							<th> 审核</th>
+							<th> 单号 </th>
+							<th> 合同类型 </th>
+							<th> 出库仓库 </th>
+							<th> 发生日期</th>
+							<th> 经办人 </th>
+							<th> 审核时间 </th>
+							<th> 操作</th>
 					</thead>
 					<tbody>
-						<volist name="purchaseOrderArray" id="order">
-						<tr data-id="{$order.order_id}" class="project{$order.project_id}" <if condition="$order[checked] eq 1">disabled="true"<else/></if>>
-							<td class="check_state"><if condition="$order[checked] eq 1">已审核<else/>未审核</if></td>
-							<td>{$order.document}</td>
-							<td>{$order.enterprise_name}</td>
-							<td>{$order.project_name}</td>
-							<td>{$order.happen_date}</td>
-							<td>{$order.transactor}</td>
-							<td>{$order.department}</td>
-							<td>{$order.administrator}</td>
-							<td>{$order.creater_name}</td>
-							<td>{$order.create_date}</td>
-							<td class="checker"><if condition="$order[checked] eq 1">{$order.checker_name}<else/></if></td>
-							<td class="check_date"><if condition="$order[checked] eq 1">{$order.check_date}<else/></if></td>
+			
+						<tr>
+							<td> 已审核</td>
+							<td>X00001245</td>
+							<td> 设备/材料借出 </td>
+							<td> 某某仓库 </td>
+							<td>2015-06-09</td>
+							<td> 陈某某 </td>
+							
+							<td>2018-06-08</td>
+					
 							<td>
-							<if condition="$order[checked] eq 1">
-							<button class="btn btn-danger checked">取消审核</button>
-							<else/>
+						
+							<!-- <button class="btn btn-danger checked">取消审核</button>
+							<button class="btn btn-danger checked">取消结算</button>
+						 -->
 							<button class="btn btn-success unchecked">通过审核</button>
-							</if>
+							<button class="btn btn-success unchecked">结算</button>
+							
+						</td>
 						</tr>
-						</volist>
+			
 
 					</tbody>
 				</table>
@@ -198,13 +193,13 @@ $().ready(function(){
 		}
 		$(this).addClass("active");
 		$("table").data("lastActive",$(this));
-        $("#to_edit_link").attr("href","{:U('OperRentManage/editRentOutOrder')}?order_id="+$(this).data("id"));
+        $("#to_edit_link").attr("href","{:U('OperMaterialManage/editPurchaseOrder')}?order_id="+$(this).data("id"));
 		$("#to_edit_link").removeAttr("disabled");
     });
 	$("table").on("click",".checked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperRentManage/uncheckRentOutOrder')}",
+		$.post("{:U('OperMaterialManage/uncheckPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text("");
@@ -218,7 +213,7 @@ $().ready(function(){
 	$("table").on("click",".unchecked",function(e){
 		var btn = $(this);
 		var tr =btn.parent().parent();
-		$.post("{:U('OperRentManage/checkRentOutOrder')}",
+		$.post("{:U('OperMaterialManage/checkPurchaseOrder')}",
 		{order_id:tr.data("id")},
 		function(result){
 			tr.find(".checker").text(result[0]);

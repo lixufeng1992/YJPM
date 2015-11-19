@@ -16,6 +16,14 @@ class OperRentManageAction extends LoginAfterAction
     
     private $materialDao;
     
+   	private $projectResourceDao;
+   
+    private $enterpriseDao;
+
+		private $materialcontractDao;
+		private $materialcontractContentDao;
+		private $materialEnquiryDao;
+		
     public function _initialize()
     {
         parent::_initialize();
@@ -23,6 +31,12 @@ class OperRentManageAction extends LoginAfterAction
         $this->materialCategoryDao = new MaterialCategoryDao();
         $this->materialrentDao = new MaterialrentDao();
         $this->materialDao = new MaterialDao();
+        $this->projectResourceDao = new ProjectResourceDao();
+        $this->enterpriseDao = new EnterpriseDao();
+        
+        $this->materialcontractDao = new MaterialcontractDao();
+        $this->materialcontractContentDao = new MaterialcontractContentDao();
+        $this->materialEnquiryDao = new MaterialEnquiryDao();
     }
     
     
@@ -269,13 +283,90 @@ class OperRentManageAction extends LoginAfterAction
     {}
 
     public function listRentOutOrder()
+
     {
-        $this->display('OperRentManage/listRentOutOrder');
+		// 分类，子分类
+            $materialClassRowArray = $this->materialClassDao->findAll();
+            foreach ($materialClassRowArray as $key => $value) {
+                $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+                $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+            }
+            // 材料实体
+            $materialRowArray = $this->materialDao->findAll();
+            foreach ($materialRowArray as $key => $value) {
+                $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+                $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+            }
+            $resourceRowArray = $this->projectResourceDao->findAll();
+        		$this->assign('resourceRowArray', $resourceRowArray);
+            $this->assign('materialClassRowArray', $materialClassRowArray);
+            $this->assign('materialRowArray', $materialRowArray);
+            
+            $enterpriseRowArray = $this->enterpriseDao->findAll();
+       			$this->assign('enterpriseRowArray', $enterpriseRowArray);
+       			 
+       			$contractRowArray = $this->materialcontractDao->findAll();
+       	 		foreach ($contractRowArray as $key => $value) {
+            		$supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
+           			$contractRowArray[$key]['supplier'] = $supplier;
+           			$contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
+           	 		$totalValue = 0;
+		            foreach ($contractContentRowArray as $key2 => $value2) {
+		                $material = $this->materialDao->findById($value2['material_id']);
+		                $contractContentRowArray[$key2]['material'] = $material;
+		                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
+		                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
+		                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
+		            }
+		            $contractRowArray[$key]['totalValue'] = $totalValue;
+		            $contractRowArray[$key]['content'] = $contractContentRowArray;
+		            $this->assign('contractRowArray', $contractRowArray);
+        		}
+        $this->display('OperRentManage/listRentOutOrder_2');
     }
 
     public function addRentOutOrder()
     {
-        $this->display('OperRentManage/addRentOutOrder');
+    	  // 分类，子分类
+            $materialClassRowArray = $this->materialClassDao->findAll();
+            foreach ($materialClassRowArray as $key => $value) {
+                $materialCategoryRowArray = $this->materialCategoryDao->findByClassid($value['classid']);
+                $materialClassRowArray[$key]['materialCategoryRowArray'] = $materialCategoryRowArray;
+            }
+            // 材料实体
+            $materialRowArray = $this->materialDao->findAll();
+            foreach ($materialRowArray as $key => $value) {
+                $materialCategoryRow = $this->materialCategoryDao->findById($value['categoryid']);
+                $materialRowArray[$key]['materialCategoryRow'] = $materialCategoryRow;
+            }
+            $resourceRowArray = $this->projectResourceDao->findAll();
+        		$this->assign('resourceRowArray', $resourceRowArray);
+            $this->assign('materialClassRowArray', $materialClassRowArray);
+            $this->assign('materialRowArray', $materialRowArray);
+            
+            $enterpriseRowArray = $this->enterpriseDao->findAll();
+       			$this->assign('enterpriseRowArray', $enterpriseRowArray);
+       			 
+       			$contractRowArray = $this->materialcontractDao->findAll();
+       	 		foreach ($contractRowArray as $key => $value) {
+            		$supplier = $this->enterpriseDao->findById($value['supplier_enterpriseid']);
+           			$contractRowArray[$key]['supplier'] = $supplier;
+           			$contractContentRowArray = $this->materialcontractContentDao->findByContractid($value['contractid']);
+           	 		$totalValue = 0;
+		            foreach ($contractContentRowArray as $key2 => $value2) {
+		                $material = $this->materialDao->findById($value2['material_id']);
+		                $contractContentRowArray[$key2]['material'] = $material;
+		                $enquiry = $this->materialEnquiryDao->findById($value2['enquiry_id']);
+		                $contractContentRowArray[$key2]['enquiry'] = $enquiry;
+		                $totalValue += $enquiry['enquiry_offer'] * $value2['amount'];
+		            }
+		            $contractRowArray[$key]['totalValue'] = $totalValue;
+		            $contractRowArray[$key]['content'] = $contractContentRowArray;
+		            $this->assign('contractRowArray', $contractRowArray);
+        		}
+       			 
+            
+      		  $this->display('OperRentManage/addRentOutOrder_2');
     }
 
     public function addRentOutOrderSubmit()
